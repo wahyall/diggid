@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuid;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
+class Category extends Model {
+    use Uuid, HasSlug;
+
+    protected $fillable = ['name', 'slug', 'icon'];
+
+    public function getSlugOptions(): SlugOptions {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+
+    public function subs() {
+        return $this->hasMany(SubCategory::class);
+    }
+}

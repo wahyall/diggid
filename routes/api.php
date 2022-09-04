@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,10 +22,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('users', function () {
-        $users = User::paginate(10);
-        return $users;
+    Route::prefix('dashboard')->group(function () {
+        Route::get('menu', [DashboardController::class, 'menu']);
     });
 
-    Route::get('menus', [MenuController::class, 'menus']);
+    Route::group(['prefix' => 'category', 'middleware' => 'role:admin'], function () {
+        Route::post('paginate', [CategoryController::class, 'paginate']);
+        Route::post('store', [CategoryController::class, 'store']);
+        Route::get('{uuid}/edit', [CategoryController::class, 'edit']);
+        Route::delete('{uuid}/destroy', [CategoryController::class, 'destroy']);
+    });
 });

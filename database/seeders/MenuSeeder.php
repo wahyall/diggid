@@ -18,28 +18,28 @@ class MenuSeeder extends Seeder {
 
         $menus = [
             // Front
-            ['name' => 'Home', 'path' => 'Index'],
+            ['name' => 'Home', 'url' => '/', 'route' => 'home', 'component' => 'Index'],
 
             ['middleware' => 'auth|verified', 'children' => [
                 // User
-                ['name' => 'User', 'path' => 'user/Index'],
-                ['name' => 'Kursus Saya', 'path' => 'user/kursus-saya/Index'],
-                ['name' => 'Setting', 'path' => 'user/setting/Index'],
+                ['name' => 'Profil', 'url' => 'me', 'route' => 'me', 'component' => 'me/Index'],
+                ['name' => 'Kursus Saya', 'url' => 'me/course', 'route' => 'me.course', 'component' => 'me/course/Index'],
+                ['name' => 'Setting', 'url' => 'me/setting', 'route' => 'me.setting', 'component' => 'me/setting/Index'],
 
                 // Redirecting Dashboard
-                ['name' => 'Redirecting', 'path' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],
+                ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],
 
                 ['middleware' => 'role:admin', 'children' => [
                     // Menu Dashboard Admin
-                    ['name' => 'Dashboard', 'path' => 'dashboard/admin/Index', 'icon' => 'las la-home fs-2'],
-                    ['name' => 'Kursus', 'path' => 'dashboard/admin/kursus/Index', 'icon' => 'las la-chalkboard-teacher fs-2'],
-                    ['name' => 'Kategori', 'path' => 'dashboard/admin/kategori/Index', 'icon' => 'las la-tags fs-2'],
+                    ['name' => 'Dashboard', 'url' => 'dashboard/admin', 'route' => 'dashboard.admin', 'component' => 'dashboard/admin/Index', 'icon' => 'las la-home fs-2'],
+                    ['name' => 'Kursus', 'url' => 'dashboard/admin/course', 'route' => 'dashboard.admin.course', 'component' => 'dashboard/admin/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2'],
+                    ['name' => 'Kategori', 'url' => 'dashboard/admin/category', 'route' => 'dashboard.admin.category', 'component' => 'dashboard/admin/category/Index', 'icon' => 'las la-tags fs-2'],
                 ]],
 
                 ['middleware' => 'role:mentor', 'children' => [
                     // Menu Dashboard Mentor
-                    ['name' => 'Dashboard', 'path' => 'dashboard/mentor/Index', 'icon' => 'las la-home fs-2'],
-                    ['name' => 'Kursus', 'path' => 'dashboard/mentor/kursus/Index', 'icon' => 'las la-chalkboard-teacher fs-2'],
+                    ['name' => 'Dashboard', 'url' => 'dashboard/mentor', 'route' => 'dashboard.mentor', 'component' => 'dashboard/mentor/Index', 'icon' => 'las la-home fs-2'],
+                    ['name' => 'Kursus', 'url' => 'dashboard/mentor/course', 'route' => 'dashboard.mentor.course', 'component' => 'dashboard/mentor/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2'],
                 ]],
             ]],
         ];

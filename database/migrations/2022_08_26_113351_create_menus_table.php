@@ -16,7 +16,9 @@ return new class extends Migration {
             $table->uuid()->unique();
             $table->string('name');
             $table->string('icon')->nullable();
-            $table->string('path')->nullable()->comment('Relative on resources/js/pages');
+            $table->string('url')->nullable();
+            $table->string('route')->nullable()->comment('Route name');
+            $table->string('component')->nullable()->comment('Relative on resources/js/pages');
             $table->integer('parent_id')->default(0);
             $table->boolean('shown')->default(true)->comment('Determines whether the menu is shown on dashboard or not');
             $table->string('middleware')->nullable()->comment('Pipe separated middleware, e.g. auth|verified');

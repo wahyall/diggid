@@ -26,7 +26,7 @@ const appName =
 
 window.assets = function (path) {
   return (
-    import.meta.env.VITE_URL + "/" + path.split("/").filter(Boolean).join("/")
+    import.meta.env.VITE_URL + "/" + path?.split("/").filter(Boolean).join("/")
   );
 };
 

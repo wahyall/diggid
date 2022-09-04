@@ -3,18 +3,12 @@ import { Link } from "@inertiajs/inertia-react";
 import { useQuery } from "@tanstack/react-query";
 import { For } from "react-haiku";
 
-function MenuItem({ name, icon, path }) {
-  const routeUrl = `/${path.replace("Index", "")}`;
-  const routeName = path
-    .replace("Index", "")
-    .replaceAll("/", ".")
-    .replace(/\.$/, "");
-
+function MenuItem({ name, icon, url, route: routeName }) {
   return (
     <div className="menu-item">
       <Link
-        className={`menu-link ${route().current() == routeName && "active"}`}
-        href={routeUrl}
+        className={`menu-link ${route().current() === routeName && "active"}`}
+        href={route(routeName)}
       >
         <span className="menu-icon menu-bullet w-25px">
           <i className={icon}></i>
@@ -25,7 +19,7 @@ function MenuItem({ name, icon, path }) {
   );
 }
 
-function MenuAccordion({ name, icon, path, children }) {
+function MenuAccordion({ name, icon, children }) {
   const accordion = useRef(null);
 
   useEffect(() => {
@@ -73,8 +67,8 @@ function DashboardLayout({ children, auth: { user } }) {
   }, []);
 
   const { data: menus } = useQuery(
-    ["menus"],
-    () => axios.get("/api/menus").then((res) => res.data),
+    ["dashboard", "menu"],
+    () => axios.get("/api/dashboard/menu").then((res) => res.data),
     {
       placeholderData: [],
     }
@@ -86,8 +80,8 @@ function DashboardLayout({ children, auth: { user } }) {
       className="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed aside-enabled aside-fixed"
       style={useMemo(
         () => ({
-          "--kt-toolbar-height": "-20px",
-          "--kt-toolbar-height-tablet-and-mobile": "-20px",
+          "--kt-toolbar-height": "0px",
+          "--kt-toolbar-height-tablet-and-mobile": "0px",
         }),
         []
       )}
@@ -280,36 +274,30 @@ function DashboardLayout({ children, auth: { user } }) {
                             </div>
                             <div className="d-flex flex-column">
                               <div className="fw-bolder d-flex align-items-center fs-5">
-                                Max Smith
+                                {user.name}
                                 <span className="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">
-                                  Pro
+                                  {user.role}
                                 </span>
                               </div>
-                              <a
-                                href="#"
-                                className="fw-bold text-muted text-hover-primary fs-7"
-                              >
-                                max@kt.com
-                              </a>
+                              <span className="fw-bold text-muted text-hover-primary fs-7">
+                                {user.email}
+                              </span>
                             </div>
                           </div>
                         </div>
                         <div className="separator my-2"></div>
                         <div className="menu-item px-5">
-                          <a
-                            href="../../demo1/dist/account/overview.html"
-                            className="menu-link px-5"
-                          >
+                          <Link href={route("me")} className="menu-link px-5">
                             Akun Saya
-                          </a>
+                          </Link>
                         </div>
                         <div className="menu-item px-5">
-                          <a
+                          <Link
                             href={route("logout")}
                             className="menu-link px-5 text-danger"
                           >
                             Logout
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>

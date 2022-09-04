@@ -51,7 +51,7 @@ class RegisteredUserController extends Controller {
 
         return response()->json([
             'message' => 'Berhasil mendaftar',
-            'redirect' => route('user'),
+            'redirect' => route('me'),
         ]);
     }
 }

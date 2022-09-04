@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller {
 
         return response()->json([
             'message' => 'Berhasil masuk',
-            'redirect' => route('user'),
+            'redirect' => route('me'),
         ]);
     }
 

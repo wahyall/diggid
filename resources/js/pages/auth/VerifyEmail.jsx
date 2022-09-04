@@ -42,7 +42,7 @@ export default function VerifyEmail({ auth: { user }, status }) {
             </a>
             <div className="pt-lg-10 mb-10">
               <h1 className="fw-bolder fs-2qx text-gray-800 mb-7">
-                Verifikasi Email Anda
+                Verifikasi Email Kamu
               </h1>
               <div className="fs-3 fw-bold text-muted mb-10">
                 {status === "verification-link-sent"
@@ -52,7 +52,7 @@ export default function VerifyEmail({ auth: { user }, status }) {
                   {user.email}
                 </a>
                 <br />
-                Silahkan cek email Anda.
+                Silahkan cek email kamu.
               </div>
               <form onSubmit={submit} className="fs-5">
                 <div className="fw-bold text-gray-700">
@@ -64,8 +64,8 @@ export default function VerifyEmail({ auth: { user }, status }) {
               </form>
 
               <div className="fs-6 fw-bold text-muted my-10">
-                Jika Anda masih belum menerima email verifikasi, silahkan cek
-                folder "Spam" Anda.
+                Jika kamu masih belum menerima email verifikasi, silahkan cek
+                folder "Spam".
               </div>
             </div>
             <div

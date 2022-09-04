@@ -39,7 +39,9 @@ createInertiaApp({
     );
     page.then((module) => {
       if (name.startsWith("dashboard")) {
-        module.default.layout = (page) => <DashboardLayout children={page} />;
+        module.default.layout = (page) => (
+          <DashboardLayout children={page} {...page.props} />
+        );
       }
     });
     return page;

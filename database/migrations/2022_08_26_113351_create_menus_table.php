@@ -11,16 +11,15 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('dashboard_menus', function (Blueprint $table) {
+        Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->uuid()->unique();
             $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('icon');
-            $table->string('component')->nullable();
+            $table->string('icon')->nullable();
+            $table->string('path')->nullable()->comment('Relative on resources/js/pages');
             $table->integer('parent_id')->default(0);
             $table->boolean('shown')->default(true)->comment('Determines whether the menu is shown on dashboard or not');
-            $table->string('role_accesses')->nullable()->comment('Comma separated middleware, e.g. user,admin,mentor')->default('admin');
+            $table->string('middleware')->nullable()->comment('Pipe separated middleware, e.g. auth|verified');
             $table->timestamps();
         });
     }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DashboardMenuController;
+use App\Http\Controllers\MenuController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +19,6 @@ Route::get('/', function () {
     return redirect('/login');
 })->name('home');
 
-DashboardMenuController::generateRoute();
+MenuController::generateRoute();
 
 require __DIR__ . '/auth.php';

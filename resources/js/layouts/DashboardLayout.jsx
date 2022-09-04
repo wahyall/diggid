@@ -1,48 +1,50 @@
-import { useEffect, memo, useState, useMemo } from "react";
+import { useEffect, memo, useState, useMemo, useRef } from "react";
 import { Link } from "@inertiajs/inertia-react";
 import { useQuery } from "@tanstack/react-query";
 import { For } from "react-haiku";
 
-function MenuItem({ nama, icon, slug, parentRoute }) {
-  let currentRoute =
-    slug === "dashboard" ? "/dashboard" : `${parentRoute}/${slug}`;
-
-  if (!currentRoute.startsWith("/")) currentRoute = `/${currentRoute}`;
+function MenuItem({ name, icon, path }) {
+  const routeUrl = `/${path.replace("Index", "")}`;
+  const routeName = path
+    .replace("Index", "")
+    .replaceAll("/", ".")
+    .replace(/\.$/, "");
 
   return (
     <div className="menu-item">
       <Link
-        className={`menu-link ${
-          currentRoute === new URL(route(route().current())).pathname &&
-          "active"
-        }`}
-        href={currentRoute}
+        className={`menu-link ${route().current() == routeName && "active"}`}
+        href={routeUrl}
       >
         <span className="menu-icon menu-bullet w-25px">
           <i className={icon}></i>
         </span>
-        <span className="menu-title">{nama}</span>
+        <span className="menu-title">{name}</span>
       </Link>
     </div>
   );
 }
 
-function MenuAccordion({ nama, icon, children, slug, parentRoute }) {
-  const currentRoute = `/${parentRoute}/${slug}`;
+function MenuAccordion({ name, icon, path, children }) {
+  const accordion = useRef(null);
+
+  useEffect(() => {
+    if (accordion.current.querySelector(".menu-link.active")) {
+      accordion.current.classList.add("show");
+    }
+  }, []);
 
   return (
     <div
+      ref={accordion}
       data-kt-menu-trigger="click"
-      className={`menu-item menu-accordion ${
-        new URL(route(route().current())).pathname.startsWith(currentRoute) &&
-        "here show"
-      }`}
+      className="menu-item menu-accordion"
     >
       <span className="menu-link">
         <span className="menu-icon">
           <i className={icon}></i>
         </span>
-        <span className="menu-title">{nama}</span>
+        <span className="menu-title">{name}</span>
         <span className="menu-arrow"></span>
       </span>
       <div className="menu-sub menu-sub-accordion menu-active-bg">
@@ -50,9 +52,9 @@ function MenuAccordion({ nama, icon, children, slug, parentRoute }) {
           each={children}
           render={(menu) =>
             menu.children.length ? (
-              <MenuAccordion {...menu} parentRoute={currentRoute} />
+              <MenuAccordion {...menu} />
             ) : (
-              <MenuItem {...menu} parentRoute={currentRoute} />
+              <MenuItem {...menu} />
             )
           }
         />
@@ -61,7 +63,7 @@ function MenuAccordion({ nama, icon, children, slug, parentRoute }) {
   );
 }
 
-function DashboardLayout({ children }) {
+function DashboardLayout({ children, auth: { user } }) {
   useEffect(() => {
     const script = document.createElement("script");
     script.src = assets("assets/js/loader.bundle.js");
@@ -105,13 +107,13 @@ function DashboardLayout({ children }) {
             data-kt-drawer-toggle="#kt_aside_mobile_toggle"
           >
             <div className="aside-logo flex-column-auto" id="kt_aside_logo">
-              <a href={route("dashboard.home")}>
+              <Link href={route(`dashboard.${user.role}`)}>
                 <img
                   alt="Logo"
                   src={assets("assets/media/logos/logo-sikatana.svg")}
                   className="h-25px logo"
                 />
-              </a>
+              </Link>
               <div
                 id="kt_aside_toggle"
                 className="btn btn-icon w-auto px-0 btn-active-color-primary aside-toggle"
@@ -163,9 +165,9 @@ function DashboardLayout({ children }) {
                     each={menus}
                     render={(menu) =>
                       menu.children.length ? (
-                        <MenuAccordion {...menu} parentRoute="dashboard" />
+                        <MenuAccordion {...menu} />
                       ) : (
-                        <MenuItem {...menu} parentRoute="dashboard" />
+                        <MenuItem {...menu} />
                       )
                     }
                   />
@@ -199,7 +201,10 @@ function DashboardLayout({ children }) {
 
                 {/* begin::Mobile logo */}
                 <div className="d-flex align-items-center flex-grow-0 ms-4">
-                  <Link href={route("dashboard.home")} className="d-lg-none">
+                  <Link
+                    href={route(`dashboard.${user.role}`)}
+                    className="d-lg-none"
+                  >
                     <img
                       alt="Logo"
                       src={assets("assets/media/logos/logo-sikatana.svg")}

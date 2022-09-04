@@ -7,11 +7,10 @@ import * as yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { Inertia } from "@inertiajs/inertia";
-import { usePage } from "@inertiajs/inertia-react";
 
 const schema = yup
   .object({
-    nama: yup.string().required("Isian nama lengkap wajib diisi"),
+    name: yup.string().required("Isian nama lengkap wajib diisi"),
     email: yup
       .string()
       .email("Masukkan Email yang valid")
@@ -64,26 +63,24 @@ const Register = ({ redirect }) => {
       >
         <div className="text-center mb-11">
           <h1 className="text-dark fw-bolder mb-3">Buat Akun Baru</h1>
-          <div className="text-gray-500 fw-semibold fs-6">
-            Sistem Informasi Karang Taruna
-          </div>
+          <div className="text-gray-500 fw-semibold fs-6"></div>
         </div>
         <div className="fv-row mb-8">
           <div className="form-floating">
             <input
               type="text"
-              name="nama"
-              id="nama"
+              name="name"
+              id="name"
               autoComplete="off"
               className="form-control bg-transparent"
               placeholder="Nama Lengkap"
-              {...form("nama")}
+              {...form("name")}
             />
             <label htmlFor="nama">Nama Lengkap</label>
           </div>
-          {errors.nama && (
+          {errors.name && (
             <span className="text-danger mt-2 d-block">
-              {errors.nama.message}
+              {errors.name.message}
             </span>
           )}
         </div>

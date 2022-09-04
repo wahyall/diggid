@@ -34,16 +34,15 @@ class RegisteredUserController extends Controller {
      */
     public function store(Request $request) {
         $request->validate([
-            'nama' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'nama' => $request->nama,
+            'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_admin' => '1',
         ]);
 
         event(new Registered($user));
@@ -52,7 +51,7 @@ class RegisteredUserController extends Controller {
 
         return response()->json([
             'message' => 'Berhasil mendaftar',
-            'redirect' => route('dashboard.home'),
+            'redirect' => route('user'),
         ]);
     }
 }

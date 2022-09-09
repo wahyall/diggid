@@ -30,7 +30,7 @@ class CategoryController extends Controller {
                 'icon' => 'required|image'
             ]);
 
-            $category = Category::create([
+            Category::create([
                 'name' => $request->name,
                 'icon' => 'storage/' . $request->icon->store('category', 'public'),
             ]);
@@ -43,10 +43,89 @@ class CategoryController extends Controller {
         }
     }
 
+    public function detail($uuid) {
+        if (request()->wantsJson()) {
+            $category = Category::with(['subs'])->where('uuid', $uuid)->first();
+            return response()->json($category);
+        } else {
+            return abort(404);
+        }
+    }
+
     public function edit($uuid) {
         if (request()->wantsJson()) {
-            $category = Category::where('uuid', $uuid)->first();
+            $category = Category::findByUuid($uuid);
             return response()->json($category);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function update(Request $request, $uuid) {
+        if (request()->wantsJson()) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'icon' => 'image'
+            ]);
+
+            $category = Category::findByUuid($uuid);
+
+            // Delete icon
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
+            }
+            $category->update([
+                'name' => $request->name,
+                'icon' => 'storage/' . $request->icon->store('category', 'public'),
+            ]);
+
+            return response()->json([
+                'message' => 'Berhasil mengubah kategori',
+            ]);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function destroy($uuid) {
+        if (request()->wantsJson()) {
+            $category = Category::findByUuid($uuid);
+
+            // Delete icon
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
+            }
+            $category->delete();
+
+            return response()->json([
+                'message' => 'Berhasil menghapus kategori',
+            ]);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function storeSub(Request $request, $uuid) {
+        if (request()->wantsJson()) {
+            $request->validate([
+                'names' => 'required|array',
+                'names.*' => 'required|string|max:255',
+                'icons' => 'required|array',
+                'icons.*' => 'required|image',
+            ]);
+
+            $category = Category::findByUuid($uuid);
+
+            foreach ($request->names as $index => $name) {
+                $category->subs()->create([
+                    'name' => $name,
+                    'icon' => 'storage/' . $request->icons[$index]->store('category', 'public'),
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Berhasil menambahkan sub kategori',
+            ]);
         } else {
             return abort(404);
         }

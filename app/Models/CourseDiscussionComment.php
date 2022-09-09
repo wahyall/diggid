@@ -9,6 +9,7 @@ class CourseDiscussionComment extends Model {
     use Uuid;
 
     protected $fillable = ['body', 'user_id', 'course_discussion_id', 'upvote', 'is_verified'];
+    protected $hidden = ['id'];
 
     public function user() {
         return $this->belongsTo(User::class);

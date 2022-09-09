@@ -79,7 +79,7 @@ function Paginate({ columns, url, id }) {
             onChange={(ev) => setPer(ev.value)}
           />
         </div>
-        <form>
+        <form onSubmit={(ev) => (ev.preventDefault(), refetch())}>
           <input
             type="search"
             className="form-control"

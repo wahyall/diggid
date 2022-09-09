@@ -9,6 +9,7 @@ class Transaction extends Model {
     use Uuid;
 
     protected $fillable = ['amount', 'status', 'user_id'];
+    protected $hidden = ['id'];
 
     public function user() {
         return $this->belongsTo(User::class);

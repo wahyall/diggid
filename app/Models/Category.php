@@ -11,6 +11,7 @@ class Category extends Model {
     use Uuid, HasSlug;
 
     protected $fillable = ['name', 'slug', 'icon'];
+    protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

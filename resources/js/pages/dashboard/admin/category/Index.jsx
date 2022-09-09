@@ -2,13 +2,23 @@ import React, { useMemo, useCallback, useState } from "react";
 import Paginate from "@/components/Paginate";
 import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
+import { useQueryClient } from "@tanstack/react-query";
+
 import Form from "./components/Form";
+import SubCategory from "./components/SubCategory";
 
 const columnHelper = createColumnHelper();
 
 export default function Index() {
   const [openForm, setOpenForm] = useState(false);
+  const [openSub, setOpenSub] = useState(false);
   const [selected, setSelected] = useState(null);
+  const queryClient = useQueryClient();
+
+  const sub = useCallback((uuid) => {
+    setSelected(uuid);
+    setOpenSub(true);
+  }, []);
 
   const edit = useCallback((uuid) => {
     setSelected(uuid);
@@ -42,9 +52,9 @@ export default function Index() {
         },
       })
       .then((result) => {
-        console.log(result);
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
+          queryClient.invalidateQueries(["/api/category/paginate"]);
         }
       });
   }, []);
@@ -78,34 +88,50 @@ export default function Index() {
         style: {
           width: "100px",
         },
-        cell: (cell) => (
-          <div className="d-flex gap-2">
-            <button
-              className="btn btn-sm btn-primary btn-icon"
-              data-id={cell.getValue()}
-              onClick={() => edit(cell.getValue())}
-            >
-              <i className="la la-pencil"></i>
-            </button>
-            <button
-              className="btn btn-sm btn-danger btn-icon"
-              data-id={cell.getValue()}
-              onClick={() => hapus(cell.getValue())}
-            >
-              <i className="la la-trash"></i>
-            </button>
-          </div>
-        ),
+        cell: (cell) =>
+          !openForm &&
+          !openSub && (
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-sm btn-primary"
+                style={{ whiteSpace: "nowrap" }}
+                data-id={cell.getValue()}
+                onClick={() => sub(cell.getValue())}
+              >
+                <i className="la la-tag fs-3"></i> Sub Kategori
+              </button>
+              <button
+                className="btn btn-sm btn-warning btn-icon"
+                data-id={cell.getValue()}
+                onClick={() => edit(cell.getValue())}
+              >
+                <i className="la la-pencil fs-3"></i>
+              </button>
+              <button
+                className="btn btn-sm btn-danger btn-icon"
+                data-id={cell.getValue()}
+                onClick={() => hapus(cell.getValue())}
+              >
+                <i className="la la-trash fs-3"></i>
+              </button>
+            </div>
+          ),
       }),
     ],
-    []
+    [openForm, openSub]
   );
 
   return (
     <section>
       <If isTrue={openForm}>
         <Form
-          close={useCallback(() => setOpenForm(false))}
+          close={useCallback(() => setOpenForm(false), [])}
+          selected={selected}
+        />
+      </If>
+      <If isTrue={openSub}>
+        <SubCategory
+          close={useCallback(() => setOpenSub(false), [])}
           selected={selected}
         />
       </If>
@@ -113,11 +139,11 @@ export default function Index() {
         <div className="card-header">
           <div className="card-title w-100">
             <h1>Kategori</h1>
-            <If isTrue={!openForm}>
+            <If isTrue={!openForm && !openSub}>
               <button
                 type="button"
                 className="btn btn-primary btn-sm ms-auto"
-                onClick={() => setOpenForm(true)}
+                onClick={() => (setSelected(null), setOpenForm(true))}
               >
                 <i className="las la-plus"></i>
                 Tambah

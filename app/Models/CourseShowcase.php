@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuid;
 
-class CoursePrerequisite extends Model {
+class CourseShowcase extends Model {
     use Uuid;
 
-    protected $fillable = ['name', 'course_id', 'recommended_course_id'];
+    protected $fillable = ['name', 'description', 'thumbnail', 'url', 'course_id', 'user_id'];
     protected $hidden = ['id'];
 
     public function course() {
         return $this->belongsTo(Course::class);
     }
 
-    public function recommended_course() {
-        return $this->belongsTo(Course::class, 'recommended_course_id');
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }

@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
         Route::post('paginate', [CategoryController::class, 'paginate']);
         Route::post('store', [CategoryController::class, 'store']);
         Route::get('{uuid}/edit', [CategoryController::class, 'edit']);
+        Route::get('{uuid}/detail', [CategoryController::class, 'detail']);
+        Route::post('{uuid}/update', [CategoryController::class, 'update']);
         Route::delete('{uuid}/destroy', [CategoryController::class, 'destroy']);
+        Route::post('{uuid}/sub/store', [CategoryController::class, 'storeSub']);
     });
 });

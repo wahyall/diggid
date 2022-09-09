@@ -9,6 +9,7 @@ class Review extends Model {
     use Uuid;
 
     protected $fillable = ['rating', 'review', 'user_id', 'course_id'];
+    protected $hidden = ['id'];
 
     public function user() {
         return $this->belongsTo(User::class);

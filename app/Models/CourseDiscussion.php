@@ -11,6 +11,7 @@ class CourseDiscussion extends Model {
     use Uuid, HasSlug;
 
     protected $fillable = ['title', 'body', 'course_id', 'user_id', 'upvote'];
+    protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

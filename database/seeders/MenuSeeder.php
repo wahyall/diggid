@@ -35,12 +35,6 @@ class MenuSeeder extends Seeder {
                     ['name' => 'Kursus', 'url' => 'dashboard/admin/course', 'route' => 'dashboard.admin.course', 'component' => 'dashboard/admin/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2'],
                     ['name' => 'Kategori', 'url' => 'dashboard/admin/category', 'route' => 'dashboard.admin.category', 'component' => 'dashboard/admin/category/Index', 'icon' => 'las la-tags fs-2'],
                 ]],
-
-                ['middleware' => 'role:mentor', 'children' => [
-                    // Menu Dashboard Mentor
-                    ['name' => 'Dashboard', 'url' => 'dashboard/mentor', 'route' => 'dashboard.mentor', 'component' => 'dashboard/mentor/Index', 'icon' => 'las la-home fs-2'],
-                    ['name' => 'Kursus', 'url' => 'dashboard/mentor/course', 'route' => 'dashboard.mentor.course', 'component' => 'dashboard/mentor/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2'],
-                ]],
             ]],
         ];
 

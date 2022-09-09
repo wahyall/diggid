@@ -11,6 +11,7 @@ class Course extends Model {
     use Uuid, HasSlug;
 
     protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'project_name', 'project_url', 'sub_category_id'];
+    protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

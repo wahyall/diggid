@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuid;
 
-class CoursePoint extends Model {
+class CourseProject extends Model {
     use Uuid;
 
-    protected $fillable = ['description', 'course_id'];
+    protected $fillable = ['name', 'description', 'course_id'];
     protected $hidden = ['id'];
 
     public function course() {

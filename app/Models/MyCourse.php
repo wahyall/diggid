@@ -9,6 +9,7 @@ class MyCourse extends Model {
     use Uuid;
 
     protected $fillable = ['course_id', 'user_id', 'transaction_id'];
+    protected $hidden = ['id'];
 
     public function course() {
         return $this->belongsTo(Course::class);

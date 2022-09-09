@@ -11,16 +11,16 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('withdraws', function (Blueprint $table) {
+        Schema::create('course_showcases', function (Blueprint $table) {
             $table->id();
             $table->uuid()->unique();
+
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('url');
+
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('bank_id')->constrained('banks')->cascadeOnDelete();
-            $table->double('amount');
-            $table->string('account_number');
-            $table->string('account_name');
-            $table->enum('status', ['pending', 'approved', 'rejected']);
-            $table->text('admin_note')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('withdraws');
+        Schema::dropIfExists('course_showcases');
     }
 };

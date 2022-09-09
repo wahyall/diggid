@@ -8,7 +8,10 @@ use App\Models\Menu;
 class DashboardController extends Controller {
     public function menu() {
         if (request()->wantsJson()) {
-            $menus = Menu::where('parent_id', 0)->where('route', 'LIKE', '%' . request()->user()->role . '%')->where('middleware', 'LIKE', '%' . request()->user()->role . '%')->get();
+            $menus = Menu::where('parent_id', 0)->where(function ($q) {
+                $q->where('route', 'LIKE', '%' . request()->user()->role . '%');
+                $q->orWhere('middleware', 'LIKE', '%' . request()->user()->role . '%');
+            })->get();
 
             return response()->json($menus);
         } else {

@@ -1,45 +1,52 @@
 import React, { memo, useState, useEffect } from "react";
 
-import { FilePond, registerPlugin } from "react-filepond";
-import "filepond/dist/filepond.min.css";
-
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+import ImageUpload from "@/components/ImageUpload";
 
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 
 function Form({ close, selected }) {
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState([]);
   const queryClient = useQueryClient();
-  const { data: category } = useQuery([`/api/category/${selected}/edit`], () =>
-    axios.get(`/api/category/${selected}/edit`).then((res) => res.data)
+  const { data: category } = useQuery(
+    [`/api/category/${selected}/edit`],
+    () => {
+      KTApp.block("#form-category");
+      return axios
+        .get(`/api/category/${selected}/edit`)
+        .then((res) => res.data);
+    },
+    {
+      onSettled: () => KTApp.unblock("#form-category"),
+    }
   );
 
   const { mutate: submit } = useMutation(
-    (data) => axios.post("/api/category/store", data),
+    (data) =>
+      axios.post(
+        selected ? `/api/category/${selected}/update` : "/api/category/store",
+        data
+      ),
     {
+      onSettled: () => KTApp.unblock("#form-subcategory"),
       onError: (error) => {
         toastr.error(error.response.data.message);
-        KTApp.unblock("#form-category");
       },
       onSuccess: ({ data }) => {
         toastr.success(data.message);
-        KTApp.unblock("#form-category");
         queryClient.invalidateQueries(["/api/category/paginate"]);
+        if (selected)
+          queryClient.invalidateQueries([`/api/category/${selected}/edit`]);
         close();
       },
     }
   );
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (ev) => {
+    ev.preventDefault();
 
-    const formData = new FormData(e.target);
-    formData.append("icon", files[0].file);
+    const formData = new FormData(ev.target);
+    formData.append("icon", file[0].file);
 
     KTApp.block("#form-category");
     submit(formData);
@@ -62,19 +69,22 @@ function Form({ close, selected }) {
       </div>
       <div className="card-body">
         <div className="row">
-          <div className="col-3">
+          <div className="col-2">
             <label htmlFor="name" className="form-label">
               Icon :
             </label>
-            <FilePond
-              files={selected ? [{ source: assets(category?.icon) }] : files}
-              onupdatefiles={setFiles}
+            <ImageUpload
+              files={
+                selected && category?.icon
+                  ? [{ source: assets(category?.icon) }]
+                  : file
+              }
+              onChange={setFile}
               allowMultiple={false}
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-              required
+              required={true}
             />
           </div>
-          <div className="col-9">
+          <div className="col-6">
             <div>
               <label htmlFor="name" className="form-label">
                 Nama :
@@ -87,6 +97,7 @@ function Form({ close, selected }) {
                 className="form-control required"
                 required
                 defaultValue={selected ? category?.name : ""}
+                autoComplete="off"
               />
             </div>
           </div>

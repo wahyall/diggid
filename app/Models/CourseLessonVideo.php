@@ -11,6 +11,7 @@ class CourseLessonVideo extends Model {
     use Uuid, HasSlug;
 
     protected $fillable = ['name', 'slug', 'description', 'course_lesson_id', 'video_url'];
+    protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

@@ -11,6 +11,7 @@ class SubCategory extends Model {
     use Uuid, HasSlug;
 
     protected $fillable = ['name', 'slug', 'icon', 'category_id'];
+    protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

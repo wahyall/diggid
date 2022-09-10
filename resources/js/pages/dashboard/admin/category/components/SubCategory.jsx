@@ -32,6 +32,7 @@ function SubCategory({ selected, close }) {
       },
       cacheTime: 0,
       placeholderData: [],
+      enabled: !!selected,
     }
   );
 

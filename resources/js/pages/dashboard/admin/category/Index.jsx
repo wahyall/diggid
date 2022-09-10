@@ -15,17 +15,19 @@ export default function Index() {
   const [selected, setSelected] = useState(null);
   const queryClient = useQueryClient();
 
-  const sub = useCallback((uuid) => {
+  const sub = (uuid) => {
     setSelected(uuid);
     setOpenSub(true);
-  }, []);
+    KTUtil.scrollTop();
+  };
 
-  const edit = useCallback((uuid) => {
+  const edit = (uuid) => {
     setSelected(uuid);
     setOpenForm(true);
-  }, []);
+    KTUtil.scrollTop();
+  };
 
-  const hapus = useCallback((uuid) => {
+  const hapus = (uuid) => {
     const mySwal = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-danger btn-sm",
@@ -57,7 +59,7 @@ export default function Index() {
           queryClient.invalidateQueries(["/api/category/paginate"]);
         }
       });
-  }, []);
+  };
 
   const columns = useMemo(
     () => [
@@ -96,21 +98,21 @@ export default function Index() {
                 className="btn btn-sm btn-primary"
                 style={{ whiteSpace: "nowrap" }}
                 data-id={cell.getValue()}
-                onClick={() => sub(cell.getValue())}
+                onClick={useCallback(() => sub(cell.getValue()), [])}
               >
                 <i className="la la-tag fs-3"></i> Sub Kategori
               </button>
               <button
                 className="btn btn-sm btn-warning btn-icon"
                 data-id={cell.getValue()}
-                onClick={() => edit(cell.getValue())}
+                onClick={useCallback(() => edit(cell.getValue()), [])}
               >
                 <i className="la la-pencil fs-3"></i>
               </button>
               <button
                 className="btn btn-sm btn-danger btn-icon"
                 data-id={cell.getValue()}
-                onClick={() => hapus(cell.getValue())}
+                onClick={useCallback(() => hapus(cell.getValue()), [])}
               >
                 <i className="la la-trash fs-3"></i>
               </button>

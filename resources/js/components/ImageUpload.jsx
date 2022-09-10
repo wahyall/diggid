@@ -5,26 +5,19 @@ import "filepond/dist/filepond.min.css";
 
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginFilePoster from "filepond-plugin-file-poster";
+
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import "filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css";
 
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+registerPlugin(
+  FilePondPluginImageExifOrientation,
+  FilePondPluginImagePreview,
+  FilePondPluginFilePoster
+);
 
-function ImageUpload({
-  allowMultiple = false,
-  onChange,
-  files,
-  required = false,
-  labelIdle = 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>',
-}) {
-  return (
-    <FilePond
-      files={files}
-      onupdatefiles={onChange}
-      allowMultiple={allowMultiple}
-      labelIdle={labelIdle}
-      required={required}
-    />
-  );
+function ImageUpload(props) {
+  return <FilePond {...props} />;
 }
 
 export default memo(ImageUpload);

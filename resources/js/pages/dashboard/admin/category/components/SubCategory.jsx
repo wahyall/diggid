@@ -1,12 +1,13 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import axios from "@/libs/axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { For } from "react-haiku";
 import ImageUpload from "@/components/ImageUpload";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
 function SubCategory({ selected, close }) {
+  const queryClient = useQueryClient();
   const { register, handleSubmit, control } = useForm();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -29,6 +30,7 @@ function SubCategory({ selected, close }) {
           append(sub);
         });
       },
+      cacheTime: 0,
       placeholderData: [],
     }
   );
@@ -43,8 +45,6 @@ function SubCategory({ selected, close }) {
       onSuccess: ({ data }) => {
         toastr.success(data.message);
         queryClient.invalidateQueries(["/api/category/paginate"]);
-        if (selected)
-          queryClient.invalidateQueries([`/api/category/${selected}/detail`]);
         close();
       },
     }
@@ -94,10 +94,12 @@ function SubCategory({ selected, close }) {
                   render={({ field: { onChange, value } }) => {
                     return (
                       <ImageUpload
-                        files={`/${value}`}
-                        onChange={onChange}
+                        files={value ? `/${value}` : []}
+                        onupdatefiles={onChange}
                         allowMultiple={false}
-                        required={true}
+                        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                        required
+                        key={`sub.${field.id}.icon`}
                       />
                     );
                   }}
@@ -125,7 +127,7 @@ function SubCategory({ selected, close }) {
                 <button
                   type="button"
                   className="btn btn-sm btn-icon btn-light-danger mt-10"
-                  onClick={remove}
+                  onClick={() => remove(index)}
                 >
                   <i className="las la-times-circle fs-2"></i>
                 </button>

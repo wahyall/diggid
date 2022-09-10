@@ -79,9 +79,10 @@ function Form({ close, selected }) {
                   ? [{ source: assets(category?.icon) }]
                   : file
               }
-              onChange={setFile}
+              onupdatefiles={setFile}
               allowMultiple={false}
-              required={true}
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+              required
             />
           </div>
           <div className="col-6">

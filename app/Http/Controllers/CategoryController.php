@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -91,10 +92,15 @@ class CategoryController extends Controller {
         if (request()->wantsJson()) {
             $category = Category::findByUuid($uuid);
 
-            // Delete icon
-            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
-                unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
-            }
+            // Delete all sub categories & a their icon
+            SubCategory::whereHas('category', function ($q) use ($uuid) {
+                $q->where('uuid', $uuid);
+            })->pluck('icon')->each(function ($icon) {
+                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $icon)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $icon)));
+                }
+            });
+
             $category->delete();
 
             return response()->json([
@@ -113,6 +119,18 @@ class CategoryController extends Controller {
                 'icons' => 'required|array',
                 'icons.*' => 'required|image',
             ]);
+
+            // Delete all sub categories and replace with new ones
+            SubCategory::whereHas('category', function ($q) use ($uuid) {
+                $q->where('uuid', $uuid);
+            })->pluck('icon')->each(function ($icon) {
+                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $icon)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $icon)));
+                }
+            });
+            SubCategory::whereHas('category', function ($q) use ($uuid) {
+                $q->where('uuid', $uuid);
+            })->delete();
 
             $category = Category::findByUuid($uuid);
 

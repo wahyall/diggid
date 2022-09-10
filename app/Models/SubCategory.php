@@ -22,4 +22,14 @@ class SubCategory extends Model {
     public function category() {
         return $this->belongsTo(Category::class);
     }
+
+    public static function booted() {
+        parent::boot();
+
+        self::deleting(function ($model) {
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $model->icon)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $model->icon)));
+            }
+        });
+    }
 }

@@ -24,6 +24,14 @@ class CategoryController extends Controller {
         }
     }
 
+    public function show() {
+        if (request()->wantsJson()) {
+            return response()->json(Category::with(['subs'])->get());
+        } else {
+            return abort(404);
+        }
+    }
+
     public function store(Request $request) {
         if (request()->wantsJson()) {
             $request->validate([

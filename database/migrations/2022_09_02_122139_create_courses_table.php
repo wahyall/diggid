@@ -21,8 +21,6 @@ return new class extends Migration {
             $table->longText('description');
             $table->integer('finish_estimation')->nullable()->comment('in days');
             $table->double('discount')->nullable()->comment('in percentage');
-            $table->string('project_name');
-            $table->string('project_url');
 
             $table->foreignId('sub_category_id')->constrained('sub_categories')->cascadeOnDelete();
             $table->timestamps();

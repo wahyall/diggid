@@ -117,9 +117,9 @@ function Paginate({ columns, url, id }) {
           <tbody>
             <If isTrue={!!data.data.length}>
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
+                <tr key={`row.${row.original.uuid}`}>
                   {row.getVisibleCells().map((cell) => (
-                    <td className="py-4" key={cell.id}>
+                    <td className="py-4" key={`cell.${cell.row.original.uuid}`}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

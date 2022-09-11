@@ -2,9 +2,132 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class CourseController extends Controller
-{
-    //
+class CourseController extends Controller {
+    public function paginate(Request $request) {
+        if (request()->wantsJson()) {
+            $per = (($request->per) ? $request->per : 10);
+            $page = (($request->page) ? $request->page - 1 : 0);
+
+            DB::statement(DB::raw('set @nomor=0+' . $page * $per));
+            $courses = Course::where(function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->search . '%');
+            })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
+
+            return response()->json($courses);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function store(Request $request) {
+        if (request()->wantsJson()) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'thumbnail' => 'required|image',
+                'price' => 'required',
+                'discount' => 'nullable',
+                'finish_estimation' => 'nullable|integer',
+                'sub_category_id' => 'required|integer',
+                'description' => 'required|string',
+                'unused_images' => 'required|array'
+            ]);
+
+            $price = str_replace('.', '', $request->price);
+            $price = str_replace(',', '.', $price);
+
+            $discount = str_replace('.', '', $request->discount);
+            $discount = str_replace(',', '.', $discount);
+
+            Course::create([
+                'name' => $request->name,
+                'thumbnail' => 'storage/' . $request->thumbnail->store('category', 'public'),
+                'price' => $price,
+                'discount' => $discount ? $discount : 0,
+                'finish_estimation' => $request->finish_estimation,
+                'sub_category_id' => $request->sub_category_id,
+                'description' => $request->description,
+            ]);
+
+            foreach ($request->unused_images as $img) {
+                if (file_exists(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $img)))) {
+                    unlink(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $img)));
+                }
+            }
+
+            return response()->json([
+                'message' => 'Berhasil menambahkan kategori',
+            ]);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function detail($uuid) {
+        if (request()->wantsJson()) {
+            $category = Course::with(['subs'])->where('uuid', $uuid)->first();
+            return response()->json($category);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function edit($uuid) {
+        if (request()->wantsJson()) {
+            $category = Course::findByUuid($uuid);
+            return response()->json($category);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function update(Request $request, $uuid) {
+        if (request()->wantsJson()) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'icon' => 'image'
+            ]);
+
+            $category = Course::findByUuid($uuid);
+
+            // Delete icon
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
+            }
+            $category->update([
+                'name' => $request->name,
+                'icon' => 'storage/' . $request->icon->store('category', 'public'),
+            ]);
+
+            return response()->json([
+                'message' => 'Berhasil mengubah kategori',
+            ]);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function destroy($uuid) {
+        if (request()->wantsJson()) {
+            $category = Course::findByUuid($uuid);
+
+            $category->delete();
+
+            return response()->json([
+                'message' => 'Berhasil menghapus kategori',
+            ]);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function uploadImage(Request $request) {
+        $file = 'storage/' . $request->upload->store('course', 'public');
+        return response()->json([
+            'url' => asset($file)
+        ]);
+    }
 }

@@ -34,7 +34,8 @@ class HandleInertiaRequests extends Middleware {
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
-            ]
+            ],
+            'csrf_token' => csrf_token()
         ]);
     }
 }

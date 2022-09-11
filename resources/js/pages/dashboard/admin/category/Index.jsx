@@ -61,67 +61,65 @@ export default function Index() {
       });
   };
 
-  const columns = useMemo(
-    () => [
-      columnHelper.accessor("nomor", {
-        header: "#",
-        style: {
-          width: "25px",
-        },
-        cell: (cell) => <span>{cell.getValue()}</span>,
-      }),
-      columnHelper.accessor("name", {
-        cell: (cell) => cell.getValue(),
-        header: "Nama",
-      }),
-      columnHelper.accessor((row) => row.icon, {
-        header: "Ikon",
-        cell: (cell) => (
-          <img
-            className="img-thumbnail"
-            width={50}
-            src={assets(cell.getValue())}
-          />
+  const columns = [
+    columnHelper.accessor("nomor", {
+      header: "#",
+      style: {
+        width: "25px",
+      },
+      cell: (cell) => <span>{cell.getValue()}</span>,
+    }),
+    columnHelper.accessor("name", {
+      cell: (cell) => cell.getValue(),
+      header: "Nama",
+    }),
+    columnHelper.accessor("icon", {
+      header: "Ikon",
+      cell: (cell) => (
+        <img
+          className="img-thumbnail"
+          width={50}
+          src={assets(cell.getValue())}
+          key={cell.getValue()}
+        />
+      ),
+    }),
+    columnHelper.accessor("uuid", {
+      id: "uuid",
+      header: "Aksi",
+      style: {
+        width: "100px",
+      },
+      cell: (cell) =>
+        !openForm &&
+        !openSub && (
+          <div className="d-flex gap-2">
+            <button
+              className="btn btn-sm btn-primary"
+              style={{ whiteSpace: "nowrap" }}
+              data-id={cell.getValue()}
+              onClick={useCallback(() => sub(cell.getValue()), [])}
+            >
+              <i className="la la-tag fs-3"></i> Sub Kategori
+            </button>
+            <button
+              className="btn btn-sm btn-warning btn-icon"
+              data-id={cell.getValue()}
+              onClick={useCallback(() => edit(cell.getValue()), [])}
+            >
+              <i className="la la-pencil fs-3"></i>
+            </button>
+            <button
+              className="btn btn-sm btn-danger btn-icon"
+              data-id={cell.getValue()}
+              onClick={useCallback(() => hapus(cell.getValue()), [])}
+            >
+              <i className="la la-trash fs-3"></i>
+            </button>
+          </div>
         ),
-      }),
-      columnHelper.accessor((row) => row.uuid, {
-        id: "uuid",
-        header: "Aksi",
-        style: {
-          width: "100px",
-        },
-        cell: (cell) =>
-          !openForm &&
-          !openSub && (
-            <div className="d-flex gap-2">
-              <button
-                className="btn btn-sm btn-primary"
-                style={{ whiteSpace: "nowrap" }}
-                data-id={cell.getValue()}
-                onClick={useCallback(() => sub(cell.getValue()), [])}
-              >
-                <i className="la la-tag fs-3"></i> Sub Kategori
-              </button>
-              <button
-                className="btn btn-sm btn-warning btn-icon"
-                data-id={cell.getValue()}
-                onClick={useCallback(() => edit(cell.getValue()), [])}
-              >
-                <i className="la la-pencil fs-3"></i>
-              </button>
-              <button
-                className="btn btn-sm btn-danger btn-icon"
-                data-id={cell.getValue()}
-                onClick={useCallback(() => hapus(cell.getValue()), [])}
-              >
-                <i className="la la-trash fs-3"></i>
-              </button>
-            </div>
-          ),
-      }),
-    ],
-    [openForm, openSub]
-  );
+    }),
+  ];
 
   return (
     <section>

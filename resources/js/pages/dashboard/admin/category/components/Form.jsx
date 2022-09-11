@@ -18,6 +18,8 @@ function Form({ close, selected }) {
     },
     {
       onSettled: () => KTApp.unblock("#form-category"),
+      enabled: !!selected,
+      cacheTime: 0,
     }
   );
 
@@ -35,8 +37,6 @@ function Form({ close, selected }) {
       onSuccess: ({ data }) => {
         toastr.success(data.message);
         queryClient.invalidateQueries(["/api/category/paginate"]);
-        if (selected)
-          queryClient.invalidateQueries([`/api/category/${selected}/edit`]);
         close();
       },
     }
@@ -74,11 +74,7 @@ function Form({ close, selected }) {
               Icon :
             </label>
             <ImageUpload
-              files={
-                selected && category?.icon
-                  ? [{ source: assets(category?.icon) }]
-                  : file
-              }
+              files={selected && category?.icon ? `/${category?.icon}` : file}
               onupdatefiles={setFile}
               allowMultiple={false}
               labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'

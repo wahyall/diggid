@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CategoryGroupController;
 use App\Http\Controllers\CategoryController;
 
 use App\Http\Controllers\DashboardController;
@@ -28,15 +29,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::group(['prefix' => 'category', 'middleware' => 'role:admin'], function () {
-        Route::get('show', [CategoryController::class, 'show']);
-        Route::post('paginate', [CategoryController::class, 'paginate']);
-        Route::post('store', [CategoryController::class, 'store']);
-        Route::get('{uuid}/edit', [CategoryController::class, 'edit']);
-        Route::get('{uuid}/detail', [CategoryController::class, 'detail']);
-        Route::post('{uuid}/update', [CategoryController::class, 'update']);
-        Route::delete('{uuid}/destroy', [CategoryController::class, 'destroy']);
+        Route::group(['prefix' => 'group'], function () {
+            Route::get('show', [CategoryGroupController::class, 'show']);
+            Route::post('paginate', [CategoryGroupController::class, 'paginate']);
+            Route::post('store', [CategoryGroupController::class, 'store']);
+            Route::get('{uuid}/edit', [CategoryGroupController::class, 'edit']);
+            Route::get('{uuid}/detail', [CategoryGroupController::class, 'detail']);
+            Route::post('{uuid}/update', [CategoryGroupController::class, 'update']);
+            Route::delete('{uuid}/destroy', [CategoryGroupController::class, 'destroy']);
+        });
 
-        Route::post('{uuid}/sub/store', [CategoryController::class, 'storeSub']);
+        Route::post('mass-store', [CategoryController::class, 'massStore']);
     });
 
     Route::group(['prefix' => 'course', 'middleware' => 'role:admin'], function () {
@@ -48,5 +51,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('{uuid}/destroy', [CourseController::class, 'destroy']);
 
         Route::post('upload-image', [CourseController::class, 'uploadImage']);
+        Route::post('delete-image', [CourseController::class, 'deleteImage']);
     });
 });

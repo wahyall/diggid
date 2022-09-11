@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->integer('finish_estimation')->nullable()->comment('in days');
             $table->double('discount')->nullable()->comment('in percentage');
 
-            $table->foreignId('sub_category_id')->constrained('sub_categories')->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->timestamps();
         });
     }

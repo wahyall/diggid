@@ -119,7 +119,10 @@ function Paginate({ columns, url, id }) {
               {table.getRowModel().rows.map((row) => (
                 <tr key={`row.${row.original.uuid}`}>
                   {row.getVisibleCells().map((cell) => (
-                    <td className="py-4" key={`cell.${cell.row.original.uuid}`}>
+                    <td
+                      className="py-4"
+                      key={`cell.${cell.id}.${cell.row.original.uuid}`}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -25,6 +25,7 @@
         "@tanstack/react-query-devtools": "^4.2.3",
         "@tanstack/react-table": "^8.5.11",
         "ckeditor5-custom-build": "file:ckeditor",
+        "ckeditor5-image-remove-event-callback-plugin": "^1.2.0",
         "filepond": "^4.30.4",
         "filepond-plugin-file-poster": "^2.5.1",
         "filepond-plugin-file-validate-type": "^1.2.8",

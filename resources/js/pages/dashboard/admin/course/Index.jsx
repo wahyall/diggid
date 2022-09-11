@@ -75,10 +75,18 @@ export default function Index({ csrf_token }) {
         header: "Nama",
       }),
       columnHelper.accessor("price", {
-        cell: (cell) => cell.getValue(),
+        cell: (cell) =>
+          Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(cell.getValue()),
         header: "Harga",
       }),
-      columnHelper.accessor((row) => row.uuid, {
+      columnHelper.accessor((row) => row.category.name, {
+        cell: (cell) => cell.getValue(),
+        header: "Kategori",
+      }),
+      columnHelper.accessor("uuid", {
         id: "uuid",
         header: "Aksi",
         style: {
@@ -125,7 +133,9 @@ export default function Index({ csrf_token }) {
               <button
                 type="button"
                 className="btn btn-primary btn-sm ms-auto"
-                onClick={() => (setSelected(null), setOpenForm(true))}
+                onClick={() => (
+                  setSelected(null), setOpenForm(true), KTUtil.scrollTop()
+                )}
               >
                 <i className="las la-plus"></i>
                 Kursus Baru

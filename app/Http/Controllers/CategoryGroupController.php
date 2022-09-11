@@ -2,26 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
+use App\Models\CategoryGroup;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CourseController extends Controller {
+class CategoryGroupController extends Controller {
     public function paginate(Request $request) {
         if (request()->wantsJson()) {
             $per = (($request->per) ? $request->per : 10);
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = Course::with(['category'])->where(function ($q) use ($request) {
+            $categories = CategoryGroup::where(function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->search . '%');
-                $q->orWhereHas('category', function ($q) use ($request) {
-                    $q->where('name', 'LIKE', '%' . $request->search . '%');
-                });
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
-            return response()->json($courses);
+            return response()->json($categories);
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function show() {
+        if (request()->wantsJson()) {
+            return response()->json(CategoryGroup::with(['categories'])->get());
         } else {
             return abort(404);
         }
@@ -31,29 +36,12 @@ class CourseController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255',
-                'thumbnail' => 'required|image',
-                'price' => 'required',
-                'discount' => 'nullable',
-                'finish_estimation' => 'nullable|integer',
-                'category_uuid' => 'required|string',
-                'description' => 'required|string',
-                'unused_images' => 'required|array'
+                'icon' => 'required|image'
             ]);
 
-            $price = str_replace('.', '', $request->price);
-            $price = str_replace(',', '.', $price);
-
-            $discount = str_replace('.', '', $request->discount);
-            $discount = str_replace(',', '.', $discount);
-
-            Course::create([
+            CategoryGroup::create([
                 'name' => $request->name,
-                'thumbnail' => 'storage/' . $request->thumbnail->store('category', 'public'),
-                'price' => $price,
-                'discount' => $discount ? $discount : 0,
-                'finish_estimation' => $request->finish_estimation,
-                'category_id' => Category::findByUuid($request->category_uuid)->id,
-                'description' => $request->description,
+                'icon' => 'storage/' . $request->icon->store('category', 'public'),
             ]);
 
             return response()->json([
@@ -66,7 +54,7 @@ class CourseController extends Controller {
 
     public function detail($uuid) {
         if (request()->wantsJson()) {
-            $category = Course::with(['subs'])->where('uuid', $uuid)->first();
+            $category = CategoryGroup::with(['categories'])->where('uuid', $uuid)->first();
             return response()->json($category);
         } else {
             return abort(404);
@@ -75,7 +63,7 @@ class CourseController extends Controller {
 
     public function edit($uuid) {
         if (request()->wantsJson()) {
-            $category = Course::findByUuid($uuid);
+            $category = CategoryGroup::findByUuid($uuid);
             return response()->json($category);
         } else {
             return abort(404);
@@ -89,7 +77,7 @@ class CourseController extends Controller {
                 'icon' => 'image'
             ]);
 
-            $category = Course::findByUuid($uuid);
+            $category = CategoryGroup::findByUuid($uuid);
 
             // Delete icon
             if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
@@ -110,7 +98,17 @@ class CourseController extends Controller {
 
     public function destroy($uuid) {
         if (request()->wantsJson()) {
-            $category = Course::findByUuid($uuid);
+            $category = CategoryGroup::findByUuid($uuid);
+
+            // Delete all categories icon
+            // note: the records is automatically deleted because it has cascade on delete
+            Category::whereHas('category', function ($q) use ($uuid) {
+                $q->where('uuid', $uuid);
+            })->pluck('icon')->each(function ($icon) {
+                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $icon)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $icon)));
+                }
+            });
 
             $category->delete();
 
@@ -120,21 +118,5 @@ class CourseController extends Controller {
         } else {
             return abort(404);
         }
-    }
-
-    public function uploadImage(Request $request) {
-        $file = 'storage/' . $request->upload->store('course', 'public');
-        return response()->json([
-            'url' => asset($file)
-        ]);
-    }
-
-    public function deleteImage(Request $request) {
-        if (file_exists(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $request->url)))) {
-            unlink(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $request->url)));
-        }
-        return response()->json([
-            'message' => 'Image deleted successfuly!'
-        ]);
     }
 }

@@ -7,11 +7,11 @@ use App\Traits\Uuid;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class SubCategory extends Model {
+class CategoryGroup extends Model {
     use Uuid, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'icon', 'category_id'];
-    // protected $hidden = ['id'];
+    protected $fillable = ['name', 'slug', 'icon'];
+    protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()
@@ -19,8 +19,8 @@ class SubCategory extends Model {
             ->saveSlugsTo('slug');
     }
 
-    public function category() {
-        return $this->belongsTo(Category::class);
+    public function categories() {
+        return $this->hasMany(Category::class);
     }
 
     public static function booted() {

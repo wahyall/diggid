@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useCallback } from "react";
 
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
@@ -9,8 +9,6 @@ import Select from "react-select";
 
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import "ckeditor5-custom-build/build/ckeditor";
-import { useMemo } from "react";
-import { useCallback } from "react";
 
 function Form({ close, selected, csrfToken }) {
   const [file, setFile] = useState([]);
@@ -31,14 +29,14 @@ function Form({ close, selected, csrfToken }) {
     }
   );
   const { data: categories } = useQuery(
-    ["/api/category/show", "admin"],
+    ["/api/category/group/show", "admin"],
     () =>
-      axios.get("/api/category/show").then((res) => {
-        return res.data.map((category) => ({
-          label: category.name,
-          options: category.subs.map((sub) => ({
+      axios.get("/api/category/group/show").then((res) => {
+        return res.data.map((group) => ({
+          label: group.name,
+          options: group.categories.map((sub) => ({
             label: sub.name,
-            value: sub.id,
+            value: sub.uuid,
           })),
         }));
       }),
@@ -55,7 +53,7 @@ function Form({ close, selected, csrfToken }) {
         data
       ),
     {
-      onSettled: () => KTApp.unblock("#form-subcategory"),
+      onSettled: () => KTApp.unblock("#form-course"),
       onError: (error) => {
         toastr.error(error.response.data.message);
       },
@@ -102,20 +100,21 @@ function Form({ close, selected, csrfToken }) {
     submit(formData);
   };
 
-  const editorConfig = useMemo(
-    () => ({
-      simpleUpload: {
-        uploadUrl: `${import.meta.env.VITE_URL}/api/course/upload-image`,
-        withCredentials: true,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-          "X-CSRF-TOKEN": csrfToken,
-        },
+  const editorConfig = {
+    simpleUpload: {
+      uploadUrl: `${import.meta.env.VITE_URL}/api/course/upload-image`,
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRF-TOKEN": csrfToken,
       },
-    }),
-    []
-  );
+    },
+    imageRemoveEvent: {
+      callback: (imagesSrc) =>
+        axios.post("/api/course/delete-image", { url: imagesSrc[0] }),
+    },
+  };
 
   return (
     <form className="card mb-12" id="form-course" onSubmit={onSubmit}>
@@ -220,12 +219,12 @@ function Form({ close, selected, csrfToken }) {
               <div className="row">
                 <div className="col-8">
                   <label
-                    htmlFor="sub_category_id"
+                    htmlFor="category_uuid"
                     className="form-label required"
                   >
                     Kategori :
                   </label>
-                  <Select name="sub_category_id" options={categories} />
+                  <Select name="category_uuid" options={categories} />
                 </div>
                 <div className="col-4">
                   <label htmlFor="finish_estimation" className="form-label">

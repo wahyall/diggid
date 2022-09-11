@@ -10,8 +10,13 @@ use Spatie\Sluggable\SlugOptions;
 class Course extends Model {
     use Uuid, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'sub_category_id'];
-    protected $hidden = ['id'];
+    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'category_id'];
+    protected $hidden = ['id', 'category_id', 'created_at', 'updated_at'];
+    protected $appends = ['category_uuid'];
+
+    public function getCategoryUuidAttribute() {
+        return $this->category()->first()->uuid;
+    }
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()
@@ -20,7 +25,7 @@ class Course extends Model {
     }
 
     public function category() {
-        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function lessons() {

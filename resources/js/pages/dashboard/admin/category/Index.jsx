@@ -1,11 +1,11 @@
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, memo } from "react";
 import Paginate from "@/components/Paginate";
 import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
 import { useQueryClient } from "@tanstack/react-query";
 
 import Form from "./components/Form";
-import SubCategory from "./components/SubCategory";
+import Categories from "./components/Categories";
 
 const columnHelper = createColumnHelper();
 
@@ -47,7 +47,7 @@ export default function Index() {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/category/${uuid}/destroy`)
+            .delete(`/api/category/group/${uuid}/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -56,7 +56,7 @@ export default function Index() {
       .then((result) => {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
-          queryClient.invalidateQueries(["/api/category/paginate"]);
+          queryClient.invalidateQueries(["/api/category/group/paginate"]);
         }
       });
   };
@@ -100,7 +100,7 @@ export default function Index() {
               data-id={cell.getValue()}
               onClick={useCallback(() => sub(cell.getValue()), [])}
             >
-              <i className="la la-tag fs-3"></i> Sub Kategori
+              <i className="la la-tag fs-3"></i> Kategori
             </button>
             <button
               className="btn btn-sm btn-warning btn-icon"
@@ -130,7 +130,7 @@ export default function Index() {
         />
       </If>
       <If isTrue={openSub}>
-        <SubCategory
+        <Categories
           close={useCallback(() => setOpenSub(false), [])}
           selected={selected}
         />
@@ -138,12 +138,14 @@ export default function Index() {
       <div className="card">
         <div className="card-header">
           <div className="card-title w-100">
-            <h1>Kategori</h1>
+            <h1>Grup Kategori</h1>
             <If isTrue={!openForm && !openSub}>
               <button
                 type="button"
                 className="btn btn-primary btn-sm ms-auto"
-                onClick={() => (setSelected(null), setOpenForm(true))}
+                onClick={() => (
+                  setSelected(null), setOpenForm(true), KTUtil.scrollTop()
+                )}
               >
                 <i className="las la-plus"></i>
                 Tambah
@@ -155,7 +157,7 @@ export default function Index() {
           <Paginate
             id="my-table"
             columns={columns}
-            url="/api/category/paginate"
+            url="/api/category/group/paginate"
           ></Paginate>
         </div>
       </div>

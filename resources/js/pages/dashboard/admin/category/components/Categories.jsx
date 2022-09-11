@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from "react";
+import React, { memo } from "react";
 import axios from "@/libs/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -6,9 +6,11 @@ import { For } from "react-haiku";
 import ImageUpload from "@/components/ImageUpload";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
-function SubCategory({ selected, close }) {
+const acceptedFileTypes = ["image/*"];
+
+function Categories({ selected, close }) {
   const queryClient = useQueryClient();
-  const { register, handleSubmit, control } = useForm();
+  const { register, handleSubmit, control, getValues } = useForm();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "sub",
@@ -16,17 +18,17 @@ function SubCategory({ selected, close }) {
   });
 
   const { data: category } = useQuery(
-    [`/api/category/${selected}/detail`],
+    [`/api/category/group/${selected}/detail`],
     () => {
       KTApp.block("#form-subcategory");
       return axios
-        .get(`/api/category/${selected}/detail`)
+        .get(`/api/category/group/${selected}/detail`)
         .then((res) => res.data);
     },
     {
       onSettled: () => KTApp.unblock("#form-subcategory"),
       onSuccess: (data) => {
-        data.subs.forEach((sub) => {
+        data.categories.forEach((sub) => {
           append(sub);
         });
       },
@@ -36,7 +38,7 @@ function SubCategory({ selected, close }) {
   );
 
   const { mutate: submit } = useMutation(
-    (data) => axios.post(`/api/category/${selected}/sub/store`, data),
+    (data) => axios.post(`/api/category/mass-store`, data),
     {
       onSettled: () => KTApp.unblock("#form-subcategory"),
       onError: (error) => {
@@ -53,6 +55,7 @@ function SubCategory({ selected, close }) {
   const onSubmit = (data) => {
     KTApp.block("#form-subcategory");
     const formData = new FormData();
+    formData.append("category_group_uuid", selected);
     data.sub.forEach((item) => {
       formData.append("names[]", item.name);
       formData.append("icons[]", item.icon[0].file);
@@ -68,7 +71,7 @@ function SubCategory({ selected, close }) {
     >
       <div className="card-header">
         <div className="card-title w-100">
-          <h3>Sub Kategori: {category?.name}</h3>
+          <h3>Kategori dari Grup: {category?.name}</h3>
           <button
             type="button"
             className="btn btn-light-danger btn-sm ms-auto"
@@ -94,9 +97,12 @@ function SubCategory({ selected, close }) {
                   render={({ field: { onChange, value } }) => {
                     return (
                       <ImageUpload
-                        files={value ? `/${value}` : []}
+                        files={
+                          value ? `/${value}` : getValues(`sub.${index}.icon`)
+                        }
                         onupdatefiles={onChange}
                         allowMultiple={false}
+                        acceptedFileTypes={acceptedFileTypes}
                         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                         required
                         key={`sub.${field.id}.icon`}
@@ -161,4 +167,4 @@ function SubCategory({ selected, close }) {
   );
 }
 
-export default memo(SubCategory);
+export default memo(Categories);

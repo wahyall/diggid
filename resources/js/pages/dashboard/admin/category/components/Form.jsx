@@ -9,11 +9,11 @@ function Form({ close, selected }) {
   const [file, setFile] = useState([]);
   const queryClient = useQueryClient();
   const { data: category } = useQuery(
-    [`/api/category/${selected}/edit`],
+    [`/api/category/group/${selected}/edit`],
     () => {
       KTApp.block("#form-category");
       return axios
-        .get(`/api/category/${selected}/edit`)
+        .get(`/api/category/group/${selected}/edit`)
         .then((res) => res.data);
     },
     {
@@ -26,7 +26,9 @@ function Form({ close, selected }) {
   const { mutate: submit } = useMutation(
     (data) =>
       axios.post(
-        selected ? `/api/category/${selected}/update` : "/api/category/store",
+        selected
+          ? `/api/category/group/${selected}/update`
+          : "/api/category/group/store",
         data
       ),
     {
@@ -36,7 +38,7 @@ function Form({ close, selected }) {
       },
       onSuccess: ({ data }) => {
         toastr.success(data.message);
-        queryClient.invalidateQueries(["/api/category/paginate"]);
+        queryClient.invalidateQueries(["/api/category/group/paginate"]);
         close();
       },
     }
@@ -56,7 +58,11 @@ function Form({ close, selected }) {
     <form className="card mb-12" id="form-category" onSubmit={onSubmit}>
       <div className="card-header">
         <div className="card-title w-100">
-          <h3>Tambah Kategori</h3>
+          <h3>
+            {selected
+              ? `Edit Grup Kategori: ${category?.name || ""}`
+              : "Tambah Grup Kategori"}
+          </h3>
           <button
             type="button"
             className="btn btn-light-danger btn-sm ms-auto"
@@ -79,6 +85,7 @@ function Form({ close, selected }) {
               allowMultiple={false}
               labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
               required
+              acceptedFileTypes={["image/*"]}
             />
           </div>
           <div className="col-6">
@@ -90,7 +97,7 @@ function Form({ close, selected }) {
                 type="text"
                 name="name"
                 id="name"
-                placeholder="Nama Kategori"
+                placeholder="Nama Grup"
                 className="form-control required"
                 required
                 defaultValue={selected ? category?.name : ""}

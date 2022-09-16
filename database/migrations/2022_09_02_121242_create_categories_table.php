@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->uuid()->unique();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('icon');
+            $table->string('icon')->nullable();
             $table->foreignId('category_group_id')->constrained('category_groups')->cascadeOnDelete();
             $table->timestamps();
         });

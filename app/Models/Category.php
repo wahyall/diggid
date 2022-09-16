@@ -23,6 +23,10 @@ class Category extends Model {
         return $this->belongsTo(CategoryGroup::class, 'category_group_id');
     }
 
+    public function courses() {
+        return $this->belongsToMany(Course::class, 'course_categories');
+    }
+
     public static function booted() {
         parent::boot();
 

@@ -14,7 +14,7 @@ class CategorySeeder extends Seeder {
      * @return void
      */
     public function run() {
-        DB::table('categories')->truncate();
+        DB::table('categories')->delete();
 
         Category::create([
             'name' => 'Frontend',

@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->uuid()->unique();
             $table->string('name');
+            $table->integer('order');
             $table->string('slug')->unique();
             $table->string('description', 255);
 

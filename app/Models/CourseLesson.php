@@ -10,7 +10,7 @@ use Spatie\Sluggable\SlugOptions;
 class CourseLesson extends Model {
     use Uuid, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'description', 'course_id'];
+    protected $fillable = ['name', 'slug', 'description', 'course_id', 'order'];
     protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {

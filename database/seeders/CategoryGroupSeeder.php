@@ -14,7 +14,7 @@ class CategoryGroupSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        DB::table('category_groups')->truncate();
+        DB::table('category_groups')->delete();
 
         CategoryGroup::create([
             'id' => 1,

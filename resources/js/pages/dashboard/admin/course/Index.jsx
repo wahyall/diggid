@@ -82,10 +82,6 @@ export default function Index({ csrf_token }) {
           }).format(cell.getValue()),
         header: "Harga",
       }),
-      columnHelper.accessor((row) => row.category.name, {
-        cell: (cell) => cell.getValue(),
-        header: "Kategori",
-      }),
       columnHelper.accessor("uuid", {
         id: "uuid",
         header: "Aksi",

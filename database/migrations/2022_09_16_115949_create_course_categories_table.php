@@ -13,9 +13,7 @@ return new class extends Migration {
     public function up() {
         Schema::create('course_categories', function (Blueprint $table) {
             $table->id();
-            $table->uuid()->unique();
-
-            $table->foreignId('course_id')->constrained('course')->cascadeOnDelete();
+            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
             $table->timestamps();
         });

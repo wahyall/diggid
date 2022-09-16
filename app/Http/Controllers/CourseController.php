@@ -14,11 +14,8 @@ class CourseController extends Controller {
             $page = (($request->page) ? $request->page - 1 : 0);
 
             DB::statement(DB::raw('set @nomor=0+' . $page * $per));
-            $courses = Course::with(['category'])->where(function ($q) use ($request) {
+            $courses = Course::where(function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->search . '%');
-                $q->orWhereHas('category', function ($q) use ($request) {
-                    $q->where('name', 'LIKE', '%' . $request->search . '%');
-                });
             })->paginate($per, ['*', DB::raw('@nomor  := @nomor  + 1 AS nomor')]);
 
             return response()->json($courses);
@@ -35,9 +32,11 @@ class CourseController extends Controller {
                 'price' => 'required',
                 'discount' => 'nullable',
                 'finish_estimation' => 'nullable|integer',
-                'category_uuid' => 'required|string',
                 'description' => 'required|string',
-                'unused_images' => 'required|array'
+                'category_uuids' => 'required|array',
+                'category_uuids.*' => 'required|exists:categories,uuid',
+                'sneak_peeks' => 'nullable|array',
+                'sneak_peeks.*' => 'nullable|image',
             ]);
 
             $price = str_replace('.', '', $request->price);
@@ -46,15 +45,23 @@ class CourseController extends Controller {
             $discount = str_replace('.', '', $request->discount);
             $discount = str_replace(',', '.', $discount);
 
-            Course::create([
+            $course = Course::create([
                 'name' => $request->name,
-                'thumbnail' => 'storage/' . $request->thumbnail->store('category', 'public'),
+                'thumbnail' => 'storage/' . $request->thumbnail->store('course/thumbnail', 'public'),
                 'price' => $price,
                 'discount' => $discount ? $discount : 0,
                 'finish_estimation' => $request->finish_estimation,
-                'category_id' => Category::findByUuid($request->category_uuid)->id,
                 'description' => $request->description,
             ]);
+
+            $categories = Category::whereIn('uuid', $request->category_uuids)->pluck('id');
+            $course->categories()->sync($categories);
+
+            if ($request->sneak_peeks) {
+                foreach ($request->file('sneak_peeks') as $sneak_peek) {
+                    $course->addMedia($sneak_peek)->usingFileName($sneak_peek->hashName())->toMediaCollection('sneak_peeks');
+                }
+            }
 
             return response()->json([
                 'message' => 'Berhasil menambahkan kategori',
@@ -64,18 +71,9 @@ class CourseController extends Controller {
         }
     }
 
-    public function detail($uuid) {
-        if (request()->wantsJson()) {
-            $category = Course::with(['subs'])->where('uuid', $uuid)->first();
-            return response()->json($category);
-        } else {
-            return abort(404);
-        }
-    }
-
     public function edit($uuid) {
         if (request()->wantsJson()) {
-            $category = Course::findByUuid($uuid);
+            $category = Course::with(['categories'])->where('uuid', $uuid)->first()->append('sneak_peeks');
             return response()->json($category);
         } else {
             return abort(404);
@@ -89,16 +87,37 @@ class CourseController extends Controller {
                 'icon' => 'image'
             ]);
 
-            $category = Course::findByUuid($uuid);
+            $course = Course::findByUuid($uuid);
 
-            // Delete icon
-            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
-                unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
+            // Delete thumbnail
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $course->thumbnail)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $course->thumbnail)));
             }
-            $category->update([
+
+            $price = str_replace('.', '', $request->price);
+            $price = str_replace(',', '.', $price);
+
+            $discount = str_replace('.', '', $request->discount);
+            $discount = str_replace(',', '.', $discount);
+
+            $course->update([
                 'name' => $request->name,
-                'icon' => 'storage/' . $request->icon->store('category', 'public'),
+                'thumbnail' => 'storage/' . $request->thumbnail->store('course/thumbnail', 'public'),
+                'price' => $price,
+                'discount' => $discount ? $discount : 0,
+                'finish_estimation' => $request->finish_estimation,
+                'description' => $request->description,
             ]);
+
+            $categories = Category::whereIn('uuid', $request->category_uuids)->pluck('id');
+            $course->categories()->sync($categories);
+
+            $course->clearMediaCollection('sneak_peeks');
+            if ($request->sneak_peeks) {
+                foreach ($request->file('sneak_peeks') as $sneak_peek) {
+                    $course->addMedia($sneak_peek)->usingFileName($sneak_peek->hashName())->toMediaCollection('sneak_peeks');
+                }
+            }
 
             return response()->json([
                 'message' => 'Berhasil mengubah kategori',
@@ -111,6 +130,11 @@ class CourseController extends Controller {
     public function destroy($uuid) {
         if (request()->wantsJson()) {
             $category = Course::findByUuid($uuid);
+
+            // Delete thumbnail
+            if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->thumbnail)))) {
+                unlink(storage_path('app/public/' . str_replace('storage/', '', $category->thumbnail)));
+            }
 
             $category->delete();
 

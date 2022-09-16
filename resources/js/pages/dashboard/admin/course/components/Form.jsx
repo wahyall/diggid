@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useCallback } from "react";
+import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
@@ -11,9 +11,11 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import "ckeditor5-custom-build/build/ckeditor";
 
 function Form({ close, selected, csrfToken }) {
-  const [file, setFile] = useState([]);
+  const [thumbnail, setThumbnail] = useState([]);
+  const [sneakPeek, setSneakPeek] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
   const [editor, setEditor] = useState(null);
-  const [uploadedImages, setUploadedImages] = useState([]);
 
   const queryClient = useQueryClient();
   const { data: course } = useQuery(
@@ -23,9 +25,20 @@ function Form({ close, selected, csrfToken }) {
       return axios.get(`/api/course/${selected}/edit`).then((res) => res.data);
     },
     {
-      onSettled: () => KTApp.unblock("#form-course"),
       enabled: !!selected,
       cacheTime: 0,
+      onSettled: () => KTApp.unblock("#form-course"),
+      onSuccess: (data) => {
+        setThumbnail([{ source: assets(data.thumbnail) }]);
+        if (data?.categories) {
+          setSelectedCategories(
+            data.categories.map((category) => ({
+              label: category.name,
+              value: category.uuid,
+            }))
+          );
+        }
+      },
     }
   );
   const { data: categories } = useQuery(
@@ -44,6 +57,11 @@ function Form({ close, selected, csrfToken }) {
       cacheTime: 0,
       placeholderData: [],
     }
+  );
+
+  const uploadedSneakPeek = useMemo(
+    () => course?.sneak_peeks?.map((img) => ({ source: img })),
+    [course]
   );
 
   const { mutate: submit } = useMutation(
@@ -66,35 +84,14 @@ function Form({ close, selected, csrfToken }) {
   );
 
   const onEditorReady = useCallback((ckeditor) => setEditor(ckeditor), []);
-  const onEditorChange = useCallback(
-    (ev, ckeditor) => {
-      let urls = Array.from(
-        new DOMParser()
-          .parseFromString(ckeditor.getData(), "text/html")
-          .querySelectorAll("img")
-      ).map((img) => img.getAttribute("src"));
-      urls = [...new Set([...urls])];
-
-      setUploadedImages((prev) => [...new Set([...urls, ...prev])]);
-    },
-    [editor]
-  );
 
   const onSubmit = (ev) => {
     ev.preventDefault();
 
     const formData = new FormData(ev.target);
-    formData.append("thumbnail", file[0].file);
+    formData.append("thumbnail", thumbnail[0].file);
     formData.append("description", editor.getData());
-
-    const images = Array.from(
-      new DOMParser()
-        .parseFromString(editor.getData(), "text/html")
-        .querySelectorAll("img")
-    ).map((img) => img.getAttribute("src"));
-    uploadedImages
-      .filter((img) => !images.includes(img))
-      .forEach((img) => formData.append("unused_images[]", img));
+    sneakPeek.forEach((img) => formData.append("sneak_peeks[]", img.file));
 
     KTApp.block("#form-course");
     submit(formData);
@@ -140,10 +137,8 @@ function Form({ close, selected, csrfToken }) {
               Thumbnail :
             </label>
             <ImageUpload
-              files={
-                selected && course?.thumbnail ? `/${course?.thumbnail}` : file
-              }
-              onupdatefiles={setFile}
+              files={thumbnail}
+              onupdatefiles={setThumbnail}
               allowMultiple={false}
               labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
               acceptedFileTypes={["image/*"]}
@@ -174,21 +169,23 @@ function Form({ close, selected, csrfToken }) {
                   </label>
                   <div className="input-group mb-5">
                     <span className="input-group-text">Rp.</span>
-                    <CurrencyInput
-                      name="price"
-                      id="price"
-                      mask="999.999"
-                      placeholder="0.000.000"
-                      className="form-control"
-                      groupSeparator="."
-                      decimalSeparator=","
-                      required
-                      defaultValue={course?.price}
-                      autoComplete="off"
-                      allowDecimals={false}
-                      allowNegativeValue={false}
-                    />
-                    <span className="input-group-text">.00</span>
+                    {(!!course?.price || !selected) && (
+                      <CurrencyInput
+                        name="price"
+                        id="price"
+                        mask="999.999"
+                        placeholder="000.000"
+                        className="form-control"
+                        groupSeparator="."
+                        decimalSeparator=","
+                        required
+                        defaultValue={course?.price}
+                        autoComplete="off"
+                        allowDecimals={false}
+                        allowNegativeValue={false}
+                      />
+                    )}
+                    <span className="input-group-text">,00</span>
                   </div>
                 </div>
                 <div className="col-3">
@@ -224,7 +221,17 @@ function Form({ close, selected, csrfToken }) {
                   >
                     Kategori :
                   </label>
-                  <Select name="category_uuid" options={categories} />
+                  <Select
+                    name="category_uuids[]"
+                    isMulti={true}
+                    options={categories}
+                    value={selectedCategories}
+                    onChange={setSelectedCategories}
+                    hideSelectedOptions={false}
+                    isOptionSelected={(option, value) =>
+                      value.find((v) => v.value === option.value)
+                    }
+                  />
                 </div>
                 <div className="col-4">
                   <label htmlFor="finish_estimation" className="form-label">
@@ -246,16 +253,32 @@ function Form({ close, selected, csrfToken }) {
               </div>
             </div>
           </div>
-          <div className="col-12">
+          <div className="col-12 mb-10">
             <label htmlFor="description" className="form-label required">
-              Deskripsi
+              Deskripsi :
             </label>
             <CKEditor
               editor={ClassicEditor} // Berasal dari CKEditor Custom Build
               config={editorConfig}
               data={course?.description}
               onReady={onEditorReady}
-              onChange={onEditorChange}
+            />
+          </div>
+          <div className="col-12 multiple">
+            <label htmlFor="description" className="form-label">
+              Sneak Peek :
+            </label>
+            <ImageUpload
+              files={
+                selected && course?.sneak_peeks?.length
+                  ? uploadedSneakPeek
+                  : sneakPeek
+              }
+              onupdatefiles={setSneakPeek}
+              allowMultiple={true}
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+              acceptedFileTypes={["image/*"]}
+              required
             />
           </div>
           <div className="col-12">

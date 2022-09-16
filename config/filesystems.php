@@ -39,7 +39,15 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'course_sneak_peeks' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/course/sneak_peeks'),
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],

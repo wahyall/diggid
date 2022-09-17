@@ -47,8 +47,9 @@ class Course extends Model implements HasMedia {
         parent::boot();
 
         self::deleting(function ($model) {
+            // Delete all images from description
             $description = new DOMDocument();
-            $description->loadHTML($model->description);
+            @$description->loadHTML($model->description);
             $images = $description->getElementsByTagName('img');
             foreach ($images as $image) {
                 $path = str_replace(getenv('APP_URL') . '/storage/', '', $image->getAttribute('src'));

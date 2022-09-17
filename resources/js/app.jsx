@@ -6,8 +6,15 @@ import { render } from "react-dom";
 import { createInertiaApp } from "@inertiajs/inertia-react";
 import { InertiaProgress } from "@inertiajs/progress";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+
+// React-Query
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+// Jotai
+import { Provider as JotaiProvider } from "jotai";
+import { queryClientAtom } from "jotai/query";
+
 import DashboardLayout from "./layouts/DashboardLayout";
 
 const queryClient = new QueryClient({
@@ -49,8 +56,10 @@ createInertiaApp({
   setup({ el, App, props }) {
     return render(
       <QueryClientProvider client={queryClient}>
-        <App {...props} />
-        <ReactQueryDevtools initialIsOpen={false} />
+        <JotaiProvider initialValues={[[queryClientAtom, queryClient]]}>
+          <App {...props} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </JotaiProvider>
       </QueryClientProvider>,
       el
     );

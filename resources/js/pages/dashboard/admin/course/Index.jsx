@@ -1,25 +1,36 @@
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, memo } from "react";
+
+import { Link } from "@inertiajs/inertia-react";
 import Paginate from "@/components/Paginate";
-import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
+import { createColumnHelper } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 
 import Form from "./components/Form";
+import Project from "./components/Project";
 
 const columnHelper = createColumnHelper();
 
-export default function Index({ csrf_token }) {
-  const [openForm, setOpenForm] = useState(false);
+function Index({ csrf_token }) {
   const [selected, setSelected] = useState(null);
+  const [openForm, setOpenForm] = useState(false);
+  const [openProject, setOpenProject] = useState(false);
+
   const queryClient = useQueryClient();
 
-  const edit = (uuid) => {
+  const courseProject = (uuid) => {
+    setSelected(uuid);
+    setOpenProject(true);
+    KTUtil.scrollTop();
+  };
+
+  const editCourse = (uuid) => {
     setSelected(uuid);
     setOpenForm(true);
     KTUtil.scrollTop();
   };
 
-  const hapus = (uuid) => {
+  const deleteCourse = (uuid) => {
     const mySwal = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-danger btn-sm",
@@ -89,19 +100,34 @@ export default function Index({ csrf_token }) {
           width: "100px",
         },
         cell: (cell) =>
-          !openForm && (
+          !openForm &&
+          !openProject && (
             <div className="d-flex gap-2">
+              <Link
+                href={route("dashboard.admin.course.lesson", cell.getValue())}
+                className="btn btn-sm btn-primary"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                <i className="la la-chalkboard fs-3"></i>
+                Materi
+              </Link>
+              <button
+                className="btn btn-sm btn-primary"
+                style={{ whiteSpace: "nowrap" }}
+                onClick={useCallback(() => courseProject(cell.getValue()), [])}
+              >
+                <i className="la la-tasks fs-3"></i>
+                Proyek
+              </button>
               <button
                 className="btn btn-sm btn-warning btn-icon"
-                data-id={cell.getValue()}
-                onClick={useCallback(() => edit(cell.getValue()), [])}
+                onClick={useCallback(() => editCourse(cell.getValue()), [])}
               >
                 <i className="la la-pencil fs-3"></i>
               </button>
               <button
                 className="btn btn-sm btn-danger btn-icon"
-                data-id={cell.getValue()}
-                onClick={useCallback(() => hapus(cell.getValue()), [])}
+                onClick={useCallback(() => deleteCourse(cell.getValue()), [])}
               >
                 <i className="la la-trash fs-3"></i>
               </button>
@@ -109,7 +135,7 @@ export default function Index({ csrf_token }) {
           ),
       }),
     ],
-    [openForm]
+    [openForm, openProject]
   );
 
   return (
@@ -117,6 +143,13 @@ export default function Index({ csrf_token }) {
       <If isTrue={openForm}>
         <Form
           close={useCallback(() => setOpenForm(false), [])}
+          selected={selected}
+          csrfToken={csrf_token}
+        />
+      </If>
+      <If isTrue={openProject}>
+        <Project
+          close={useCallback(() => setOpenProject(false), [])}
           selected={selected}
           csrfToken={csrf_token}
         />
@@ -150,3 +183,5 @@ export default function Index({ csrf_token }) {
     </section>
   );
 }
+
+export default memo(Index);

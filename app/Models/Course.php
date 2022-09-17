@@ -32,6 +32,10 @@ class Course extends Model implements HasMedia {
         return $this->hasMany(CourseLesson::class);
     }
 
+    public function project() {
+        return $this->hasOne(CourseProject::class);
+    }
+
     public function registerMediaCollections(): void {
         $this->addMediaCollection('sneak_peeks')->useDisk('course_sneak_peeks');
     }

@@ -25,7 +25,7 @@ class MenuController extends Controller {
                     return !!$role;
                 });
 
-                if ($menu->children->count() > 0) {
+                if ($menu->children->count() > 0 && !isset($menu->url)) {
                     self::generateRouteChildren($menu->children, $breadcrumb);
                 } else {
                     Route::get($menu->url, function () use ($menu, $breadcrumb) {
@@ -34,6 +34,10 @@ class MenuController extends Controller {
                             'breadcrumb' => $breadcrumb,
                         ]);
                     })->middleware($middleware->toArray())->name($menu->route);
+
+                    if ($menu->children->count() > 0) {
+                        self::generateRouteChildren($menu->children, $breadcrumb);
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -52,7 +56,7 @@ class MenuController extends Controller {
                 return !!$role;
             });
 
-            if ($menu->children->count() > 0) {
+            if ($menu->children->count() > 0 && !isset($menu->url)) {
                 self::generateRouteChildren($menu->children, $breadcrumb);
             } else {
                 Route::get($menu->url, function () use ($menu, $breadcrumb) {
@@ -61,6 +65,10 @@ class MenuController extends Controller {
                         'breadcrumb' => $breadcrumb,
                     ]);
                 })->middleware($middleware->toArray())->name($menu->route);
+
+                if ($menu->children->count() > 0) {
+                    self::generateRouteChildren($menu->children, $breadcrumb);
+                }
             }
         }
     }

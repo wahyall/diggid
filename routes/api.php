@@ -3,7 +3,7 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CategoryGroupController;
 use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +49,13 @@ Route::middleware('auth')->group(function () {
         Route::get('{uuid}/detail', [CourseController::class, 'detail']);
         Route::post('{uuid}/update', [CourseController::class, 'update']);
         Route::delete('{uuid}/destroy', [CourseController::class, 'destroy']);
+
+        Route::prefix('{uuid}/project')->group(function () {
+            Route::get('/', [CourseProjectController::class, 'index']);
+            Route::post('store', [CourseProjectController::class, 'store']);
+            Route::post('update', [CourseProjectController::class, 'update']);
+            Route::delete('destroy', [CourseProjectController::class, 'destroy']);
+        });
 
         Route::post('upload-image', [CourseController::class, 'uploadImage']);
         Route::post('delete-image', [CourseController::class, 'deleteImage']);

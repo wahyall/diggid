@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, memo } from "react";
+import React, { useCallback, useState, memo } from "react";
 import Paginate from "@/components/Paginate";
 import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
@@ -9,7 +9,7 @@ import Categories from "./components/Categories";
 
 const columnHelper = createColumnHelper();
 
-export default function Index() {
+function Index() {
   const [openForm, setOpenForm] = useState(false);
   const [openSub, setOpenSub] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -97,21 +97,18 @@ export default function Index() {
             <button
               className="btn btn-sm btn-primary"
               style={{ whiteSpace: "nowrap" }}
-              data-id={cell.getValue()}
               onClick={useCallback(() => sub(cell.getValue()), [])}
             >
               <i className="la la-tag fs-3"></i> Kategori
             </button>
             <button
               className="btn btn-sm btn-warning btn-icon"
-              data-id={cell.getValue()}
               onClick={useCallback(() => edit(cell.getValue()), [])}
             >
               <i className="la la-pencil fs-3"></i>
             </button>
             <button
               className="btn btn-sm btn-danger btn-icon"
-              data-id={cell.getValue()}
               onClick={useCallback(() => hapus(cell.getValue()), [])}
             >
               <i className="la la-trash fs-3"></i>
@@ -164,3 +161,5 @@ export default function Index() {
     </section>
   );
 }
+
+export default memo(Index);

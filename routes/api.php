@@ -3,6 +3,7 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CategoryGroupController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
@@ -45,8 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'course', 'middleware' => 'role:admin'], function () {
         Route::post('paginate', [CourseController::class, 'paginate']);
         Route::post('store', [CourseController::class, 'store']);
+        Route::get('{uuid}', [CourseController::class, 'show']);
         Route::get('{uuid}/edit', [CourseController::class, 'edit']);
-        Route::get('{uuid}/detail', [CourseController::class, 'detail']);
         Route::post('{uuid}/update', [CourseController::class, 'update']);
         Route::delete('{uuid}/destroy', [CourseController::class, 'destroy']);
 
@@ -55,6 +56,15 @@ Route::middleware('auth')->group(function () {
             Route::post('store', [CourseProjectController::class, 'store']);
             Route::post('update', [CourseProjectController::class, 'update']);
             Route::delete('destroy', [CourseProjectController::class, 'destroy']);
+        });
+
+        Route::prefix('{course_uuid}/lesson')->group(function () {
+            Route::get('/', [CourseLessonController::class, 'index']);
+            Route::post('store', [CourseLessonController::class, 'store']);
+            Route::get('{uuid}/edit', [CourseLessonController::class, 'edit']);
+            Route::post('{uuid}/update', [CourseLessonController::class, 'update']);
+            Route::delete('{uuid}/destroy', [CourseLessonController::class, 'destroy']);
+            Route::post('reorder', [CourseLessonController::class, 'reorder']);
         });
 
         Route::post('upload-image', [CourseController::class, 'uploadImage']);

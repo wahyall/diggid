@@ -118,7 +118,7 @@ function Form({ close, selected, csrfToken }) {
       <div className="card-header">
         <div className="card-title w-100">
           <h3>
-            {selected ? `Edit Kursus: ${course?.name}` : "Buat Kursus Baru"}
+            {course?.uuid ? `Edit Kursus: ${course?.name}` : "Buat Kursus Baru"}
           </h3>
           <button
             type="button"

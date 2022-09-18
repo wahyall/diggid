@@ -71,6 +71,14 @@ class CourseController extends Controller {
         }
     }
 
+    public function show($uuid) {
+        if (request()->wantsJson()) {
+            return response()->json(Course::findByUuid($uuid));
+        } else {
+            return abort(404);
+        }
+    }
+
     public function edit($uuid) {
         if (request()->wantsJson()) {
             $category = Course::with(['categories'])->where('uuid', $uuid)->first()->append('sneak_peeks');

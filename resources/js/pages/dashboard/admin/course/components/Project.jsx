@@ -131,7 +131,7 @@ function Project({ close, selected, csrfToken }) {
           <div className="col-12">
             <div className="mb-10">
               <label htmlFor="name" className="form-label required">
-                Nama Proyek :
+                Judul Proyek :
               </label>
               <input
                 type="text"

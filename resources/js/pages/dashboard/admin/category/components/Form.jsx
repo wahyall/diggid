@@ -59,7 +59,7 @@ function Form({ close, selected }) {
       <div className="card-header">
         <div className="card-title w-100">
           <h3>
-            {selected
+            {category?.name
               ? `Edit Grup Kategori: ${category?.name || ""}`
               : "Tambah Grup Kategori"}
           </h3>

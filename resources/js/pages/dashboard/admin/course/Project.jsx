@@ -8,6 +8,7 @@ import "ckeditor5-custom-build/build/ckeditor";
 
 function Project({ close, selected, csrfToken }) {
   const [editor, setEditor] = useState();
+  const [deletedImages, setDeletedImages] = useState([]);
 
   const { data: course } = useQuery(
     [`/api/course/${selected}/project`],
@@ -80,10 +81,13 @@ function Project({ close, selected, csrfToken }) {
       });
   };
 
-  const handleSubmit = (ev) => {
+  const onSubmit = (ev) => {
     ev.preventDefault();
 
     const formData = new FormData(ev.target);
+    deletedImages.forEach((image) =>
+      formData.append("deleted_images[]", image)
+    );
     formData.append("description", editor.getData());
 
     KTApp.block("#form-course-project");
@@ -103,16 +107,12 @@ function Project({ close, selected, csrfToken }) {
     },
     imageRemoveEvent: {
       callback: (imagesSrc) =>
-        axios.post("/api/course/delete-image", { url: imagesSrc[0] }),
+        setDeletedImages((images) => [...images, ...imagesSrc]),
     },
   };
 
   return (
-    <form
-      className="card mb-12"
-      id="form-course-project"
-      onSubmit={handleSubmit}
-    >
+    <form className="card mb-12" id="form-course-project" onSubmit={onSubmit}>
       <div className="card-header">
         <div className="card-title w-100">
           <h3>Proyek Kursus: {course?.name || ""}</h3>
@@ -122,7 +122,7 @@ function Project({ close, selected, csrfToken }) {
             onClick={close}
           >
             <i className="las la-chevron-left"></i>
-            Kembali
+            Batal
           </button>
         </div>
       </div>

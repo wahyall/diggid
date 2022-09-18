@@ -3,6 +3,9 @@ import { Link } from "@inertiajs/inertia-react";
 import { useQuery } from "@tanstack/react-query";
 import { For } from "react-haiku";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function MenuItem({ name, icon, url, route: routeName }) {
   return (
     <div className="menu-item">
@@ -60,7 +63,7 @@ function MenuAccordion({ name, icon, children }) {
 function DashboardLayout({ children, auth: { user } }) {
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = assets("assets/js/loader.bundle.js");
+    script.src = asset("assets/js/loader.bundle.js");
     script.async = true;
 
     document.body.appendChild(script);
@@ -104,7 +107,7 @@ function DashboardLayout({ children, auth: { user } }) {
               <Link href={route(`dashboard.${user.role}`)}>
                 <img
                   alt="Logo"
-                  src={assets("assets/media/logos/logo-sikatana.svg")}
+                  src={asset("assets/media/logos/logo-sikatana.svg")}
                   className="h-25px logo"
                 />
               </Link>
@@ -201,7 +204,7 @@ function DashboardLayout({ children, auth: { user } }) {
                   >
                     <img
                       alt="Logo"
-                      src={assets("assets/media/logos/logo-sikatana.svg")}
+                      src={asset("assets/media/logos/logo-sikatana.svg")}
                       className="h-30px"
                     />
                   </Link>
@@ -247,7 +250,7 @@ function DashboardLayout({ children, auth: { user } }) {
                         data-kt-menu-placement="bottom-end"
                       >
                         <img
-                          src={assets("assets/media/avatars/300-1.jpg")}
+                          src={asset("assets/media/avatars/300-1.jpg")}
                           alt="user"
                         />
                       </div>
@@ -269,7 +272,7 @@ function DashboardLayout({ children, auth: { user } }) {
                             <div className="symbol symbol-50px me-5">
                               <img
                                 alt="Logo"
-                                src={assets("assets/media/avatars/300-1.jpg")}
+                                src={asset("assets/media/avatars/300-1.jpg")}
                               />
                             </div>
                             <div className="d-flex flex-column">
@@ -329,6 +332,11 @@ function DashboardLayout({ children, auth: { user } }) {
           {/* end::Wrapper */}
         </div>
       </div>
+      <ToastContainer
+        newestOnTop={false}
+        position="bottom-right"
+        theme="dark"
+      />
     </main>
   );
 }

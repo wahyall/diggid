@@ -18,42 +18,64 @@ class CourseProjectController extends Controller {
     }
 
     public function store(Request $request, $uuid) {
-        $request->validate([
-            'name' => 'required|string',
-            'description' => 'required|string'
-        ]);
+        if (request()->wantsJson()) {
+            $request->validate([
+                'name' => 'required|string',
+                'description' => 'required|string'
+            ]);
 
-        Course::where('uuid', $uuid)->first()->project()->create([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
+            Course::where('uuid', $uuid)->first()->project()->create([
+                'name' => $request->name,
+                'description' => $request->description
+            ]);
 
-        return response()->json([
-            'message' => 'Proyek berhasil dibuat',
-        ]);
+            return response()->json([
+                'message' => 'Proyek berhasil dibuat',
+            ]);
+        } else {
+            return abort(404);
+        }
     }
 
     public function update(Request $request, $uuid) {
-        $request->validate([
-            'name' => 'required|string',
-            'description' => 'required|string'
-        ]);
+        if (request()->wantsJson()) {
+            $request->validate([
+                'name' => 'required|string',
+                'description' => 'required|string',
+                'deleted_images' => 'nullable|array',
+                'deleted_images.*' => 'nullable|string',
+            ]);
 
-        Course::where('uuid', $uuid)->first()->project()->update([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
+            Course::where('uuid', $uuid)->first()->project()->update([
+                'name' => $request->name,
+                'description' => $request->description
+            ]);
 
-        return response()->json([
-            'message' => 'Proyek berhasil diperbarui',
-        ]);
+            if (isset($request->deleted_images)) {
+                foreach ($request->deleted_images as $image) {
+                    if (file_exists(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $image)))) {
+                        unlink(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $image)));
+                    }
+                }
+            }
+
+            return response()->json([
+                'message' => 'Proyek berhasil diperbarui',
+            ]);
+        } else {
+            return abort(404);
+        }
     }
 
     public function destroy($uuid) {
-        Course::where('uuid', $uuid)->first()->project()->delete();
+        if (request()->wantsJson()) {
+            Course::where('uuid', $uuid)->first()->project()->delete();
 
-        return response()->json([
-            'message' => 'Proyek berhasil dihapus',
-        ]);
+            return response()->json([
+                'message' => 'Proyek berhasil dihapus',
+            ]);
+        } else {
+            return abort(404);
+        }
     }
 }

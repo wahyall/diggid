@@ -20,7 +20,7 @@ export default function AuthLayout({ children }) {
         <div
           className="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2 min-h-200px"
           style={{
-            backgroundImage: `linear-gradient(0deg, rgba(24, 16, 28, 0.5), rgba(24, 16, 28, 0.75)), url(${assets(
+            backgroundImage: `linear-gradient(0deg, rgba(24, 16, 28, 0.5), rgba(24, 16, 28, 0.75)), url(${asset(
               "assets/media/misc/bg-auth.jpg"
             )})`,
           }}
@@ -29,7 +29,7 @@ export default function AuthLayout({ children }) {
             <Link href={route("home")} className="mb-0 mb-lg-12">
               <img
                 alt="Logo"
-                src={assets("assets/media/logos/logo-sikatana.svg")}
+                src={asset("assets/media/logos/logo-sikatana.svg")}
                 className="h-60px h-lg-75px"
               />
             </Link>

@@ -36,7 +36,7 @@ export default function VerifyEmail({ auth: { user }, status }) {
             <a href={route("home")} className="mb-10 pt-lg-10">
               <img
                 alt="Logo"
-                src={assets("assets/media/logos/logo-sikatana.svg")}
+                src={asset("assets/media/logos/logo-sikatana.svg")}
                 className="h-40px mb-5"
               />
             </a>
@@ -71,7 +71,7 @@ export default function VerifyEmail({ auth: { user }, status }) {
             <div
               className="d-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain bgi-position-y-bottom min-h-100px min-h-lg-350px"
               style={{
-                backgroundImage: `url(${assets(
+                backgroundImage: `url(${asset(
                   "assets/media/illustrations/sketchy-1/17.png"
                 )})`,
               }}

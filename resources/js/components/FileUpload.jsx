@@ -18,8 +18,8 @@ registerPlugin(
   FilePondPluginFileValidateType
 );
 
-function ImageUpload(props) {
+function FileUpload(props) {
   return <FilePond {...props} />;
 }
 
-export default memo(ImageUpload);
+export default memo(FileUpload);

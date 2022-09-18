@@ -92,7 +92,17 @@ class CourseController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255',
-                'icon' => 'image'
+                'thumbnail' => 'required|image',
+                'price' => 'required',
+                'discount' => 'nullable',
+                'finish_estimation' => 'nullable|integer',
+                'description' => 'required|string',
+                'category_uuids' => 'required|array',
+                'category_uuids.*' => 'required|exists:categories,uuid',
+                'sneak_peeks' => 'nullable|array',
+                'sneak_peeks.*' => 'nullable|image',
+                'deleted_images' => 'nullable|array',
+                'deleted_images.*' => 'nullable|string',
             ]);
 
             $course = Course::findByUuid($uuid);
@@ -116,6 +126,14 @@ class CourseController extends Controller {
                 'finish_estimation' => $request->finish_estimation,
                 'description' => $request->description,
             ]);
+
+            if (isset($request->deleted_images)) {
+                foreach ($request->deleted_images as $image) {
+                    if (file_exists(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $image)))) {
+                        unlink(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $image)));
+                    }
+                }
+            }
 
             $categories = Category::whereIn('uuid', $request->category_uuids)->pluck('id');
             $course->categories()->sync($categories);
@@ -158,15 +176,6 @@ class CourseController extends Controller {
         $file = 'storage/' . $request->upload->store('course', 'public');
         return response()->json([
             'url' => asset($file)
-        ]);
-    }
-
-    public function deleteImage(Request $request) {
-        if (file_exists(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $request->url)))) {
-            unlink(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $request->url)));
-        }
-        return response()->json([
-            'message' => 'Image deleted successfuly!'
         ]);
     }
 }

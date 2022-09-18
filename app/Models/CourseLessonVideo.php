@@ -10,8 +10,8 @@ use Spatie\Sluggable\SlugOptions;
 class CourseLessonVideo extends Model {
     use Uuid, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'description', 'course_lesson_id', 'video_url', 'order'];
-    protected $hidden = ['id'];
+    protected $fillable = ['name', 'slug', 'description', 'course_lesson_id', 'video', 'order'];
+    protected $hidden = ['id', 'course_lesson_id', 'video', 'created_at', 'updated_at'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

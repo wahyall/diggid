@@ -4,7 +4,7 @@ import { If } from "react-haiku";
 import { createColumnHelper } from "@tanstack/react-table";
 import SortableTable from "@/components/SortableTable";
 import { extractUuidFromUrl } from "@/libs/utils";
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { usePage, Link } from "@inertiajs/inertia-react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 import Form from "./Form";
@@ -19,9 +19,13 @@ function Index({ csrf_token }) {
   const [selected, setSelected] = useState(null);
   const { url } = usePage();
   const course_uuid = useMemo(() => extractUuidFromUrl(url), [url]);
+  const lesson_uuid = useMemo(
+    () => extractUuidFromUrl(url.split("lesson")[1]),
+    [url]
+  );
 
-  const { data: course } = useQuery([`/api/course/${course_uuid}`], () =>
-    axios.get(`/api/course/${course_uuid}`).then((res) => res.data)
+  const { data: lesson } = useQuery([`/api/course/lesson/${lesson_uuid}`], () =>
+    axios.get(`/api/course/lesson/${lesson_uuid}`).then((res) => res.data)
   );
 
   const editLesson = (uuid) => {
@@ -50,7 +54,7 @@ function Index({ csrf_token }) {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/course/${course_uuid}/lesson/${uuid}/destroy`)
+            .delete(`/api/course/lesson/${lesson_uuid}/video/${uuid}/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -59,7 +63,9 @@ function Index({ csrf_token }) {
       .then((result) => {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
-          queryClient.invalidateQueries([`/api/course/${course_uuid}/lesson`]);
+          queryClient.invalidateQueries([
+            `/api/course/lesson/${lesson_uuid}/video`,
+          ]);
         }
       });
   };
@@ -86,17 +92,6 @@ function Index({ csrf_token }) {
         cell: (cell) =>
           !openForm && (
             <div className="d-flex gap-2 ms-auto">
-              <Link
-                href={route("dashboard.admin.course.lesson.video", [
-                  course_uuid,
-                  cell.getValue(),
-                ])}
-                className="btn btn-sm btn-primary"
-                style={{ whiteSpace: "nowrap" }}
-              >
-                <i className="la la-video fs-3"></i>
-                Video
-              </Link>
               <button
                 className="btn btn-sm btn-warning btn-icon"
                 onClick={useCallback(() => editLesson(cell.getValue()), [])}
@@ -117,10 +112,13 @@ function Index({ csrf_token }) {
   );
 
   const { mutate: reorder } = useMutation(
-    (data) => axios.post(`/api/course/${course_uuid}/lesson/reorder`, data),
+    (data) =>
+      axios.post(`/api/course/lesson/${lesson_uuid}/video/reorder`, data),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([`/api/course/${course_uuid}/lesson`]);
+        queryClient.invalidateQueries([
+          `/api/course/lesson/${lesson_uuid}/video`,
+        ]);
       },
     }
   );
@@ -136,7 +134,7 @@ function Index({ csrf_token }) {
   return (
     <section>
       <Link
-        href={route("dashboard.admin.course")}
+        href={route("dashboard.admin.course.lesson", course_uuid)}
         className="btn btn-light-danger btn-sm ms-auto"
       >
         <i className="las la-chevron-left"></i>
@@ -147,13 +145,13 @@ function Index({ csrf_token }) {
           close={useCallback(() => setOpenForm(false), [])}
           selected={selected}
           csrfToken={csrf_token}
-          course_uuid={course_uuid}
+          lesson_uuid={lesson_uuid}
         />
       </If>
       <div className="card">
         <div className="card-header">
           <div className="card-title w-100">
-            <h1>Daftar Silabus dari Kursus: {course?.name}</h1>
+            <h1>Daftar Video dari Silabus: {lesson?.name}</h1>
             <If isTrue={!openForm}>
               <button
                 type="button"
@@ -163,7 +161,7 @@ function Index({ csrf_token }) {
                 )}
               >
                 <i className="las la-plus"></i>
-                Silabus Baru
+                Video Baru
               </button>
             </If>
           </div>
@@ -172,7 +170,7 @@ function Index({ csrf_token }) {
           <SortableTable
             id="my-table"
             columns={columns}
-            url={`/api/course/${course_uuid}/lesson`}
+            url={`/api/course/lesson/${lesson_uuid}/video`}
             onSorted={handleOnSorted}
           ></SortableTable>
         </div>

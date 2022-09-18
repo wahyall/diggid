@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 
-import ImageUpload from "@/components/ImageUpload";
+import FileUpload from "@/components/FileUpload";
 
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
@@ -69,7 +69,7 @@ function Form({ close, selected }) {
             onClick={close}
           >
             <i className="las la-chevron-left"></i>
-            Kembali
+            Batal
           </button>
         </div>
       </div>
@@ -79,7 +79,7 @@ function Form({ close, selected }) {
             <label htmlFor="name" className="form-label">
               Icon :
             </label>
-            <ImageUpload
+            <FileUpload
               files={selected && category?.icon ? `/${category?.icon}` : file}
               onupdatefiles={setFile}
               allowMultiple={false}

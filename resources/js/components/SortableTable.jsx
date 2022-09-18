@@ -33,7 +33,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { If } from "react-haiku";
 
-// REMAIN BUG
 function SortableRow({ row }) {
   const {
     attributes,
@@ -79,7 +78,7 @@ function StaticRow({ row }) {
   return (
     <>
       <td className="py-4">
-        <i className="las la-braille fs-3" style={{ cursor: "grabbing" }}></i>
+        <i className="las la-braille fs-3"></i>
       </td>
       {row.getVisibleCells().map((cell) => (
         <td

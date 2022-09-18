@@ -3,7 +3,7 @@ import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 
-import ImageUpload from "@/components/ImageUpload";
+import FileUpload from "@/components/FileUpload";
 import CurrencyInput from "react-currency-input-field";
 import Select from "react-select";
 
@@ -14,6 +14,7 @@ function Form({ close, selected, csrfToken }) {
   const [thumbnail, setThumbnail] = useState([]);
   const [sneakPeek, setSneakPeek] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
 
   const [editor, setEditor] = useState(null);
 
@@ -29,7 +30,7 @@ function Form({ close, selected, csrfToken }) {
       cacheTime: 0,
       onSettled: () => KTApp.unblock("#form-course"),
       onSuccess: (data) => {
-        setThumbnail([{ source: assets(data.thumbnail) }]);
+        setThumbnail([{ source: asset(data.thumbnail) }]);
         if (data?.categories) {
           setSelectedCategories(
             data.categories.map((category) => ({
@@ -91,6 +92,9 @@ function Form({ close, selected, csrfToken }) {
     const formData = new FormData(ev.target);
     formData.append("thumbnail", thumbnail[0].file);
     formData.append("description", editor.getData());
+    deletedImages.forEach((image) =>
+      formData.append("deleted_images[]", image)
+    );
     sneakPeek.forEach((img) => formData.append("sneak_peeks[]", img.file));
 
     KTApp.block("#form-course");
@@ -109,7 +113,7 @@ function Form({ close, selected, csrfToken }) {
     },
     imageRemoveEvent: {
       callback: (imagesSrc) =>
-        axios.post("/api/course/delete-image", { url: imagesSrc[0] }),
+        setDeletedImages((images) => [...images, ...imagesSrc]),
     },
   };
 
@@ -126,7 +130,7 @@ function Form({ close, selected, csrfToken }) {
             onClick={close}
           >
             <i className="las la-chevron-left"></i>
-            Kembali
+            Batal
           </button>
         </div>
       </div>
@@ -136,7 +140,7 @@ function Form({ close, selected, csrfToken }) {
             <label htmlFor="name" className="form-label required">
               Thumbnail :
             </label>
-            <ImageUpload
+            <FileUpload
               files={thumbnail}
               onupdatefiles={setThumbnail}
               allowMultiple={false}
@@ -268,7 +272,7 @@ function Form({ close, selected, csrfToken }) {
             <label htmlFor="description" className="form-label">
               Sneak Peek :
             </label>
-            <ImageUpload
+            <FileUpload
               files={
                 selected && course?.sneak_peeks?.length
                   ? uploadedSneakPeek
@@ -278,7 +282,6 @@ function Form({ close, selected, csrfToken }) {
               allowMultiple={true}
               labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
               acceptedFileTypes={["image/*"]}
-              required
             />
           </div>
           <div className="col-12">

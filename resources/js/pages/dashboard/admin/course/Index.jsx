@@ -6,8 +6,8 @@ import { If } from "react-haiku";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
 
-import Form from "./components/Form";
-import Project from "./components/Project";
+import Form from "./Form";
+import Project from "./Project";
 
 const columnHelper = createColumnHelper();
 
@@ -77,7 +77,7 @@ function Index({ csrf_token }) {
           <img
             className="img-thumbnail"
             width={50}
-            src={assets(cell.getValue())}
+            src={asset(cell.getValue())}
           />
         ),
       }),
@@ -109,7 +109,7 @@ function Index({ csrf_token }) {
                 style={{ whiteSpace: "nowrap" }}
               >
                 <i className="la la-chalkboard fs-3"></i>
-                Materi
+                Silabus
               </Link>
               <button
                 className="btn btn-sm btn-primary"
@@ -158,7 +158,7 @@ function Index({ csrf_token }) {
         <div className="card-header">
           <div className="card-title w-100">
             <h1>Kursus</h1>
-            <If isTrue={!openForm}>
+            <If isTrue={!openForm && !openProject}>
               <button
                 type="button"
                 className="btn btn-primary btn-sm ms-auto"

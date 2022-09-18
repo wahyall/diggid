@@ -9,6 +9,7 @@ import "ckeditor5-custom-build/build/ckeditor";
 function Form({ close, course_uuid, selected, csrfToken }) {
   const queryClient = useQueryClient();
   const [editor, setEditor] = useState();
+  const [deletedImages, setDeletedImages] = useState([]);
 
   const { data: lesson } = useQuery(
     [`/api/course/${course_uuid}/lesson/${selected}/edit`],
@@ -49,10 +50,13 @@ function Form({ close, course_uuid, selected, csrfToken }) {
     }
   );
 
-  const handleSubmit = (ev) => {
+  const onSubmit = (ev) => {
     ev.preventDefault();
 
     const formData = new FormData(ev.target);
+    deletedImages.forEach((image) =>
+      formData.append("deleted_images[]", image)
+    );
     formData.append("description", editor.getData());
 
     KTApp.block("#form-course-lesson");
@@ -72,26 +76,22 @@ function Form({ close, course_uuid, selected, csrfToken }) {
     },
     imageRemoveEvent: {
       callback: (imagesSrc) =>
-        axios.post("/api/course/delete-image", { url: imagesSrc[0] }),
+        setDeletedImages((images) => [...images, ...imagesSrc]),
     },
   };
 
   return (
-    <form
-      className="card mb-12"
-      id="form-course-lesson"
-      onSubmit={handleSubmit}
-    >
+    <form className="card mb-12" id="form-course-lesson" onSubmit={onSubmit}>
       <div className="card-header">
         <div className="card-title w-100">
-          {lesson?.uuid ? `Edit Materi: ${lesson?.name}` : "Buat Materi Baru"}
+          {lesson?.uuid ? `Edit Silabus: ${lesson?.name}` : "Buat Silabus Baru"}
           <button
             type="button"
             className="btn btn-light-danger btn-sm ms-auto"
             onClick={close}
           >
             <i className="las la-chevron-left"></i>
-            Kembali
+            Batal
           </button>
         </div>
       </div>
@@ -100,7 +100,7 @@ function Form({ close, course_uuid, selected, csrfToken }) {
           <div className="col-12">
             <div className="mb-10">
               <label htmlFor="name" className="form-label required">
-                Judul Materi :
+                Judul Silabus :
               </label>
               <input
                 type="text"
@@ -122,16 +122,13 @@ function Form({ close, course_uuid, selected, csrfToken }) {
                 onReady={onEditorReady}
               />
             </div>
-            <div className="col-12">
-              <div className="d-flex justify-content-end mt-8 gap-8">
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-sm d-block"
-                >
-                  <i className="las la-save fs-3"></i>
-                  Simpan
-                </button>
-              </div>
+          </div>
+          <div className="col-12">
+            <div className="d-flex justify-content-end mt-8 gap-8">
+              <button type="submit" className="btn btn-primary btn-sm d-block">
+                <i className="las la-save fs-3"></i>
+                Simpan
+              </button>
             </div>
           </div>
         </div>

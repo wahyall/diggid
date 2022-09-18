@@ -4,8 +4,8 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
 import { useQueryClient } from "@tanstack/react-query";
 
-import Form from "./components/Form";
-import Categories from "./components/Categories";
+import Form from "./Form";
+import Categories from "./Categories";
 
 const columnHelper = createColumnHelper();
 
@@ -79,7 +79,7 @@ function Index() {
         <img
           className="img-thumbnail"
           width={50}
-          src={assets(cell.getValue())}
+          src={asset(cell.getValue())}
           key={cell.getValue()}
         />
       ),

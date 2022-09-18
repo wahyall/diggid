@@ -24,6 +24,10 @@ const queryClient = new QueryClient({
       refetchOnmount: false,
       retry: false,
       staleTime: 1000 * 60 * 60 * 1,
+      networkMode: "always",
+    },
+    mutations: {
+      networkMode: "always",
     },
   },
 });
@@ -31,7 +35,7 @@ const queryClient = new QueryClient({
 const appName =
   window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
 
-window.assets = function (path) {
+window.asset = function (path) {
   return (
     import.meta.env.VITE_URL + "/" + path?.split("/").filter(Boolean).join("/")
   );

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\CourseLesson;
+use App\Models\CourseLessonVideo;
 
 class CourseLessonController extends Controller {
     public function index($uuid) {
@@ -43,6 +44,14 @@ class CourseLessonController extends Controller {
         }
     }
 
+    public function show($lesson_uuid) {
+        if (request()->wantsJson()) {
+            return response()->json(CourseLesson::findByUuid($lesson_uuid));
+        } else {
+            return abort(404);
+        }
+    }
+
     public function edit($course_uuid, $uuid) {
         if (request()->wantsJson()) {
             $lesson = Course::where('uuid', $course_uuid)->first()->lessons()->where('uuid', $uuid)->first();
@@ -53,18 +62,27 @@ class CourseLessonController extends Controller {
         }
     }
 
-
     public function update(Request $request, $course_uuid, $uuid) {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string',
-                'description' => 'required|string'
+                'description' => 'required|string',
+                'deleted_images' => 'nullable|array',
+                'deleted_images.*' => 'nullable|string',
             ]);
 
             Course::where('uuid', $course_uuid)->first()->lessons()->where('uuid', $uuid)->update([
                 'name' => $request->name,
                 'description' => $request->description
             ]);
+
+            if (isset($request->deleted_images)) {
+                foreach ($request->deleted_images as $image) {
+                    if (file_exists(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $image)))) {
+                        unlink(storage_path('app/public/' . str_replace(getenv('APP_URL') . '/storage/', '', $image)));
+                    }
+                }
+            }
 
             return response()->json([
                 'message' => 'Materi berhasil diperbarui',

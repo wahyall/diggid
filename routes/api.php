@@ -4,6 +4,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CategoryGroupController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseLessonController;
+use App\Http\Controllers\CourseLessonVideoController;
 use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
@@ -67,7 +68,19 @@ Route::middleware('auth')->group(function () {
             Route::post('reorder', [CourseLessonController::class, 'reorder']);
         });
 
+        Route::prefix('lesson/{lesson_uuid}')->group(function () {
+            Route::get('/', [CourseLessonController::class, 'show']);
+            Route::prefix('video')->group(function () {
+                Route::get('/', [CourseLessonVideoController::class, 'index']);
+                Route::post('store', [CourseLessonVideoController::class, 'store']);
+                Route::get('{uuid}/edit', [CourseLessonVideoController::class, 'edit']);
+                Route::post('{uuid}/update', [CourseLessonVideoController::class, 'update']);
+                Route::post('{uuid}/upload', [CourseLessonVideoController::class, 'upload']);
+                Route::delete('{uuid}/destroy', [CourseLessonVideoController::class, 'destroy']);
+                Route::post('reorder', [CourseLessonVideoController::class, 'reorder']);
+            });
+        });
+
         Route::post('upload-image', [CourseController::class, 'uploadImage']);
-        Route::post('delete-image', [CourseController::class, 'deleteImage']);
     });
 });

@@ -3,7 +3,7 @@ import axios from "@/libs/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { For } from "react-haiku";
-import ImageUpload from "@/components/ImageUpload";
+import FileUpload from "@/components/FileUpload";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
 const acceptedFileTypes = ["image/*"];
@@ -78,7 +78,7 @@ function Categories({ selected, close }) {
             onClick={close}
           >
             <i className="las la-chevron-left"></i>
-            Kembali
+            Batal
           </button>
         </div>
       </div>
@@ -96,7 +96,7 @@ function Categories({ selected, close }) {
                   name={`sub.${index}.icon`}
                   render={({ field: { onChange, value } }) => {
                     return (
-                      <ImageUpload
+                      <FileUpload
                         files={
                           value ? `/${value}` : getValues(`sub.${index}.icon`)
                         }

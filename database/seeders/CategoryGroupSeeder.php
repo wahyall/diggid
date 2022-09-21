@@ -7,13 +7,15 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CategoryGroupSeeder extends Seeder {
+class CategoryGroupSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
         DB::table('category_groups')->delete();
 
         CategoryGroup::create([
@@ -23,7 +25,7 @@ class CategoryGroupSeeder extends Seeder {
         ]);
         CategoryGroup::create([
             'id' => 2,
-            'name' => 'Desgin',
+            'name' => 'Design',
             'icon' => 'storage/category/design.png',
         ]);
     }

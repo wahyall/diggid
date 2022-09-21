@@ -52,7 +52,7 @@ function SortableRow({ row }) {
     <tr
       ref={setNodeRef}
       style={style}
-      className={`${isDragging && "bg-secondary"}`}
+      className={`${isDragging && "bg-light"}`}
     >
       <td className={`py-4 ${isDragging && "opacity-0"}`}>
         <i
@@ -165,7 +165,7 @@ function SortableTable({ columns, url, id, onSorted }) {
           onDragEnd={handleDragEnd}
           modifiers={[restrictToVerticalAxis]}
         >
-          <table className="table table-rounded table-striped border gy-7 gs-7">
+          <table className="table table-rounded table-row-bordered border gy-7 gs-7">
             <thead className="bg-gray-200">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr

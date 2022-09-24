@@ -7,14 +7,14 @@ use App\Models\CourseLesson;
 use App\Models\CourseLessonVideo;
 use Illuminate\Support\Facades\Storage;
 
-class CourseLessonVideoController extends Controller
-{
-    public function index($uuid)
-    {
+class CourseLessonVideoController extends Controller {
+    public function index(Request $request, $uuid) {
         if (request()->wantsJson()) {
             $videos = CourseLessonVideo::whereHas('lesson', function ($q) use ($uuid) {
                 $q->where('uuid', $uuid);
-            })->where('video', '!=', null)->orderBy('order')->get();
+            })->when(isset($request->exclude) ?? false, function ($q) use ($request) {
+                $q->whereNotIn('uuid', $request->exclude);
+            })->orderBy('order')->get();
 
             return response()->json($videos);
         } else {
@@ -22,8 +22,7 @@ class CourseLessonVideoController extends Controller
         }
     }
 
-    public function store(Request $request, $lesson_uuid)
-    {
+    public function store(Request $request, $lesson_uuid) {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string',
@@ -48,8 +47,7 @@ class CourseLessonVideoController extends Controller
         }
     }
 
-    public function edit($lesson_uuid, $uuid)
-    {
+    public function edit($lesson_uuid, $uuid) {
         if (request()->wantsJson()) {
             $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->first();
             $video->file_size = Storage::disk('private')->size($video->video);
@@ -61,8 +59,7 @@ class CourseLessonVideoController extends Controller
     }
 
 
-    public function update(Request $request, $lesson_uuid, $uuid)
-    {
+    public function update(Request $request, $lesson_uuid, $uuid) {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string',
@@ -95,33 +92,38 @@ class CourseLessonVideoController extends Controller
         }
     }
 
-    public function upload(Request $request, $lesson_uuid, $uuid)
-    {
+    public function upload(Request $request, $lesson_uuid, $uuid) {
         if (request()->wantsJson()) {
-            $request->validate([
-                'video' => 'required|mimetypes:video/avi,video/mpeg,video/mp4|max:102400',
-            ]);
+            try {
+                $request->validate([
+                    'video' => 'required|mimetypes:video/avi,video/mpeg,video/mp4|max:102400',
+                ]);
 
-            // Delete old video
-            $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->first();
-            if (file_exists(storage_path('app/private/' . $video->video))) {
-                unlink(storage_path('app/private/' . $video->video));
+                // Delete old video
+                $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->first();
+                if (isset($video->video) && file_exists(storage_path('app/private/' . $video->video))) {
+                    unlink(storage_path('app/private/' . $video->video));
+                }
+
+                CourseLessonVideo::where('uuid', $uuid)->update([
+                    'video' => $request->video->store('course/video', 'private')
+                ]);
+
+                return response()->json([
+                    'message' => 'Berhasil mengupload video'
+                ]);
+            } catch (\Throwable $th) {
+                $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->delete();
+                return response()->json([
+                    'message' => $th->getMessage(),
+                ], 500);
             }
-
-            CourseLessonVideo::where('uuid', $uuid)->update([
-                'video' => $request->video->store('course/video', 'private')
-            ]);
-
-            return response()->json([
-                'message' => 'Video berhasil diupload'
-            ]);
         } else {
             return abort(404);
         }
     }
 
-    public function destroy($lesson_uuid, $uuid)
-    {
+    public function destroy($lesson_uuid, $uuid) {
         if (request()->wantsJson()) {
             $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->first();
             $video->delete();
@@ -142,8 +144,7 @@ class CourseLessonVideoController extends Controller
         }
     }
 
-    public function reorder(Request $request, $lesson_uuid)
-    {
+    public function reorder(Request $request, $lesson_uuid) {
         if (request()->wantsJson()) {
             $request->validate([
                 '*.uuid' => 'required|string|exists:course_lesson_videos,uuid',

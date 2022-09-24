@@ -123,7 +123,7 @@ function Project({ close, selected, csrfToken }) {
             className="btn btn-light-danger btn-sm ms-auto"
             onClick={close}
           >
-            <i className="las la-chevron-left"></i>
+            <i className="las la-times-circle"></i>
             Batal
           </button>
         </div>

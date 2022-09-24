@@ -16,7 +16,7 @@ const perOptions = [
   { value: 50, label: "50" },
 ];
 
-function Paginate({ columns, url, id }) {
+function Paginate({ columns, url, id, payload }) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [page, setPage] = useState(1);
@@ -26,7 +26,7 @@ function Paginate({ columns, url, id }) {
     [url],
     () =>
       axios
-        .post(url, { search: debouncedSearch, page, per })
+        .post(url, { search: debouncedSearch, page, per, ...payload })
         .then((res) => res.data),
     {
       placeholderData: { data: [] },

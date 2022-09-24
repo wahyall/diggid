@@ -59,12 +59,15 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       onSettled: () => {
         KTApp.unblock("#form-course-lesson-video");
       },
-      onSuccess: ({ data }) => {
-        queryClient.invalidateQueries([
-          `/api/course/lesson/${lesson_uuid}/video`,
-        ]);
-
+      onSuccess: ({ data, message }) => {
         if (videoFile[0]?.file.constructor === File) uploadVideo(data);
+        else toast.success(message);
+
+        if (video?.uuid)
+          queryClient.invalidateQueries([
+            `/api/course/lesson/${lesson_uuid}/video`,
+          ]);
+
         setTimeout(() => {
           close();
         }, 500);
@@ -82,45 +85,52 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       );
       formData.append("video", videoFile[0].file);
 
-      return axios
-        .post(
-          `/api/course/lesson/${lesson_uuid}/video/${uuid}/upload`,
-          formData,
-          {
-            onUploadProgress: (ev) => {
-              const progress = ev.loaded / ev.total;
-              const toastList = queryClient.getQueryData(["toast-list"]) || [];
+      return axios.post(
+        `/api/course/lesson/${lesson_uuid}/video/${uuid}/upload`,
+        formData,
+        {
+          onUploadProgress: (ev) => {
+            const progress = ev.loaded / ev.total;
+            const toastList =
+              queryClient.getQueryData([lesson_uuid, "upload-toasts"]) || [];
 
-              if (!toastList.includes(uuid)) {
-                toast(`Sedang mengupload video ${name}`, {
-                  toastId: uuid,
-                  progress,
-                  closeButton: false,
-                  closeOnClick: false,
-                  draggable: false,
-                });
-                queryClient.setQueryData(["toast-list"], (items) =>
-                  items ? [...items, uuid] : [uuid]
-                );
-              } else {
-                toast.update(uuid, { progress });
-              }
-            },
-          }
-        )
-        .then((res) => {
-          toast.done(uuid);
-          queryClient.setQueryData(["toast-list"], (items) =>
-            items.filter((i) => i !== uuid)
-          );
-          return res.data;
-        });
+            if (!toastList.includes(uuid)) {
+              toast.info(`Sedang mengupload video "${name}"`, {
+                toastId: uuid,
+                progress,
+                closeButton: false,
+                closeOnClick: false,
+                draggable: false,
+              });
+              queryClient.setQueryData(
+                [lesson_uuid, "upload-toasts"],
+                (items) => (items ? [...items, uuid] : [uuid])
+              );
+            } else {
+              progress >= 1
+                ? toast.update(uuid, { render: `Memproses video "${name}"` })
+                : toast.update(uuid, { progress });
+            }
+          },
+        }
+      );
     },
     {
-      onSuccess: ({ data }) => {
-        toast.success(data.message);
+      onSettled: (data, error, { uuid }) => {
+        toast.done(uuid);
       },
-      onError: ({ response }) => {
+      onSuccess: ({ data: { message } }, { uuid, name }) => {
+        queryClient.setQueryData([lesson_uuid, "upload-toasts"], (items) =>
+          items.filter((i) => i !== uuid)
+        );
+
+        toast.success(`${message} "${name}"`);
+
+        queryClient.invalidateQueries([
+          `/api/course/lesson/${lesson_uuid}/video`,
+        ]);
+      },
+      onError: ({ response }, { uuid }) => {
         toast.error(response.data.message);
       },
     }
@@ -170,7 +180,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
             className="btn btn-light-danger btn-sm ms-auto"
             onClick={close}
           >
-            <i className="las la-chevron-left"></i>
+            <i className="las la-times-circle"></i>
             Batal
           </button>
         </div>

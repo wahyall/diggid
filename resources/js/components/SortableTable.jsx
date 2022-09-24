@@ -94,12 +94,12 @@ function StaticRow({ row }) {
   );
 }
 
-function SortableTable({ columns, url, id, onSorted }) {
+function SortableTable({ columns, url, id, onSorted, payload }) {
   const queryClient = useQueryClient();
   const [activeId, setActiveId] = useState();
   const { data, isFetching } = useQuery(
     [url],
-    () => axios.get(url).then((res) => res.data),
+    () => axios.post(url, { ...payload }).then((res) => res.data),
     {
       placeholderData: [],
     }

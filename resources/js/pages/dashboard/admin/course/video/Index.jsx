@@ -1,6 +1,6 @@
-import React, { memo, useState, useMemo, useCallback } from "react";
+import React, { memo, useState, useMemo, useCallback, useEffect } from "react";
 
-import { If } from "react-haiku";
+import { If, Show } from "react-haiku";
 import { createColumnHelper } from "@tanstack/react-table";
 import SortableTable from "@/components/SortableTable";
 import { extractUuidFromUrl } from "@/libs/utils";
@@ -9,6 +9,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 import Form from "./Form";
 import axios from "@/libs/axios";
+import useUnload from "@/hooks/useUnload";
 
 const columnHelper = createColumnHelper();
 
@@ -23,10 +24,18 @@ function Index({ csrf_token }) {
     () => extractUuidFromUrl(url.split("lesson")[1]),
     [url]
   );
+  const { data: uploadToasts } = useQuery([lesson_uuid, "upload-toasts"]);
 
   const { data: lesson } = useQuery([`/api/course/lesson/${lesson_uuid}`], () =>
     axios.get(`/api/course/lesson/${lesson_uuid}`).then((res) => res.data)
   );
+
+  useUnload((e) => {
+    if (uploadToasts?.length) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
 
   const editLesson = (uuid) => {
     setOpenForm(true);
@@ -87,28 +96,37 @@ function Index({ csrf_token }) {
         id: "action",
         header: "Aksi",
         style: {
-          width: "100px",
+          width: "200px",
         },
-        cell: (cell) =>
-          !openForm && (
-            <div className="d-flex gap-2 ms-auto">
-              <button
-                className="btn btn-sm btn-warning btn-icon"
-                onClick={useCallback(() => editLesson(cell.getValue()), [])}
-              >
-                <i className="la la-pencil fs-3"></i>
-              </button>
-              <button
-                className="btn btn-sm btn-danger btn-icon"
-                onClick={useCallback(() => deleteLesson(cell.getValue()), [])}
-              >
-                <i className="la la-trash fs-3"></i>
-              </button>
-            </div>
-          ),
+        cell: (cell) => (
+          <Show>
+            <Show.When isTrue={uploadToasts?.includes(cell.getValue())}>
+              <div>
+                <span className="spinner-border spinner-border-sm align-middle ms-2"></span>{" "}
+                Memproses...
+              </div>
+            </Show.When>
+            <Show.When isTrue={!openForm}>
+              <div className="d-flex gap-2 ms-auto">
+                <button
+                  className="btn btn-sm btn-warning btn-icon"
+                  onClick={useCallback(() => editLesson(cell.getValue()), [])}
+                >
+                  <i className="la la-pencil fs-3"></i>
+                </button>
+                <button
+                  className="btn btn-sm btn-danger btn-icon"
+                  onClick={useCallback(() => deleteLesson(cell.getValue()), [])}
+                >
+                  <i className="la la-trash fs-3"></i>
+                </button>
+              </div>
+            </Show.When>
+          </Show>
+        ),
       }),
     ],
-    [openForm]
+    [openForm, uploadToasts]
   );
 
   const { mutate: reorder } = useMutation(
@@ -167,11 +185,27 @@ function Index({ csrf_token }) {
           </div>
         </div>
         <div className="card-body">
+          {!!uploadToasts?.length && (
+            <div className="alert alert-warning d-flex align-items-center p-5">
+              <i className="las la-exclamation-triangle fs-1 text-warning"></i>
+              <div className="d-flex flex-column ms-4">
+                <h4 className="mb-1 text-dark">Sedang mengupload video...</h4>
+                <span>
+                  Mohon tunggu beberapa saat, video akan muncul setelah proses.
+                  <br />
+                  <span className="text-muted">
+                    *Jangan tutup atau refresh halaman ini.
+                  </span>
+                </span>
+              </div>
+            </div>
+          )}
           <SortableTable
             id="my-table"
             columns={columns}
             url={`/api/course/lesson/${lesson_uuid}/video`}
             onSorted={handleOnSorted}
+            payload={{ exclude: uploadToasts }}
           ></SortableTable>
         </div>
       </div>

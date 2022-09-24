@@ -76,7 +76,7 @@ function Index({ csrf_token }) {
         cell: (cell) => (
           <img
             className="img-thumbnail"
-            width={50}
+            width={250}
             src={asset(cell.getValue())}
           />
         ),

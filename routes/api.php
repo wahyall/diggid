@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('{course_uuid}/lesson')->group(function () {
-            Route::get('/', [CourseLessonController::class, 'index']);
+            Route::post('/', [CourseLessonController::class, 'index']);
             Route::post('store', [CourseLessonController::class, 'store']);
             Route::get('{uuid}/edit', [CourseLessonController::class, 'edit']);
             Route::post('{uuid}/update', [CourseLessonController::class, 'update']);
@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('lesson/{lesson_uuid}')->group(function () {
             Route::get('/', [CourseLessonController::class, 'show']);
             Route::prefix('video')->group(function () {
-                Route::get('/', [CourseLessonVideoController::class, 'index']);
+                Route::post('/', [CourseLessonVideoController::class, 'index']);
                 Route::post('store', [CourseLessonVideoController::class, 'store']);
                 Route::get('{uuid}/edit', [CourseLessonVideoController::class, 'edit']);
                 Route::post('{uuid}/update', [CourseLessonVideoController::class, 'update']);

@@ -26,7 +26,7 @@ class CategoryGroup extends Model {
     public static function booted() {
         parent::boot();
 
-        self::deleting(function ($model) {
+        self::deleted(function ($model) {
             if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $model->icon)))) {
                 unlink(storage_path('app/public/' . str_replace('storage/', '', $model->icon)));
             }

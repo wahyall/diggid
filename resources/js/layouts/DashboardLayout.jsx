@@ -336,6 +336,8 @@ function DashboardLayout({ children, auth: { user } }) {
         newestOnTop={false}
         position="bottom-right"
         theme="dark"
+        pauseOnHover={false}
+        pauseOnFocusLoss={false}
       />
     </main>
   );

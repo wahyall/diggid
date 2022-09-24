@@ -6,6 +6,8 @@ import axios from "@/libs/axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import "ckeditor5-custom-build/build/ckeditor";
 
+import { toast } from "react-toastify";
+
 function Project({ close, selected, csrfToken }) {
   const [editor, setEditor] = useState();
   const [deletedImages, setDeletedImages] = useState([]);
@@ -38,11 +40,11 @@ function Project({ close, selected, csrfToken }) {
         KTApp.unblock("#form-course-project");
       },
       onSuccess: ({ data }) => {
-        toastr.success(data.message);
+        toast.success(data.message);
         close();
       },
       onError: ({ response }) => {
-        toastr.error(response.data.message);
+        toast.error(response.data.message);
       },
     }
   );

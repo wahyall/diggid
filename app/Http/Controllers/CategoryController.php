@@ -7,39 +7,43 @@ use App\Models\Category;
 use App\Models\CategoryGroup;
 
 class CategoryController extends Controller {
-    public function massStore(Request $request) {
+    public function sync(Request $request) {
         if (request()->wantsJson()) {
             $request->validate([
-                'names' => 'required|array',
-                'names.*' => 'required|string|max:255',
-                'icons' => 'required|array',
-                'icons.*' => 'required|image',
+                'subs' => 'required|array',
+                'subs.*.uuid' => 'required|string',
+                'subs.*.name' => 'required|string|max:179',
+                'subs.*.icon' => 'required|image',
                 'category_group_uuid' => 'required|string'
             ]);
 
-            // Delete all categories and replace with new ones
-            Category::whereHas('group', function ($q) use ($request) {
-                $q->where('uuid', $request->category_group_uuid);
-            })->pluck('icon')->each(function ($icon) {
-                if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $icon)))) {
-                    unlink(storage_path('app/public/' . str_replace('storage/', '', $icon)));
+            $group = CategoryGroup::where('uuid', $request->category_group_uuid)->first();
+
+            // Delete old icon
+            $group->categories()->get()->each(function ($category) {
+                if (isset($category->icon) && file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
+                    unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
                 }
             });
-            Category::whereHas('group', function ($q) use ($request) {
-                $q->where('uuid', $request->category_group_uuid);
-            })->delete();
 
-            $group = CategoryGroup::findByUuid($request->category_group_uuid);
-
-            foreach ($request->names as $index => $name) {
-                $group->categories()->create([
-                    'name' => $name,
-                    'icon' => 'storage/' . $request->icons[$index]->store('category', 'public'),
+            foreach ($request->subs as $sub) {
+                $group->categories()->updateOrCreate([
+                    'uuid' => $sub['uuid']
+                ], [
+                    'name' => $sub['name'],
+                    'icon' => 'storage/' . $sub['icon']->store('category', 'public'),
                 ]);
             }
 
+            // Delete category when not found in request (it's deleted)
+            $uuids = [];
+            foreach ($request->subs as $sub) {
+                array_push($uuids, $sub['uuid']);
+            }
+            $group->categories()->whereNotIn('uuid', $uuids)->delete();
+
             return response()->json([
-                'message' => 'Berhasil menambahkan sub kategori',
+                'message' => 'Berhasil memperbarui sub kategori',
             ]);
         } else {
             return abort(404);

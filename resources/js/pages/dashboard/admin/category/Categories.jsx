@@ -6,6 +6,8 @@ import { For } from "react-haiku";
 import FileUpload from "@/components/FileUpload";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
+import { toast } from "react-toastify";
+
 const acceptedFileTypes = ["image/*"];
 
 function Categories({ selected, close }) {
@@ -38,14 +40,14 @@ function Categories({ selected, close }) {
   );
 
   const { mutate: submit } = useMutation(
-    (data) => axios.post(`/api/category/mass-store`, data),
+    (data) => axios.post(`/api/category/sync`, data),
     {
       onSettled: () => KTApp.unblock("#form-subcategory"),
       onError: (error) => {
-        toastr.error(error.response.data.message);
+        toast.error(error.response.data.message);
       },
       onSuccess: ({ data }) => {
-        toastr.success(data.message);
+        toast.success(data.message);
         queryClient.invalidateQueries(["/api/category/paginate"]);
         close();
       },
@@ -56,9 +58,10 @@ function Categories({ selected, close }) {
     KTApp.block("#form-subcategory");
     const formData = new FormData();
     formData.append("category_group_uuid", selected);
-    data.sub.forEach((item) => {
-      formData.append("names[]", item.name);
-      formData.append("icons[]", item.icon[0].file);
+    data.sub.forEach((item, i) => {
+      formData.append(`subs[${i}][uuid]`, item.uuid);
+      formData.append(`subs[${i}][name]`, item.name);
+      formData.append(`subs[${i}][icon]`, item.icon[0].file);
     });
     submit(formData);
   };
@@ -87,10 +90,9 @@ function Categories({ selected, close }) {
           each={fields}
           render={(field, index) => (
             <div className="row mb-8" key={field.uuid}>
+              <input type="hidden" name={`${index}.uuid`} />
               <div className="col-2">
-                <label htmlFor="name" className="form-label">
-                  Icon :
-                </label>
+                <label className="form-label">Icon :</label>
                 <Controller
                   control={control}
                   name={`sub.${index}.icon`}
@@ -113,13 +115,10 @@ function Categories({ selected, close }) {
               </div>
               <div className="col-6">
                 <div>
-                  <label htmlFor="name" className="form-label">
-                    Nama :
-                  </label>
+                  <label className="form-label">Nama :</label>
                   <input
                     type="text"
                     name={`${index}.name`}
-                    id="name"
                     placeholder="Nama Kategori"
                     className="form-control required"
                     required

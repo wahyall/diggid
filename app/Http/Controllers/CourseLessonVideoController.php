@@ -11,7 +11,7 @@ class CourseLessonVideoController extends Controller {
         if (request()->wantsJson()) {
             $videos = CourseLessonVideo::whereHas('lesson', function ($q) use ($uuid) {
                 $q->where('uuid', $uuid);
-            })->orderBy('order')->get();
+            })->where('video', '!=', null)->orderBy('order')->get();
 
             return response()->json($videos);
         } else {

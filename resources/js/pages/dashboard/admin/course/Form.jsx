@@ -10,6 +10,8 @@ import Select from "react-select";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import "ckeditor5-custom-build/build/ckeditor";
 
+import { toast } from "react-toastify";
+
 function Form({ close, selected, csrfToken }) {
   const [thumbnail, setThumbnail] = useState([]);
   const [sneakPeek, setSneakPeek] = useState([]);
@@ -74,10 +76,10 @@ function Form({ close, selected, csrfToken }) {
     {
       onSettled: () => KTApp.unblock("#form-course"),
       onError: (error) => {
-        toastr.error(error.response.data.message);
+        toast.error(error.response.data.message);
       },
       onSuccess: ({ data }) => {
-        toastr.success(data.message);
+        toast.success(data.message);
         queryClient.invalidateQueries(["/api/course/paginate"]);
         close();
       },

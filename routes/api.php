@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('{uuid}/destroy', [CategoryGroupController::class, 'destroy']);
         });
 
-        Route::post('mass-store', [CategoryController::class, 'massStore']);
+        Route::post('sync', [CategoryController::class, 'sync']);
     });
 
     Route::group(['prefix' => 'course', 'middleware' => 'role:admin'], function () {

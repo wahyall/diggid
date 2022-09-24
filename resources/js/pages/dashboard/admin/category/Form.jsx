@@ -1,9 +1,11 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState } from "react";
 
 import FileUpload from "@/components/FileUpload";
 
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
+
+import { toast } from "react-toastify";
 
 function Form({ close, selected }) {
   const [file, setFile] = useState([]);
@@ -34,10 +36,10 @@ function Form({ close, selected }) {
     {
       onSettled: () => KTApp.unblock("#form-subcategory"),
       onError: (error) => {
-        toastr.error(error.response.data.message);
+        toast.error(error.response.data.message);
       },
       onSuccess: ({ data }) => {
-        toastr.success(data.message);
+        toast.success(data.message);
         queryClient.invalidateQueries(["/api/category/group/paginate"]);
         close();
       },

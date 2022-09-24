@@ -102,7 +102,7 @@ class CategoryGroupController extends Controller {
 
             // Delete all categories icon
             // note: the records is automatically deleted because it has cascade on delete
-            Category::whereHas('category', function ($q) use ($uuid) {
+            CategoryGroup::whereHas('categories', function ($q) use ($uuid) {
                 $q->where('uuid', $uuid);
             })->pluck('icon')->each(function ($icon) {
                 if (file_exists(storage_path('app/public/' . str_replace('storage/', '', $icon)))) {

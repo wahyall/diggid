@@ -46,8 +46,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       onSettled: () => {
         KTApp.unblock("#form-course-lesson-video");
       },
-      onSuccess: ({ data, message }) => {
-        toastr.success(message);
+      onSuccess: ({ data }) => {
         queryClient.invalidateQueries([
           `/api/course/lesson/${lesson_uuid}/video`,
         ]);
@@ -58,7 +57,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
         }, 500);
       },
       onError: ({ response }) => {
-        toastr.error(response.data.message);
+        toast.error(response.data.message);
       },
     }
   );
@@ -106,10 +105,10 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
     },
     {
       onSuccess: ({ data }) => {
-        toastr.success(data.message);
+        toast.success(data.message);
       },
       onError: ({ response }) => {
-        toastr.error(response.data.message);
+        toast.error(response.data.message);
       },
     }
   );

@@ -14,9 +14,9 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
   const queryClient = useQueryClient();
   const [editor, setEditor] = useState();
   const [deletedImages, setDeletedImages] = useState([]);
-  const [video, setVideo] = useState([]);
+  const [videoFile, setVideoFile] = useState([]);
 
-  const { data: lesson } = useQuery(
+  const { data: video } = useQuery(
     [`/api/course/lesson/${lesson_uuid}/video/${selected}/edit`],
     () => {
       KTApp.block("#form-course-lesson-video");
@@ -29,6 +29,19 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       cacheTime: 0,
       placeholderData: {},
       onSettled: () => KTApp.unblock("#form-course-lesson-video"),
+      onSuccess: ({ name, file_size }) => {
+        setVideoFile([
+          {
+            options: {
+              file: {
+                name: `${name}.mp4`,
+                type: "video/mp4",
+                size: file_size,
+              },
+            },
+          },
+        ]);
+      },
     }
   );
 
@@ -36,7 +49,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
     (data) =>
       axios
         .post(
-          lesson?.uuid
+          video?.uuid
             ? `/api/course/lesson/${lesson_uuid}/video/${selected}/update`
             : `/api/course/lesson/${lesson_uuid}/video/store`,
           data
@@ -51,7 +64,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
           `/api/course/lesson/${lesson_uuid}/video`,
         ]);
 
-        if (video.length) uploadVideo(data);
+        if (videoFile[0]?.file.constructor === File) uploadVideo(data);
         setTimeout(() => {
           close();
         }, 500);
@@ -67,7 +80,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       const formData = new FormData(
         document.querySelector("#form-course-lesson-video")
       );
-      formData.append("video", video[0].file);
+      formData.append("video", videoFile[0].file);
 
       return axios
         .post(
@@ -151,7 +164,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
     >
       <div className="card-header">
         <div className="card-title w-100">
-          {lesson?.uuid ? `Edit Video: ${lesson?.name}` : "Buat Video Baru"}
+          {video?.uuid ? `Edit Video: ${video?.name}` : "Buat Video Baru"}
           <button
             type="button"
             className="btn btn-light-danger btn-sm ms-auto"
@@ -170,8 +183,8 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
                 Video :
               </label>
               <FileUpload
-                files={video}
-                onupdatefiles={setVideo}
+                files={videoFile}
+                onupdatefiles={setVideoFile}
                 allowMultiple={false}
                 labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 acceptedFileTypes={["video/*"]}
@@ -190,7 +203,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
                 id="name"
                 name="name"
                 autoComplete="off"
-                defaultValue={lesson?.name}
+                defaultValue={video?.name}
               />
             </div>
             <div className="col-12 mb-10">
@@ -200,7 +213,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
               <CKEditor
                 editor={ClassicEditor} // Berasal dari CKEditor Custom Build
                 config={editorConfig}
-                data={lesson?.description}
+                data={video?.description ?? ""}
                 onReady={onEditorReady}
               />
             </div>

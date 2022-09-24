@@ -135,7 +135,7 @@ function Index({ csrf_token }) {
     <section>
       <Link
         href={route("dashboard.admin.course.lesson", course_uuid)}
-        className="btn btn-light-danger btn-sm ms-auto"
+        className="btn btn-light-danger btn-sm ms-auto mb-4"
       >
         <i className="las la-chevron-left"></i>
         Kembali

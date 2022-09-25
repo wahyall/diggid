@@ -11,9 +11,7 @@ class DashboardController extends Controller {
             $menus = Menu::where('parent_id', 0)->where(function ($q) {
                 $q->where('route', 'LIKE', '%' . request()->user()->role . '%');
                 $q->orWhere('middleware', 'LIKE', '%' . request()->user()->role . '%');
-            })->with(['children' => function ($q) {
-                $q->where('shown', 1);
-            }])->where('shown', 1)->get();
+            })->where('shown', 1)->get();
 
             return response()->json($menus);
         } else {

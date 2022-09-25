@@ -9,6 +9,7 @@ class MyCourseProgress extends Model {
     use Uuid;
 
     protected $fillable = ['course_lesson_video_id', 'has_watched', 'my_course_id'];
+    protected $casts = ['has_watched' => 'boolean'];
     protected $hidden = ['id'];
 
     public function video() {

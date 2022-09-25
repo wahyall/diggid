@@ -13,7 +13,8 @@ return new class extends Migration {
     public function up() {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->uuid()->unique();
+            $table->uuid()->unique()->comment('Order ID for midtrans');
+            $table->string('identifier')->unique()->comment('Transaction ID from midtrans')->nullable();
             $table->double('amount');
             $table->enum('status', ['pending', 'success', 'failed']);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();

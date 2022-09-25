@@ -8,6 +8,7 @@ use App\Traits\Uuid;
 class Menu extends Model {
     use Uuid;
     protected $fillable = ['nama', 'url', 'route', 'component', 'icon', 'parent_id', 'shown', 'middleware'];
+    protected $casts = ['shown' => 'boolean'];
     protected $with = ['children'];
     protected $hidden = ['id'];
 

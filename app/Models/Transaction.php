@@ -8,7 +8,7 @@ use App\Traits\Uuid;
 class Transaction extends Model {
     use Uuid;
 
-    protected $fillable = ['amount', 'status', 'user_id'];
+    protected $fillable = ['identifier', 'amount', 'status', 'user_id'];
     protected $hidden = ['id'];
 
     public function user() {

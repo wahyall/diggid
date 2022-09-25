@@ -7,6 +7,7 @@ use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\CourseLessonVideoController;
 use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

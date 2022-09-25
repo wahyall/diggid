@@ -49,15 +49,17 @@ function Index({ csrf_token }) {
         cancelButtonText: "Batalkan!",
         reverseButtons: true,
         preConfirm: () => {
-          return axios.delete(`/api/course/${uuid}/destroy`).catch((error) => {
-            Swal.showValidationMessage(error.response.data.message);
-          });
+          return axios
+            .delete(`/api/admin/course/${uuid}/destroy`)
+            .catch((error) => {
+              Swal.showValidationMessage(error.response.data.message);
+            });
         },
       })
       .then((result) => {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
-          queryClient.invalidateQueries(["/api/course/paginate"]);
+          queryClient.invalidateQueries(["/api/admin/course/paginate"]);
         }
       });
   };
@@ -176,7 +178,7 @@ function Index({ csrf_token }) {
           <Paginate
             id="my-table"
             columns={columns}
-            url="/api/course/paginate"
+            url="/api/admin/course/paginate"
           ></Paginate>
         </div>
       </div>

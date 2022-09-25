@@ -26,8 +26,12 @@ function Index({ csrf_token }) {
   );
   const { data: uploadToasts } = useQuery([lesson_uuid, "upload-toasts"]);
 
-  const { data: lesson } = useQuery([`/api/course/lesson/${lesson_uuid}`], () =>
-    axios.get(`/api/course/lesson/${lesson_uuid}`).then((res) => res.data)
+  const { data: lesson } = useQuery(
+    [`/api/admin/course/lesson/${lesson_uuid}`],
+    () =>
+      axios
+        .get(`/api/admin/course/lesson/${lesson_uuid}`)
+        .then((res) => res.data)
   );
 
   useUnload((e) => {
@@ -63,7 +67,9 @@ function Index({ csrf_token }) {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/course/lesson/${lesson_uuid}/video/${uuid}/destroy`)
+            .delete(
+              `/api/admin/course/lesson/${lesson_uuid}/video/${uuid}/destroy`
+            )
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -73,7 +79,7 @@ function Index({ csrf_token }) {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
           queryClient.invalidateQueries([
-            `/api/course/lesson/${lesson_uuid}/video`,
+            `/api/admin/course/lesson/${lesson_uuid}/video`,
           ]);
         }
       });
@@ -89,7 +95,21 @@ function Index({ csrf_token }) {
         cell: (cell) => <span>{cell.getValue()}</span>,
       }),
       columnHelper.accessor("name", {
-        cell: (cell) => cell.getValue(),
+        cell: (cell) => (
+          <>
+            {cell.getValue()}
+            <If
+              isTrue={
+                !cell.row.original.has_video &&
+                !uploadToasts?.includes(cell.row.original.uuid)
+              }
+            >
+              <span className="badge badge-light-danger ms-4">
+                Video Tidak Terupload
+              </span>
+            </If>
+          </>
+        ),
         header: "Nama",
       }),
       columnHelper.accessor("uuid", {
@@ -131,11 +151,11 @@ function Index({ csrf_token }) {
 
   const { mutate: reorder } = useMutation(
     (data) =>
-      axios.post(`/api/course/lesson/${lesson_uuid}/video/reorder`, data),
+      axios.post(`/api/admin/course/lesson/${lesson_uuid}/video/reorder`, data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([
-          `/api/course/lesson/${lesson_uuid}/video`,
+          `/api/admin/course/lesson/${lesson_uuid}/video`,
         ]);
       },
     }
@@ -203,7 +223,7 @@ function Index({ csrf_token }) {
           <SortableTable
             id="my-table"
             columns={columns}
-            url={`/api/course/lesson/${lesson_uuid}/video`}
+            url={`/api/admin/course/lesson/${lesson_uuid}/video`}
             onSorted={handleOnSorted}
             payload={{ exclude: uploadToasts }}
           ></SortableTable>

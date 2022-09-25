@@ -22,10 +22,12 @@ function Form({ close, selected, csrfToken }) {
 
   const queryClient = useQueryClient();
   const { data: course } = useQuery(
-    [`/api/course/${selected}/edit`],
+    [`/api/admin/course/${selected}/edit`],
     () => {
       KTApp.block("#form-course");
-      return axios.get(`/api/course/${selected}/edit`).then((res) => res.data);
+      return axios
+        .get(`/api/admin/course/${selected}/edit`)
+        .then((res) => res.data);
     },
     {
       enabled: !!selected,
@@ -45,9 +47,9 @@ function Form({ close, selected, csrfToken }) {
     }
   );
   const { data: categories } = useQuery(
-    ["/api/category/group/show", "admin"],
+    ["/api/admin/category/group/show", "admin"],
     () =>
-      axios.get("/api/category/group/show").then((res) => {
+      axios.get("/api/admin/category/group/show").then((res) => {
         return res.data.map((group) => ({
           label: group.name,
           options: group.categories.map((sub) => ({
@@ -70,7 +72,9 @@ function Form({ close, selected, csrfToken }) {
   const { mutate: submit } = useMutation(
     (data) =>
       axios.post(
-        selected ? `/api/course/${selected}/update` : "/api/course/store",
+        selected
+          ? `/api/admin/course/${selected}/update`
+          : "/api/admin/course/store",
         data
       ),
     {
@@ -80,7 +84,7 @@ function Form({ close, selected, csrfToken }) {
       },
       onSuccess: ({ data }) => {
         toast.success(data.message);
-        queryClient.invalidateQueries(["/api/course/paginate"]);
+        queryClient.invalidateQueries(["/api/admin/course/paginate"]);
         close();
       },
     }
@@ -105,7 +109,7 @@ function Form({ close, selected, csrfToken }) {
 
   const editorConfig = {
     simpleUpload: {
-      uploadUrl: `${import.meta.env.VITE_URL}/api/course/upload-image`,
+      uploadUrl: `${import.meta.env.VITE_URL}/api/admin/course/upload-image`,
       withCredentials: true,
       headers: {
         Accept: "application/json",

@@ -17,11 +17,11 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
   const [videoFile, setVideoFile] = useState([]);
 
   const { data: video } = useQuery(
-    [`/api/course/lesson/${lesson_uuid}/video/${selected}/edit`],
+    [`/api/admin/course/lesson/${lesson_uuid}/video/${selected}/edit`],
     () => {
       KTApp.block("#form-course-lesson-video");
       return axios
-        .get(`/api/course/lesson/${lesson_uuid}/video/${selected}/edit`)
+        .get(`/api/admin/course/lesson/${lesson_uuid}/video/${selected}/edit`)
         .then((res) => res.data);
     },
     {
@@ -30,17 +30,18 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       placeholderData: {},
       onSettled: () => KTApp.unblock("#form-course-lesson-video"),
       onSuccess: ({ name, file_size }) => {
-        setVideoFile([
-          {
-            options: {
-              file: {
-                name: `${name}.mp4`,
-                type: "video/mp4",
-                size: file_size,
+        if (file_size)
+          setVideoFile([
+            {
+              options: {
+                file: {
+                  name: `${name}.mp4`,
+                  type: "video/mp4",
+                  size: file_size,
+                },
               },
             },
-          },
-        ]);
+          ]);
       },
     }
   );
@@ -50,8 +51,8 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       axios
         .post(
           video?.uuid
-            ? `/api/course/lesson/${lesson_uuid}/video/${selected}/update`
-            : `/api/course/lesson/${lesson_uuid}/video/store`,
+            ? `/api/admin/course/lesson/${lesson_uuid}/video/${selected}/update`
+            : `/api/admin/course/lesson/${lesson_uuid}/video/store`,
           data
         )
         .then((res) => res.data),
@@ -65,7 +66,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
 
         if (video?.uuid)
           queryClient.invalidateQueries([
-            `/api/course/lesson/${lesson_uuid}/video`,
+            `/api/admin/course/lesson/${lesson_uuid}/video`,
           ]);
 
         setTimeout(() => {
@@ -86,7 +87,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       formData.append("video", videoFile[0].file);
 
       return axios.post(
-        `/api/course/lesson/${lesson_uuid}/video/${uuid}/upload`,
+        `/api/admin/course/lesson/${lesson_uuid}/video/${uuid}/upload`,
         formData,
         {
           onUploadProgress: (ev) => {
@@ -127,7 +128,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
         toast.success(`${message} "${name}"`);
 
         queryClient.invalidateQueries([
-          `/api/course/lesson/${lesson_uuid}/video`,
+          `/api/admin/course/lesson/${lesson_uuid}/video`,
         ]);
       },
       onError: ({ response }, { uuid }) => {
@@ -152,7 +153,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
   const onEditorReady = useCallback((ckeditor) => setEditor(ckeditor), []);
   const editorConfig = {
     simpleUpload: {
-      uploadUrl: `${import.meta.env.VITE_URL}/api/course/upload-image`,
+      uploadUrl: `${import.meta.env.VITE_URL}/api/admin/course/upload-image`,
       withCredentials: true,
       headers: {
         Accept: "application/json",

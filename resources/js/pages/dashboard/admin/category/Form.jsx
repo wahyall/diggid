@@ -11,11 +11,11 @@ function Form({ close, selected }) {
   const [file, setFile] = useState([]);
   const queryClient = useQueryClient();
   const { data: category } = useQuery(
-    [`/api/category/group/${selected}/edit`],
+    [`/api/admin/category/group/${selected}/edit`],
     () => {
       KTApp.block("#form-category");
       return axios
-        .get(`/api/category/group/${selected}/edit`)
+        .get(`/api/admin/category/group/${selected}/edit`)
         .then((res) => res.data);
     },
     {
@@ -29,8 +29,8 @@ function Form({ close, selected }) {
     (data) =>
       axios.post(
         selected
-          ? `/api/category/group/${selected}/update`
-          : "/api/category/group/store",
+          ? `/api/admin/category/group/${selected}/update`
+          : "/api/admin/category/group/store",
         data
       ),
     {
@@ -40,7 +40,7 @@ function Form({ close, selected }) {
       },
       onSuccess: ({ data }) => {
         toast.success(data.message);
-        queryClient.invalidateQueries(["/api/category/group/paginate"]);
+        queryClient.invalidateQueries(["/api/admin/category/group/paginate"]);
         close();
       },
     }

@@ -71,7 +71,7 @@ function DashboardLayout({ children, auth: { user } }) {
 
   const { data: menus } = useQuery(
     ["dashboard", "menu"],
-    () => axios.get("/api/dashboard/menu").then((res) => res.data),
+    () => axios.get("/api/admin/dashboard/menu").then((res) => res.data),
     {
       placeholderData: [],
     }

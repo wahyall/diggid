@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CourseLesson;
 use App\Models\CourseLessonVideo;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
 
 class CourseLessonVideoController extends Controller {
@@ -15,6 +16,11 @@ class CourseLessonVideoController extends Controller {
             })->when(isset($request->exclude) ?? false, function ($q) use ($request) {
                 $q->whereNotIn('uuid', $request->exclude);
             })->orderBy('order')->get();
+
+            $videos = $videos->map(function ($video) {
+                $video->has_video = isset($video->video) && Storage::disk('private')->exists($video->video);
+                return $video;
+            });
 
             return response()->json($videos);
         } else {
@@ -50,7 +56,9 @@ class CourseLessonVideoController extends Controller {
     public function edit($lesson_uuid, $uuid) {
         if (request()->wantsJson()) {
             $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->first();
-            $video->file_size = Storage::disk('private')->size($video->video);
+            if (isset($video->video)) {
+                $video->file_size = Storage::disk('private')->size($video->video);
+            }
 
             return response()->json($video);
         } else {

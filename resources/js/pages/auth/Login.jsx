@@ -56,9 +56,7 @@ const Login = ({ redirect }) => {
       >
         <div className="text-center mb-11">
           <h1 className="text-dark fw-bolder mb-3">Selamat Datang Kembali</h1>
-          <div className="text-gray-500 fw-semibold fs-6">
-            Sistem Informasi Karang Taruna
-          </div>
+          <div className="text-gray-500 fw-semibold fs-6">DIGGID</div>
         </div>
         <div className="fv-row mb-8">
           <div className="form-floating">

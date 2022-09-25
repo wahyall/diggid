@@ -12,11 +12,11 @@ function Form({ close, course_uuid, selected, csrfToken }) {
   const [deletedImages, setDeletedImages] = useState([]);
 
   const { data: lesson } = useQuery(
-    [`/api/course/${course_uuid}/lesson/${selected}/edit`],
+    [`/api/admin/course/${course_uuid}/lesson/${selected}/edit`],
     () => {
       KTApp.block("#form-course-lesson");
       return axios
-        .get(`/api/course/${course_uuid}/lesson/${selected}/edit`)
+        .get(`/api/admin/course/${course_uuid}/lesson/${selected}/edit`)
         .then((res) => res.data);
     },
     {
@@ -31,8 +31,8 @@ function Form({ close, course_uuid, selected, csrfToken }) {
     (data) =>
       axios.post(
         lesson?.uuid
-          ? `/api/course/${course_uuid}/lesson/${selected}/update`
-          : `/api/course/${course_uuid}/lesson/store`,
+          ? `/api/admin/course/${course_uuid}/lesson/${selected}/update`
+          : `/api/admin/course/${course_uuid}/lesson/store`,
         data
       ),
     {
@@ -41,7 +41,9 @@ function Form({ close, course_uuid, selected, csrfToken }) {
       },
       onSuccess: ({ data }) => {
         toastr.success(data.message);
-        queryClient.invalidateQueries([`/api/course/${course_uuid}/lesson`]);
+        queryClient.invalidateQueries([
+          `/api/admin/course/${course_uuid}/lesson`,
+        ]);
         close();
       },
       onError: ({ response }) => {
@@ -66,7 +68,7 @@ function Form({ close, course_uuid, selected, csrfToken }) {
   const onEditorReady = useCallback((ckeditor) => setEditor(ckeditor), []);
   const editorConfig = {
     simpleUpload: {
-      uploadUrl: `${import.meta.env.VITE_URL}/api/course/upload-image`,
+      uploadUrl: `${import.meta.env.VITE_URL}/api/admin/course/upload-image`,
       withCredentials: true,
       headers: {
         Accept: "application/json",

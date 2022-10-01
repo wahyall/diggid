@@ -290,7 +290,10 @@ function DashboardLayout({ children, auth: { user } }) {
                         </div>
                         <div className="separator my-2"></div>
                         <div className="menu-item px-5">
-                          <Link href={route("me")} className="menu-link px-5">
+                          <Link
+                            href={route("front.me")}
+                            className="menu-link px-5"
+                          >
                             Akun Saya
                           </Link>
                         </div>

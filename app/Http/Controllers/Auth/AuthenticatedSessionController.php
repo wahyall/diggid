@@ -17,7 +17,7 @@ class AuthenticatedSessionController extends Controller {
      * @return \Inertia\Response
      */
     public function index() {
-        return Inertia::render('auth/Login', [
+        return Inertia::render('front/auth/Login', [
             'redirect' => request()->redirect ?? url()->previous()
         ]);
     }
@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller {
 
         return response()->json([
             'message' => 'Berhasil masuk',
-            'redirect' => route('me'),
+            'redirect' => route('front.me'),
         ]);
     }
 

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input {
+    @apply rounded-md bg-slate-50;
+  }
+
+  .input:focus {
+    @apply bg-transparent outline-4 outline-brand-200 outline-offset-1 border-brand-600;
+  }
+
+  .btn {
+    @apply rounded-md no-animation tracking-wider;
+  }
+
+  .form-control .label .label-text {
+    @apply text-base;
+  }
+
+  .btn-brand {
+    @apply btn bg-brand-600 border-brand-600 text-slate-50;
+  }
+
+  .btn-brand:hover {
+    @apply bg-brand-700 border-brand-700;
+  }
+}

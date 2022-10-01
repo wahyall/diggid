@@ -19,7 +19,7 @@ class RegisteredUserController extends Controller {
      * @return \Inertia\Response
      */
     public function index() {
-        return Inertia::render('auth/Register', [
+        return Inertia::render('front/auth/Register', [
             'redirect' => request()->redirect
         ]);
     }
@@ -51,7 +51,7 @@ class RegisteredUserController extends Controller {
 
         return response()->json([
             'message' => 'Berhasil mendaftar',
-            'redirect' => route('me'),
+            'redirect' => route('front.me'),
         ]);
     }
 }

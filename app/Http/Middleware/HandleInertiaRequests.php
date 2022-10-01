@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use Illuminate\Support\Facades\Route;
 
 class HandleInertiaRequests extends Middleware {
     /**
@@ -12,7 +14,21 @@ class HandleInertiaRequests extends Middleware {
      *
      * @var string
      */
-    protected $rootView = 'app';
+    protected $rootView = 'front';
+    protected $externalRootView = [
+        'dashboard',
+        'front',
+    ];
+
+    public function handle(Request $request, Closure $next) {
+        $route = Route::currentRouteName();
+        if (explode('.', $route)[0] == 'dashboard') {
+            $this->rootView = 'dashboard';
+        } else if (explode('.', $route)[0] == 'front') {
+            $this->rootView = 'front';
+        }
+        return parent::handle($request, $next);
+    }
 
     /**
      * Determine the current asset version.
@@ -35,7 +51,8 @@ class HandleInertiaRequests extends Middleware {
             'auth' => [
                 'user' => $request->user(),
             ],
-            'csrf_token' => csrf_token()
+            'csrf_token' => csrf_token(),
+            'route' => Route::current()
         ]);
     }
 }

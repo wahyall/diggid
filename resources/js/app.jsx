@@ -15,7 +15,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider as JotaiProvider } from "jotai";
 import { queryClientAtom } from "jotai/query";
 
-import DashboardLayout from "./layouts/DashboardLayout";
+import DashboardLayout from "./pages/dashboard/layouts/DashboardLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {

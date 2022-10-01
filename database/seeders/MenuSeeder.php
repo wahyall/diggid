@@ -18,13 +18,13 @@ class MenuSeeder extends Seeder {
 
         $menus = [
             // Front
-            ['name' => 'Home', 'url' => '/', 'route' => 'home', 'component' => 'Index'],
+            ['name' => 'Home', 'url' => '/', 'route' => 'front.home', 'component' => 'front/Index'],
 
             ['middleware' => 'auth|verified', 'children' => [
                 // User
-                ['name' => 'Profil', 'url' => 'me', 'route' => 'me', 'component' => 'me/Index'],
-                ['name' => 'Kursus Saya', 'url' => 'me/course', 'route' => 'me.course', 'component' => 'me/course/Index'],
-                ['name' => 'Setting', 'url' => 'me/setting', 'route' => 'me.setting', 'component' => 'me/setting/Index'],
+                ['name' => 'Profil', 'url' => 'me', 'route' => 'front.me', 'component' => 'front/me/Index'],
+                ['name' => 'Kursus Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
+                ['name' => 'Setting', 'url' => 'me/setting', 'route' => 'front.me.setting', 'component' => 'front/me/setting/Index'],
 
                 // Redirecting Dashboard
                 ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],

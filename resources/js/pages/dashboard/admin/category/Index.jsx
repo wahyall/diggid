@@ -73,6 +73,10 @@ function Index() {
       cell: (cell) => cell.getValue(),
       header: "Nama",
     }),
+    columnHelper.accessor("caption", {
+      cell: (cell) => cell.getValue(),
+      header: "Caption",
+    }),
     columnHelper.accessor("icon", {
       header: "Ikon",
       cell: (cell) => (

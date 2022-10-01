@@ -10,7 +10,7 @@ use Spatie\Sluggable\SlugOptions;
 class CategoryGroup extends Model {
     use Uuid, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'icon'];
+    protected $fillable = ['name', 'slug', 'icon', 'caption'];
     protected $hidden = ['id'];
 
     public function getSlugOptions(): SlugOptions {

@@ -1,0 +1,30 @@
+.text-brand {
+  color: #ea7348;
+}
+
+.bg-brand {
+  background-color: #ea7348;
+}
+
+.border-brand {
+  border-color: #ea7348;
+}
+
+.btn-brand {
+  background-color: #ea7348;
+  color: #fff;
+  border-color: #ea7348;
+}
+
+.btn-check:active + .btn.btn-brand,
+.btn-check:checked + .btn.btn-brand,
+.btn.btn-brand.active,
+.btn.btn-brand.show,
+.btn.btn-brand:active:not(.btn-active),
+.btn.btn-brand:focus:not(.btn-active),
+.btn.btn-brand:hover:not(.btn-active),
+.show > .btn.btn-brand {
+  background-color: #d15e35;
+  color: #ea7348;
+  border-color: #d15e35;
+}

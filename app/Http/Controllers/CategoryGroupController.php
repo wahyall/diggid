@@ -36,12 +36,14 @@ class CategoryGroupController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255',
-                'icon' => 'required|image'
+                'icon' => 'required|image',
+                'caption' => 'required|string'
             ]);
 
             CategoryGroup::create([
                 'name' => $request->name,
                 'icon' => 'storage/' . $request->icon->store('category', 'public'),
+                'caption' => $request->caption
             ]);
 
             return response()->json([
@@ -74,7 +76,8 @@ class CategoryGroupController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255',
-                'icon' => 'image'
+                'icon' => 'required|image',
+                'caption' => 'required|string'
             ]);
 
             $category = CategoryGroup::findByUuid($uuid);
@@ -86,10 +89,11 @@ class CategoryGroupController extends Controller {
             $category->update([
                 'name' => $request->name,
                 'icon' => 'storage/' . $request->icon->store('category', 'public'),
+                'caption' => $request->caption
             ]);
 
             return response()->json([
-                'message' => 'Berhasil mengubah kategori',
+                'message' => 'Berhasil memperbarui grup kategori',
             ]);
         } else {
             return abort(404);

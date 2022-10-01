@@ -15,6 +15,7 @@
         <!-- Styles -->
         <link href="{{ asset("assets/plugins/global/plugins.bundle.css") }}" rel="stylesheet" type="text/css" />
 		<link href="{{ asset("assets/css/style.bundle.css") }}" rel="stylesheet" type="text/css" />
+		<link href="{{ asset("assets/css/custom.css") }}" rel="stylesheet" type="text/css" />
         <style>
             .multiple .filepond--item {
                 width: calc(33.33% - 0.5em);

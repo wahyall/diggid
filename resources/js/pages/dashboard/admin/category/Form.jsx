@@ -91,7 +91,7 @@ function Form({ close, selected }) {
             />
           </div>
           <div className="col-6">
-            <div>
+            <div className="mb-4">
               <label htmlFor="name" className="form-label">
                 Nama :
               </label>
@@ -103,6 +103,21 @@ function Form({ close, selected }) {
                 className="form-control required"
                 required
                 defaultValue={selected ? category?.name : ""}
+                autoComplete="off"
+              />
+            </div>
+            <div>
+              <label htmlFor="name" className="form-label">
+                Caption :
+              </label>
+              <input
+                type="text"
+                name="caption"
+                id="caption"
+                placeholder="Beri Caption"
+                className="form-control required"
+                required
+                defaultValue={selected ? category?.caption : ""}
                 autoComplete="off"
               />
             </div>

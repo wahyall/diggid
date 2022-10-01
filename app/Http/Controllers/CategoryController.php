@@ -43,7 +43,7 @@ class CategoryController extends Controller {
             $group->categories()->whereNotIn('uuid', $uuids)->delete();
 
             return response()->json([
-                'message' => 'Berhasil memperbarui sub kategori',
+                'message' => 'Berhasil memperbarui kategori',
             ]);
         } else {
             return abort(404);

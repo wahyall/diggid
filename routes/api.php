@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CategoryGroupController;
 use App\Http\Controllers\CategoryController;
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth')->group(function () {
+    // Dashboard
     Route::group(['prefix' => 'admin', 'middleware' => 'role:admin'], function () {
         Route::prefix('dashboard')->group(function () {
             Route::get('menu', [DashboardController::class, 'menu']);
@@ -85,5 +87,11 @@ Route::middleware('auth')->group(function () {
 
             Route::post('upload-image', [CourseController::class, 'uploadImage']);
         });
+    });
+
+    // Front
+    Route::group(['prefix' => 'catalog'], function () {
+        Route::post('course', [CatalogController::class, 'course']);
+        Route::get('category', [CatalogController::class, 'category']);
     });
 });

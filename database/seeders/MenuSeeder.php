@@ -19,7 +19,7 @@ class MenuSeeder extends Seeder {
         $menus = [
             // Front
             ['name' => 'Home', 'url' => '/', 'route' => 'front.home', 'component' => 'front/Index'],
-            ['name' => 'Katalog Kelas', 'url' => '/courses', 'route' => 'front.courses', 'component' => 'front/courses/Index'],
+            ['name' => 'Katalog Kelas', 'url' => '/catalog', 'route' => 'front.catalog', 'component' => 'front/catalog/Index'],
 
             ['middleware' => 'auth|verified', 'children' => [
                 // User

@@ -15,7 +15,7 @@ const Index = ({ auth: { user } }) => {
         </p>
         <div className="flex gap-4 mt-10">
           <Link
-            href={!!user ? route("front.courses") : route("register")}
+            href={!!user ? route("front.catalog") : route("register")}
             className="btn btn-primary px-8"
             data-ripplet
           >
@@ -23,7 +23,7 @@ const Index = ({ auth: { user } }) => {
           </Link>
           <If isTrue={!user}>
             <Link
-              href={route("front.courses")}
+              href={route("front.catalog")}
               className="btn btn-ghost px-8"
               data-ripplet
             >

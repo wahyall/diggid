@@ -5,6 +5,7 @@ import { For } from "react-haiku";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "@/libs/axios";
 
 function MenuItem({ name, icon, url, route: routeName }) {
   return (
@@ -71,7 +72,7 @@ function DashboardLayout({ children, auth: { user } }) {
 
   const { data: menus } = useQuery(
     ["dashboard", "menu"],
-    () => axios.get("/api/admin/dashboard/menu").then((res) => res.data),
+    () => axios.get("/admin/dashboard/menu").then((res) => res.data),
     {
       placeholderData: [],
     }

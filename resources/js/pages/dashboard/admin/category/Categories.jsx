@@ -20,11 +20,11 @@ function Categories({ selected, close }) {
   });
 
   const { data: category } = useQuery(
-    [`/api/admin/category/group/${selected}/detail`],
+    [`/admin/category/group/${selected}/detail`],
     () => {
       KTApp.block("#form-subcategory");
       return axios
-        .get(`/api/admin/category/group/${selected}/detail`)
+        .get(`/admin/category/group/${selected}/detail`)
         .then((res) => res.data);
     },
     {
@@ -40,7 +40,7 @@ function Categories({ selected, close }) {
   );
 
   const { mutate: submit } = useMutation(
-    (data) => axios.post(`/api/admin/category/sync`, data),
+    (data) => axios.post(`/admin/category/sync`, data),
     {
       onSettled: () => KTApp.unblock("#form-subcategory"),
       onError: (error) => {
@@ -48,7 +48,7 @@ function Categories({ selected, close }) {
       },
       onSuccess: ({ data }) => {
         toast.success(data.message);
-        queryClient.invalidateQueries(["/api/admin/category/paginate"]);
+        queryClient.invalidateQueries(["/admin/category/paginate"]);
         close();
       },
     }

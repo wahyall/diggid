@@ -13,11 +13,11 @@ function Project({ close, selected, csrfToken }) {
   const [deletedImages, setDeletedImages] = useState([]);
 
   const { data: course } = useQuery(
-    [`/api/admin/course/${selected}/project`],
+    [`/admin/course/${selected}/project`],
     () => {
       KTApp.block("#form-course-project");
       return axios
-        .get(`/api/admin/course/${selected}/project`)
+        .get(`/admin/course/${selected}/project`)
         .then((res) => res.data);
     },
     {
@@ -31,8 +31,8 @@ function Project({ close, selected, csrfToken }) {
     (data) =>
       axios.post(
         course?.project?.uuid
-          ? `/api/admin/course/${selected}/project/update`
-          : `/api/admin/course/${selected}/project/store`,
+          ? `/admin/course/${selected}/project/update`
+          : `/admin/course/${selected}/project/store`,
         data
       ),
     {
@@ -69,7 +69,7 @@ function Project({ close, selected, csrfToken }) {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/admin/course/${selected}/project/destroy`)
+            .delete(`/admin/course/${selected}/project/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -99,7 +99,7 @@ function Project({ close, selected, csrfToken }) {
   const onEditorReady = useCallback((ckeditor) => setEditor(ckeditor), []);
   const editorConfig = {
     simpleUpload: {
-      uploadUrl: `${import.meta.env.VITE_URL}/api/admin/course/upload-image`,
+      uploadUrl: `${import.meta.env.VITE_URL}/admin/course/upload-image`,
       withCredentials: true,
       headers: {
         Accept: "application/json",

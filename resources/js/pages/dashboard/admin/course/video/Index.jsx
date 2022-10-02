@@ -27,11 +27,9 @@ function Index({ csrf_token }) {
   const { data: uploadToasts } = useQuery([lesson_uuid, "upload-toasts"]);
 
   const { data: lesson } = useQuery(
-    [`/api/admin/course/lesson/${lesson_uuid}`],
+    [`/admin/course/lesson/${lesson_uuid}`],
     () =>
-      axios
-        .get(`/api/admin/course/lesson/${lesson_uuid}`)
-        .then((res) => res.data)
+      axios.get(`/admin/course/lesson/${lesson_uuid}`).then((res) => res.data)
   );
 
   useUnload((e) => {
@@ -67,9 +65,7 @@ function Index({ csrf_token }) {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(
-              `/api/admin/course/lesson/${lesson_uuid}/video/${uuid}/destroy`
-            )
+            .delete(`/admin/course/lesson/${lesson_uuid}/video/${uuid}/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -79,7 +75,7 @@ function Index({ csrf_token }) {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
           queryClient.invalidateQueries([
-            `/api/admin/course/lesson/${lesson_uuid}/video`,
+            `/admin/course/lesson/${lesson_uuid}/video`,
           ]);
         }
       });
@@ -151,11 +147,11 @@ function Index({ csrf_token }) {
 
   const { mutate: reorder } = useMutation(
     (data) =>
-      axios.post(`/api/admin/course/lesson/${lesson_uuid}/video/reorder`, data),
+      axios.post(`/admin/course/lesson/${lesson_uuid}/video/reorder`, data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([
-          `/api/admin/course/lesson/${lesson_uuid}/video`,
+          `/admin/course/lesson/${lesson_uuid}/video`,
         ]);
       },
     }
@@ -223,7 +219,7 @@ function Index({ csrf_token }) {
           <SortableTable
             id="my-table"
             columns={columns}
-            url={`/api/admin/course/lesson/${lesson_uuid}/video`}
+            url={`/admin/course/lesson/${lesson_uuid}/video`}
             onSorted={handleOnSorted}
             payload={{ exclude: uploadToasts }}
           ></SortableTable>

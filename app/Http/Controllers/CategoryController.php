@@ -19,6 +19,13 @@ class CategoryController extends Controller {
 
             $group = CategoryGroup::where('uuid', $request->category_group_uuid)->first();
 
+            // Delete category when not found in request (it's deleted)
+            $uuids = [];
+            foreach ($request->subs as $sub) {
+                array_push($uuids, $sub['uuid']);
+            }
+            $group->categories()->whereNotIn('uuid', $uuids)->delete();
+
             // Delete old icon
             $group->categories()->get()->each(function ($category) {
                 if (isset($category->icon) && file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
@@ -34,13 +41,6 @@ class CategoryController extends Controller {
                     'icon' => 'storage/' . $sub['icon']->store('category', 'public'),
                 ]);
             }
-
-            // Delete category when not found in request (it's deleted)
-            $uuids = [];
-            foreach ($request->subs as $sub) {
-                array_push($uuids, $sub['uuid']);
-            }
-            $group->categories()->whereNotIn('uuid', $uuids)->delete();
 
             return response()->json([
                 'message' => 'Berhasil memperbarui kategori',

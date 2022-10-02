@@ -30,4 +30,12 @@
   .btn-brand:hover {
     @apply bg-brand-700 border-brand-700;
   }
+
+  .form-control .label {
+    @apply justify-start gap-4;
+  }
+
+  .checkbox {
+    @apply rounded-md;
+  }
 }

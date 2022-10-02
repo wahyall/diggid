@@ -5,6 +5,7 @@ import Paginate from "@/components/Paginate";
 import { If } from "react-haiku";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "@/libs/axios";
 
 import Form from "./Form";
 import Project from "./Project";
@@ -50,7 +51,7 @@ function Index({ csrf_token }) {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/admin/course/${uuid}/destroy`)
+            .delete(`/admin/course/${uuid}/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -59,7 +60,7 @@ function Index({ csrf_token }) {
       .then((result) => {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
-          queryClient.invalidateQueries(["/api/admin/course/paginate"]);
+          queryClient.invalidateQueries(["/admin/course/paginate"]);
         }
       });
   };
@@ -91,7 +92,9 @@ function Index({ csrf_token }) {
         header: "Status",
         cell: (cell) => (
           <span
-            class={`badge ${cell.getValue() ? "badge-success" : "badge-dark"}`}
+            className={`badge ${
+              cell.getValue() ? "badge-success" : "badge-dark"
+            }`}
           >
             {cell.getValue() ? "Live" : "Draft"}
           </span>
@@ -188,7 +191,7 @@ function Index({ csrf_token }) {
           <Paginate
             id="my-table"
             columns={columns}
-            url="/api/admin/course/paginate"
+            url="/admin/course/paginate"
           ></Paginate>
         </div>
       </div>

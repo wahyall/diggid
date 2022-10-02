@@ -156,7 +156,7 @@ class CourseController extends Controller {
             }
 
             return response()->json([
-                'message' => 'Berhasil mengubah kelas',
+                'message' => 'Berhasil memperbarui kelas',
             ]);
         } else {
             return abort(404);

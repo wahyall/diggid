@@ -4,13 +4,18 @@ import { Link } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 import { If, Show } from "react-haiku";
 
+import { extractRouteParams } from "@/libs/utils";
+
 const MainLayout = ({ children, auth: { user } }) => {
+  const params = useRef(extractRouteParams(window.location.search));
   const [focus, setFocus] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(params.current.search);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    Inertia.visit(route("front.courses"), { data: { search } });
+    Inertia.visit(route("front.catalog"), {
+      data: { ...params.current, search },
+    });
   };
 
   return (
@@ -141,7 +146,7 @@ const MainLayout = ({ children, auth: { user } }) => {
           </Show>
         </div>
       </div>
-      <div className="container mx-auto mt-20 px-4">{children}</div>
+      <div className="container mx-auto mt-20 px-4 pb-10">{children}</div>
     </main>
   );
 };

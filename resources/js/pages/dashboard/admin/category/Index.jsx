@@ -3,6 +3,7 @@ import Paginate from "@/components/Paginate";
 import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "@/libs/axios";
 
 import Form from "./Form";
 import Categories from "./Categories";
@@ -47,7 +48,7 @@ function Index() {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/admin/category/group/${uuid}/destroy`)
+            .delete(`/admin/category/group/${uuid}/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -56,7 +57,7 @@ function Index() {
       .then((result) => {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
-          queryClient.invalidateQueries(["/api/admin/category/group/paginate"]);
+          queryClient.invalidateQueries(["/admin/category/group/paginate"]);
         }
       });
   };
@@ -158,7 +159,7 @@ function Index() {
           <Paginate
             id="my-table"
             columns={columns}
-            url="/api/admin/category/group/paginate"
+            url="/admin/category/group/paginate"
           ></Paginate>
         </div>
       </div>

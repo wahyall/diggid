@@ -20,8 +20,8 @@ function Index({ csrf_token }) {
   const { url } = usePage();
   const course_uuid = useMemo(() => extractUuidFromUrl(url), [url]);
 
-  const { data: course } = useQuery([`/api/admin/course/${course_uuid}`], () =>
-    axios.get(`/api/admin/course/${course_uuid}`).then((res) => res.data)
+  const { data: course } = useQuery([`/admin/course/${course_uuid}`], () =>
+    axios.get(`/admin/course/${course_uuid}`).then((res) => res.data)
   );
 
   const editLesson = (uuid) => {
@@ -50,7 +50,7 @@ function Index({ csrf_token }) {
         reverseButtons: true,
         preConfirm: () => {
           return axios
-            .delete(`/api/admin/course/${course_uuid}/lesson/${uuid}/destroy`)
+            .delete(`/admin/course/${course_uuid}/lesson/${uuid}/destroy`)
             .catch((error) => {
               Swal.showValidationMessage(error.response.data.message);
             });
@@ -60,7 +60,7 @@ function Index({ csrf_token }) {
         if (result.isConfirmed) {
           mySwal.fire("Berhasil!", "Data berhasil dihapus.", "success");
           queryClient.invalidateQueries([
-            `/api/admin/course/${course_uuid}/lesson`,
+            `/admin/course/${course_uuid}/lesson`,
           ]);
         }
       });
@@ -119,13 +119,10 @@ function Index({ csrf_token }) {
   );
 
   const { mutate: reorder } = useMutation(
-    (data) =>
-      axios.post(`/api/admin/course/${course_uuid}/lesson/reorder`, data),
+    (data) => axios.post(`/admin/course/${course_uuid}/lesson/reorder`, data),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([
-          `/api/admin/course/${course_uuid}/lesson`,
-        ]);
+        queryClient.invalidateQueries([`/admin/course/${course_uuid}/lesson`]);
       },
     }
   );
@@ -177,7 +174,7 @@ function Index({ csrf_token }) {
           <SortableTable
             id="my-table"
             columns={columns}
-            url={`/api/admin/course/${course_uuid}/lesson`}
+            url={`/admin/course/${course_uuid}/lesson`}
             onSorted={handleOnSorted}
           ></SortableTable>
         </div>

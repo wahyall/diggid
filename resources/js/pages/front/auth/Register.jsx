@@ -174,8 +174,8 @@ const Register = ({ redirect }) => {
         id="form-login"
         className="w-full"
       >
-        <div className="text-center mb-8">
-          <h1 className="text-slate-800 text-3xl md:text-4xl font-bold mb-2">
+        <div className="mb-16">
+          <h1 className="text-slate-800 text-3xl md:text-4xl font-bold">
             Buat Akun Baru
           </h1>
         </div>
@@ -193,7 +193,7 @@ const Register = ({ redirect }) => {
           />
           {errors.name && (
             <label className="label">
-              <span className="label-text-alt text-red-600">
+              <span className="label-text-alt text-red-500">
                 {errors.name.message}
               </span>
             </label>
@@ -213,7 +213,7 @@ const Register = ({ redirect }) => {
           />
           {errors.email && (
             <label className="label">
-              <span className="label-text-alt text-red-600">
+              <span className="label-text-alt text-red-500">
                 {errors.email.message}
               </span>
             </label>
@@ -233,7 +233,7 @@ const Register = ({ redirect }) => {
           />
           {errors.password && (
             <label className="label">
-              <span className="label-text-alt text-red-600">
+              <span className="label-text-alt text-red-500">
                 {errors.password.message}
               </span>
             </label>
@@ -253,7 +253,7 @@ const Register = ({ redirect }) => {
           />
           {errors.password_confirmation && (
             <label className="label">
-              <span className="label-text-alt text-red-600">
+              <span className="label-text-alt text-red-500">
                 {errors.password_confirmation.message}
               </span>
             </label>
@@ -261,7 +261,7 @@ const Register = ({ redirect }) => {
         </div>
         <button
           type="submit"
-          className={`btn btn-brand w-full ${isLoading && "loading"}`}
+          className={`btn btn-primary w-full ${isLoading && "loading"}`}
           disabled={isLoading}
           data-ripplet
         >

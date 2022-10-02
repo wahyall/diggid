@@ -20,7 +20,7 @@ export default function AuthLayout({ children }) {
           <Link href={route("front.home")} className="mb-0 mb-lg-12">
             <img
               alt="Logo"
-              src={asset("assets/media/logos/logo-sikatana.svg")}
+              src={asset("assets/media/logos/logo-diggid.svg")}
               className="h-16 lg:h-20"
             />
           </Link>

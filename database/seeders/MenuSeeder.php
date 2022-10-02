@@ -19,11 +19,12 @@ class MenuSeeder extends Seeder {
         $menus = [
             // Front
             ['name' => 'Home', 'url' => '/', 'route' => 'front.home', 'component' => 'front/Index'],
+            ['name' => 'Katalog Kelas', 'url' => '/courses', 'route' => 'front.courses', 'component' => 'front/courses/Index'],
 
             ['middleware' => 'auth|verified', 'children' => [
                 // User
                 ['name' => 'Profil', 'url' => 'me', 'route' => 'front.me', 'component' => 'front/me/Index'],
-                ['name' => 'Kursus Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
+                ['name' => 'Kelas Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
                 ['name' => 'Setting', 'url' => 'me/setting', 'route' => 'front.me.setting', 'component' => 'front/me/setting/Index'],
 
                 // Redirecting Dashboard
@@ -33,9 +34,9 @@ class MenuSeeder extends Seeder {
                     // Menu Dashboard Admin
                     ['name' => 'Dashboard', 'url' => 'dashboard/admin', 'route' => 'dashboard.admin', 'component' => 'dashboard/admin/Index', 'icon' => 'las la-home fs-2'],
 
-                    ['name' => 'Kursus', 'url' => 'dashboard/admin/course', 'route' => 'dashboard.admin.course', 'component' => 'dashboard/admin/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2', 'children' => [
-                        ['name' => 'Silabus Kursus', 'url' => 'dashboard/admin/course/{course_uuid}/lesson', 'route' => 'dashboard.admin.course.lesson', 'component' => 'dashboard/admin/course/lesson/Index', 'shown' => false, 'children' => [
-                            ['name' => 'Video Silabus Kursus', 'url' => 'dashboard/admin/course/{course_uuid}/lesson/{lesson_uuid}/video', 'route' => 'dashboard.admin.course.lesson.video', 'component' => 'dashboard/admin/course/video/Index', 'shown' => false],
+                    ['name' => 'Kelas', 'url' => 'dashboard/admin/course', 'route' => 'dashboard.admin.course', 'component' => 'dashboard/admin/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2', 'children' => [
+                        ['name' => 'Silabus Kelas', 'url' => 'dashboard/admin/course/{course_uuid}/lesson', 'route' => 'dashboard.admin.course.lesson', 'component' => 'dashboard/admin/course/lesson/Index', 'shown' => false, 'children' => [
+                            ['name' => 'Video Silabus Kelas', 'url' => 'dashboard/admin/course/{course_uuid}/lesson/{lesson_uuid}/video', 'route' => 'dashboard.admin.course.lesson.video', 'component' => 'dashboard/admin/course/video/Index', 'shown' => false],
                         ]],
                     ]],
 

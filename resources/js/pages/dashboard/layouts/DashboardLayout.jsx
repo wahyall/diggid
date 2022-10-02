@@ -107,7 +107,7 @@ function DashboardLayout({ children, auth: { user } }) {
               <Link href={route(`dashboard.${user.role}`)}>
                 <img
                   alt="Logo"
-                  src={asset("assets/media/logos/logo-sikatana.svg")}
+                  src={asset("assets/media/logos/logo-diggid.svg")}
                   className="h-25px logo"
                 />
               </Link>
@@ -204,7 +204,7 @@ function DashboardLayout({ children, auth: { user } }) {
                   >
                     <img
                       alt="Logo"
-                      src={asset("assets/media/logos/logo-sikatana.svg")}
+                      src={asset("assets/media/logos/logo-diggid.svg")}
                       className="h-30px"
                     />
                   </Link>

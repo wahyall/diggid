@@ -29,6 +29,9 @@ module.exports = {
       screens: {
         xs: "480px",
       },
+      aspectRatio: {
+        "4/3": "4 / 3",
+      },
     },
     fontFamily: {
       sans: ["Poppins", "system-ui", "Arial", "sans-serif"],

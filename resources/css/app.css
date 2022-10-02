@@ -8,11 +8,15 @@
   }
 
   .input:focus {
-    @apply bg-transparent outline-4 outline-brand-200 outline-offset-1 border-brand-600;
+    @apply bg-transparent outline-4 outline-brand-200 outline-offset-1 border-primary;
   }
 
   .btn {
     @apply rounded-md no-animation tracking-wider;
+  }
+
+  .menu li > * {
+    @apply !rounded-md;
   }
 
   .form-control .label .label-text {

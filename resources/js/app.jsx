@@ -16,6 +16,7 @@ import { Provider as JotaiProvider } from "jotai";
 import { queryClientAtom } from "jotai/query";
 
 import DashboardLayout from "./pages/dashboard/layouts/DashboardLayout";
+import MainLayout from "./pages/front/layouts/MainLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +54,12 @@ createInertiaApp({
         module.default.layout = (page) => (
           <DashboardLayout children={page} {...page.props} />
         );
+      } else {
+        if (!name.includes("Login") && !name.includes("Register")) {
+          module.default.layout = (page) => (
+            <MainLayout children={page} {...page.props} />
+          );
+        }
       }
     });
     return page;

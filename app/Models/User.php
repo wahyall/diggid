@@ -18,6 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @var array<int, string>
      */
     protected $fillable = ['name', 'email', 'password', 'address', 'phone', 'photo', 'bio', 'role'];
+    protected $appends = ['photo_url'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -34,4 +35,9 @@ class User extends Authenticatable implements MustVerifyEmail {
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getPhotoUrlAttribute() {
+        if (!isset($this->photo)) return asset('assets/media/avatars/blank.png');
+        else return asset($this->photo);
+    }
 }

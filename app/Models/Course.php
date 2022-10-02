@@ -8,15 +8,28 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use DOMDocument;
+use Laravel\Scout\Searchable;
 
 class Course extends Model implements HasMedia {
-    use Uuid, HasSlug, InteractsWithMedia;
+    use Uuid, HasSlug, InteractsWithMedia, Searchable;
 
-    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount'];
+    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published'];
     protected $hidden = ['id', 'category_id', 'created_at', 'updated_at', 'media'];
+    protected $casts = ['published' => 'boolean'];
+
+    public function shouldBeSearchable() {
+        return !!$this->published;
+    }
+
+    public function toSearchableArray() {
+        return [
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'description' => $this->description,
+            'categories' => $this->categories->pluck('name'),
+        ];
+    }
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

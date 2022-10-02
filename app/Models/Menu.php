@@ -13,6 +13,6 @@ class Menu extends Model {
     protected $hidden = ['id'];
 
     public function children() {
-        return $this->hasMany(self::class, 'parent_id')->where('shown', 1);
+        return $this->hasMany(self::class, 'parent_id');
     }
 }

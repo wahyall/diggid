@@ -1,5 +1,8 @@
 import "./bootstrap";
-import "../css/app.css";
+
+if (route().current().includes("front")) {
+  import("../css/app.css");
+}
 
 import React from "react";
 import { render } from "react-dom";

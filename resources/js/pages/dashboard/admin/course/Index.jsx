@@ -84,16 +84,26 @@ function Index({ csrf_token }) {
         ),
       }),
       columnHelper.accessor("name", {
-        cell: (cell) => cell.getValue(),
         header: "Nama",
+        cell: (cell) => cell.getValue(),
+      }),
+      columnHelper.accessor("published", {
+        header: "Status",
+        cell: (cell) => (
+          <span
+            class={`badge ${cell.getValue() ? "badge-success" : "badge-dark"}`}
+          >
+            {cell.getValue() ? "Live" : "Draft"}
+          </span>
+        ),
       }),
       columnHelper.accessor("price", {
+        header: "Harga",
         cell: (cell) =>
           Intl.NumberFormat("id-ID", {
             style: "currency",
             currency: "IDR",
           }).format(cell.getValue()),
-        header: "Harga",
       }),
       columnHelper.accessor("uuid", {
         id: "uuid",

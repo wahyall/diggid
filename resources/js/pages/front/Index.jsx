@@ -27,7 +27,7 @@ const Index = ({ auth: { user } }) => {
               className="btn btn-ghost px-8"
               data-ripplet
             >
-              Daftar Kelas
+              Lihat Kelas
             </Link>
           </If>
         </div>

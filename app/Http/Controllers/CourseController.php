@@ -37,6 +37,7 @@ class CourseController extends Controller {
                 'category_uuids.*' => 'required|exists:categories,uuid',
                 'sneak_peeks' => 'nullable|array',
                 'sneak_peeks.*' => 'nullable|image',
+                'published' => 'required|boolean',
             ]);
 
             $price = str_replace('.', '', $request->price);
@@ -52,7 +53,11 @@ class CourseController extends Controller {
                 'discount' => $discount ? $discount : 0,
                 'finish_estimation' => $request->finish_estimation,
                 'description' => $request->description,
+                'published' => $request->published,
             ]);
+
+            if ($course->published) $course->searchable();
+            else $course->unsearchable();
 
             $categories = Category::whereIn('uuid', $request->category_uuids)->pluck('id');
             $course->categories()->sync($categories);
@@ -64,7 +69,7 @@ class CourseController extends Controller {
             }
 
             return response()->json([
-                'message' => 'Berhasil menambahkan kategori',
+                'message' => 'Berhasil menambahkan kelas',
             ]);
         } else {
             return abort(404);
@@ -103,6 +108,7 @@ class CourseController extends Controller {
                 'sneak_peeks.*' => 'nullable|image',
                 'deleted_images' => 'nullable|array',
                 'deleted_images.*' => 'nullable|string',
+                'published' => 'required|boolean',
             ]);
 
             $course = Course::findByUuid($uuid);
@@ -125,7 +131,11 @@ class CourseController extends Controller {
                 'discount' => $discount ? $discount : 0,
                 'finish_estimation' => $request->finish_estimation,
                 'description' => $request->description,
+                'published' => $request->published,
             ]);
+
+            if ($course->published) $course->searchable();
+            else $course->unsearchable();
 
             if (isset($request->deleted_images)) {
                 foreach ($request->deleted_images as $image) {
@@ -146,7 +156,7 @@ class CourseController extends Controller {
             }
 
             return response()->json([
-                'message' => 'Berhasil mengubah kategori',
+                'message' => 'Berhasil mengubah kelas',
             ]);
         } else {
             return abort(404);
@@ -165,7 +175,7 @@ class CourseController extends Controller {
             $category->delete();
 
             return response()->json([
-                'message' => 'Berhasil menghapus kategori',
+                'message' => 'Berhasil menghapus kelas',
             ]);
         } else {
             return abort(404);

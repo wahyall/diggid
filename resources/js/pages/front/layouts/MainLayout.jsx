@@ -97,6 +97,13 @@ const MainLayout = ({ children, auth: { user } }) => {
                   tabIndex={0}
                   className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-slate-50 w-52 rounded-md"
                 >
+                  <If isTrue={user?.role === "admin"}>
+                    <li>
+                      <a href={route("dashboard")} className="text-base">
+                        Dashboard
+                      </a>
+                    </li>
+                  </If>
                   <li>
                     <Link href={route("front.me")} className="text-base">
                       Profil

@@ -92,10 +92,13 @@ function Form({ close, selected, csrfToken }) {
 
   const onEditorReady = useCallback((ckeditor) => setEditor(ckeditor), []);
 
-  const onSubmit = (ev) => {
-    ev.preventDefault();
+  const onSubmit = (ev, published = true) => {
+    ev && ev.preventDefault();
 
-    const formData = new FormData(ev.target);
+    const formData = new FormData(
+      ev ? ev.target : document.getElementById("form-course")
+    );
+    formData.append("published", published ? 1 : 0);
     formData.append("thumbnail", thumbnail[0].file);
     formData.append("description", editor.getData());
     deletedImages.forEach((image) =>
@@ -290,10 +293,18 @@ function Form({ close, selected, csrfToken }) {
               acceptedFileTypes={["image/*"]}
             />
           </div>
-          <div className="col-12">
+          <div className="col-12 d-flex gap-4 justify-content-end">
+            <button
+              type="button"
+              className="btn btn-dark btn-sm mt-8 d-block"
+              onClick={() => onSubmit(null, false)}
+            >
+              <i className="las la-save"></i>
+              Simpan sebagai Draft
+            </button>
             <button
               type="submit"
-              className="btn btn-primary btn-sm ms-auto mt-8 d-block"
+              className="btn btn-primary btn-sm mt-8 d-block"
             >
               <i className="las la-save"></i>
               Simpan

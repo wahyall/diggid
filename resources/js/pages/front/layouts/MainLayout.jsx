@@ -10,7 +10,7 @@ const MainLayout = ({ children, auth: { user } }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log(search);
+    Inertia.visit(route("front.courses"), { data: { search } });
   };
 
   return (
@@ -76,7 +76,7 @@ const MainLayout = ({ children, auth: { user } }) => {
             <Show.When isTrue={!!user}>
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost px-2">
-                  <span className="font-medium normal-case hidden lg:inline-block mr-4">
+                  <span className="font-medium normal-case hidden lg:inline-block mr-4 text-base">
                     Halo, {user?.name?.split(" ")[0]}
                   </span>
                   <div className="avatar rounded-full">

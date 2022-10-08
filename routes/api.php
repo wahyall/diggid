@@ -88,10 +88,10 @@ Route::middleware('auth')->group(function () {
             Route::post('upload-image', [CourseController::class, 'uploadImage']);
         });
     });
+});
 
-    // Front
-    Route::group(['prefix' => 'catalog'], function () {
-        Route::post('course', [CatalogController::class, 'course']);
-        Route::get('category', [CatalogController::class, 'category']);
-    });
+// Front
+Route::group(['prefix' => 'catalog'], function () {
+    Route::post('course', [CatalogController::class, 'course']);
+    Route::get('category', [CatalogController::class, 'category']);
 });

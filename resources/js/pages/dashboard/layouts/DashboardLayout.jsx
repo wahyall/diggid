@@ -299,12 +299,12 @@ function DashboardLayout({ children, auth: { user } }) {
                           </Link>
                         </div>
                         <div className="menu-item px-5">
-                          <Link
+                          <a
                             href={route("logout")}
                             className="menu-link px-5 text-danger"
                           >
                             Logout
-                          </Link>
+                          </a>
                         </div>
                       </div>
                     </div>

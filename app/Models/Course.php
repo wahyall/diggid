@@ -17,6 +17,7 @@ class Course extends Model implements HasMedia {
     protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published'];
     protected $hidden = ['id', 'category_id', 'created_at', 'updated_at', 'media'];
     protected $casts = ['published' => 'boolean'];
+    protected $withCount = ['purchases'];
 
     public function shouldBeSearchable() {
         return !!$this->published;
@@ -27,7 +28,30 @@ class Course extends Model implements HasMedia {
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'categories' => $this->categories->pluck('name'),
+            'categories' => $this->categories->pluck('slug'),
+        ];
+    }
+
+    public static function getSearchFilterAttributes(): array {
+        return [
+            'categories',
+        ];
+    }
+
+    public static function getSearchSortAttributes(): array {
+        return [
+            'purchases_count',
+        ];
+    }
+
+    public static function getSearchRankingRuleAttributes(): array {
+        return [
+            'sort',
+            'words',
+            'typo',
+            'proximity',
+            'attribute',
+            'exactness'
         ];
     }
 
@@ -47,6 +71,10 @@ class Course extends Model implements HasMedia {
 
     public function project() {
         return $this->hasOne(CourseProject::class);
+    }
+
+    public function purchases() {
+        return $this->hasMany(MyCourse::class);
     }
 
     public function registerMediaCollections(): void {

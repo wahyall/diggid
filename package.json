@@ -46,6 +46,7 @@
         "react-haiku": "^2.0.3",
         "react-hook-form": "^7.34.2",
         "react-input-mask": "^3.0.0-alpha.2",
+        "react-loading-skeleton": "^3.1.0",
         "react-select": "^5.4.0",
         "react-toastify": "^9.0.8",
         "ripplet.js": "^1.1.0",

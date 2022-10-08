@@ -305,7 +305,7 @@ function Form({ close, selected, csrfToken }) {
               className="btn btn-primary btn-sm mt-8 d-block"
             >
               <i className="las la-save"></i>
-              Simpan
+              Simpan dan Publish
             </button>
           </div>
         </div>

@@ -22,7 +22,7 @@ const MainLayout = ({ children, auth: { user } }) => {
 
   return (
     <main>
-      <div className="navbar bg-slate-50 w-full fixed top-0 border-b-2 lg:px-12 border-b-slate-300">
+      <div className="navbar bg-slate-50 w-full fixed top-0 border-b-2 lg:px-12 border-b-slate-300 z-50">
         <div className="navbar-start w-full lg:w-auto">
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost px-2 lg:hidden">

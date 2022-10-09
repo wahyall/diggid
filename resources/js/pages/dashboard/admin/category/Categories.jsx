@@ -3,7 +3,7 @@ import axios from "@/libs/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { For } from "react-haiku";
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/pages/dashboard/components/FileUpload";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
 import { toast } from "react-toastify";

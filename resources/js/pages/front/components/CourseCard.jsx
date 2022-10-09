@@ -1,0 +1,61 @@
+import React, { memo, useMemo } from "react";
+import { currency } from "@/libs/utils";
+
+import { For } from "react-haiku";
+
+const CourseCard = ({ course }) => {
+  const level = useMemo(() => {
+    if (course.level === "1") return "Pemula";
+    if (course.level === "2") return "Menengah";
+    if (course.level === "3") return "Mahir";
+  });
+  return (
+    <div className="card card-compact bg-base-100 shadow-xl">
+      <figure>
+        <img src={asset(course.thumbnail)} alt="Shoes" />
+      </figure>
+      <div className="card-body">
+        <h1 className="card-title font-bold line-clamp-2 !mb-0">
+          {course.name}
+        </h1>
+        <div className="flex gap-2 mb-2">
+          <For
+            each={course.categories}
+            render={(category) => (
+              <div className="badge badge-outline badge-sm" key={category.uuid}>
+                {category.name}
+              </div>
+            )}
+          />
+        </div>
+        <div className="flex justify-between">
+          <span className="text-lg">
+            {currency(course.price - (course.price * course.discount) / 100)}
+          </span>
+          <span
+            className={`tooltip tooltip-primary tooltip-left before:text-xs before:content-[attr(data-tip)]`}
+            data-tip={level}
+          >
+            <svg
+              className="svg-icon -mt-6 -mr-4"
+              style={{
+                width: "3rem",
+                height: "3rem",
+                overflow: "hidden",
+                fill: "#570df8",
+                verticalAlign: "middle",
+              }}
+              viewBox="0 0 1280 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M432 576h-96c-17.68 0-32 14.32-32 32v384c0 17.68 14.32 32 32 32h96c17.68 0 32-14.32 32-32V608c0-17.68-14.32-32-32-32zM176 768H80c-17.68 0-32 14.32-32 32v192c0 17.68 14.32 32 32 32h96c17.68 0 32-14.32 32-32v-192c0-17.68-14.32-32-32-32z m512-384h-96c-17.68 0-32 14.32-32 32v576c0 17.68 14.32 32 32 32h96c17.68 0 32-14.32 32-32V416c0-17.68-14.32-32-32-32z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default memo(CourseCard);

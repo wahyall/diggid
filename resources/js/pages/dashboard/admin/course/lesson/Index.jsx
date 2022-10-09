@@ -2,7 +2,7 @@ import React, { memo, useState, useMemo, useCallback } from "react";
 
 import { If } from "react-haiku";
 import { createColumnHelper } from "@tanstack/react-table";
-import SortableTable from "@/components/SortableTable";
+import SortableTable from "@/pages/dashboard/components/SortableTable";
 import { extractUuidFromUrl } from "@/libs/utils";
 import { Link, usePage } from "@inertiajs/inertia-react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";

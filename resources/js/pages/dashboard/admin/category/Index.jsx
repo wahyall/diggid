@@ -1,5 +1,5 @@
 import React, { useCallback, useState, memo } from "react";
-import Paginate from "@/components/Paginate";
+import Paginate from "@/pages/dashboard/components/Paginate";
 import { createColumnHelper } from "@tanstack/react-table";
 import { If } from "react-haiku";
 import { useQueryClient } from "@tanstack/react-query";

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuid;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\MediaLibrary\HasMedia;
@@ -14,10 +15,9 @@ use Laravel\Scout\Searchable;
 class Course extends Model implements HasMedia {
     use Uuid, HasSlug, InteractsWithMedia, Searchable;
 
-    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published'];
+    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published', 'level'];
     protected $hidden = ['id', 'category_id', 'created_at', 'updated_at', 'media'];
     protected $casts = ['published' => 'boolean'];
-    protected $withCount = ['purchases'];
 
     public function shouldBeSearchable() {
         return !!$this->published;
@@ -46,8 +46,8 @@ class Course extends Model implements HasMedia {
 
     public static function getSearchRankingRuleAttributes(): array {
         return [
-            'sort',
             'words',
+            'sort',
             'typo',
             'proximity',
             'attribute',
@@ -61,6 +61,7 @@ class Course extends Model implements HasMedia {
             ->saveSlugsTo('slug');
     }
 
+    // Relationship
     public function categories() {
         return $this->belongsToMany(Category::class, 'course_categories');
     }
@@ -77,15 +78,24 @@ class Course extends Model implements HasMedia {
         return $this->hasMany(MyCourse::class);
     }
 
+    public function reviews() {
+        return $this->hasMany(Review::class);
+    }
+
     public function registerMediaCollections(): void {
         $this->addMediaCollection('sneak_peeks')->useDisk('course_sneak_peeks');
     }
 
+    // Attribute
     public function getSneakPeeksAttribute() {
         return $this->getMedia('sneak_peeks')->map(function ($item) {
             $path = str_replace(getenv('APP_URL') . '/storage/', '', $item->getFullUrl());
             return asset('storage/course/sneak_peeks/' . $path);
         });
+    }
+
+    public function getRatingAttribute() {
+        return $this->reviews->avg('rating');
     }
 
     public static function booted() {

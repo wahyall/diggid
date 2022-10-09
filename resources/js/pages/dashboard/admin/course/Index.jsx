@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, memo } from "react";
 
 import { Link } from "@inertiajs/inertia-react";
-import Paginate from "@/components/Paginate";
+import Paginate from "@/pages/dashboard/components/Paginate";
 import { If } from "react-haiku";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";

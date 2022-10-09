@@ -1,6 +1,6 @@
 import React, { memo, useRef, useEffect } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { extractRouteParams } from "@/libs/utils";
 import { useForm, useWatch } from "react-hook-form";
@@ -9,8 +9,10 @@ import { useUpdateEffect } from "react-haiku";
 
 import { For, If } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
+import CourseCard from "../components/CourseCard";
 
 const Index = () => {
+  const queryClient = useQueryClient();
   const params = useRef(extractRouteParams(window.location.search));
   const {
     register: form,
@@ -18,12 +20,15 @@ const Index = () => {
     control,
     handleSubmit,
   } = useForm({
-    defaultValues: params.current,
+    defaultValues: {
+      ...params.current,
+      ...(!params.current.sort ? { sort: "newest" } : {}),
+    },
     mode: "onSubmit",
   });
   const filter = useWatch({
     control,
-    name: ["sort", "category"],
+    name: ["sort", "category", "level"],
   });
 
   const { data: groupCategories = [], isSuccess: isGroupCategoriesSuccess } =
@@ -31,28 +36,33 @@ const Index = () => {
       axios.get("/catalog/category").then((res) => res.data)
     );
 
-  const { data: courses = [], isSuccess: isCoursesSuccess } = useQuery(
-    ["catalog", "course"],
-    () => axios.post("/catalog/course", params.current)
+  const {
+    data: courses = [],
+    isSuccess: isCoursesSuccess,
+    refetch,
+  } = useQuery(["catalog", "course"], () =>
+    axios.post("/catalog/course", { ...watch() }).then((res) => res.data)
   );
 
   useUpdateEffect(() => {
     Inertia.visit(route("front.catalog"), {
       data: { ...watch() },
+      onSuccess: refetch,
     });
   }, [filter]);
 
   const handleSearch = (data) => {
     Inertia.visit(route("front.catalog"), {
       data,
+      onSuccess: refetch,
     });
   };
 
   return (
     <main>
       <header className="py-20 prose text-center max-w-none">
-        <h1>Eksplor Semua Kelas Kami</h1>
-        <p className="max-w-lg mx-auto">
+        <h1 className="text-navy">Eksplor Semua Kelas Kami</h1>
+        <p className="max-w-lg mx-auto text-navy">
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Qui aperiam
           rerum, quisquam sequi nostrum numquam nulla?
         </p>
@@ -76,7 +86,7 @@ const Index = () => {
         </form>
       </section>
       <section className="mb-12 grid grid-cols-[1fr_4fr] gap-4">
-        <div className="overflow-auto max-h-96 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded">
+        <div className="overflow-auto max-h-screen scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded">
           <If isTrue={isGroupCategoriesSuccess}>
             <For
               each={groupCategories}
@@ -97,7 +107,7 @@ const Index = () => {
                                 value={category.slug}
                                 {...form("category")}
                               />
-                              <span className="label-text">
+                              <span className="label-text text-navy">
                                 {category.name}
                               </span>
                             </label>
@@ -123,7 +133,7 @@ const Index = () => {
                         value="newest"
                         {...form("sort")}
                       />
-                      <span className="label-text">Terbaru</span>
+                      <span className="label-text text-navy">Terbaru</span>
                     </label>
                   </div>
                 </li>
@@ -137,7 +147,55 @@ const Index = () => {
                         value="popular"
                         {...form("sort")}
                       />
-                      <span className="label-text">Terpopuler</span>
+                      <span className="label-text text-navy">Terpopuler</span>
+                    </label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div className="divider mr-4"></div>
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold">Tingkatan</h2>
+              <ul className="mt-2">
+                <li>
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="level"
+                        className="checkbox checkbox-primary"
+                        value="1"
+                        {...form("level")}
+                      />
+                      <span className="label-text text-navy">Pemula</span>
+                    </label>
+                  </div>
+                </li>
+                <li>
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="level"
+                        className="checkbox checkbox-primary"
+                        value="2"
+                        {...form("level")}
+                      />
+                      <span className="label-text text-navy">Menengah</span>
+                    </label>
+                  </div>
+                </li>
+                <li>
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="level"
+                        className="checkbox checkbox-primary"
+                        value="3"
+                        {...form("level")}
+                      />
+                      <span className="label-text text-navy">Mahir</span>
                     </label>
                   </div>
                 </li>
@@ -152,7 +210,24 @@ const Index = () => {
             <Skeleton count={3} className="h-8" />
           </If>
         </div>
-        <div>2</div>
+        <div className="grid grid-cols-3 gap-4 items-start">
+          <If isTrue={isCoursesSuccess}>
+            <For
+              each={courses}
+              render={(course) => (
+                <CourseCard course={course} key={course.uuid} />
+              )}
+            />
+          </If>
+          <If isTrue={!isCoursesSuccess}>
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+          </If>
+        </div>
       </section>
     </main>
   );

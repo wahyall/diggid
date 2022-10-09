@@ -3,7 +3,7 @@ import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/pages/dashboard/components/FileUpload";
 import CurrencyInput from "react-currency-input-field";
 import Select from "react-select";
 
@@ -263,6 +263,47 @@ function Form({ close, selected, csrfToken }) {
                 </div>
               </div>
             </div>
+            <div className="mb-10">
+              <label className="form-label mb-3">Tingkatan</label>
+              <div className="d-flex gap-10 align-items-center">
+                <div class="form-check form-check-custom form-check-solid">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="level"
+                    value="1"
+                    id="level-pemula"
+                  />
+                  <label class="form-check-label" for="level-pemula">
+                    Pemula
+                  </label>
+                </div>
+                <div class="form-check form-check-custom form-check-solid">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="level"
+                    value="2"
+                    id="level-mengengah"
+                  />
+                  <label class="form-check-label" for="level-mengengah">
+                    Menengah
+                  </label>
+                </div>
+                <div class="form-check form-check-custom form-check-solid">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="level"
+                    value="3"
+                    id="level-mahir"
+                  />
+                  <label class="form-check-label" for="level-mahir">
+                    Mahir
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="col-12 mb-10">
             <label htmlFor="description" className="form-label required">
@@ -297,7 +338,6 @@ function Form({ close, selected, csrfToken }) {
               className="btn btn-dark btn-sm mt-8 d-block"
               onClick={() => onSubmit(null, false)}
             >
-              <i className="las la-save"></i>
               Simpan sebagai Draft
             </button>
             <button

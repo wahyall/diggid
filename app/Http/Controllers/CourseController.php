@@ -38,6 +38,7 @@ class CourseController extends Controller {
                 'sneak_peeks' => 'nullable|array',
                 'sneak_peeks.*' => 'nullable|image',
                 'published' => 'required|boolean',
+                'level' => 'required|in:1,2,3',
             ]);
 
             $price = str_replace('.', '', $request->price);
@@ -54,6 +55,7 @@ class CourseController extends Controller {
                 'finish_estimation' => $request->finish_estimation,
                 'description' => $request->description,
                 'published' => $request->published,
+                'level' => $request->level,
             ]);
 
             if ($course->published) $course->searchable();
@@ -109,6 +111,7 @@ class CourseController extends Controller {
                 'deleted_images' => 'nullable|array',
                 'deleted_images.*' => 'nullable|string',
                 'published' => 'required|boolean',
+                'level' => 'required|in:1,2,3',
             ]);
 
             $course = Course::findByUuid($uuid);
@@ -132,6 +135,7 @@ class CourseController extends Controller {
                 'finish_estimation' => $request->finish_estimation,
                 'description' => $request->description,
                 'published' => $request->published,
+                'level' => $request->level,
             ]);
 
             if ($course->published) $course->searchable();

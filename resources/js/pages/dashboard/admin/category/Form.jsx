@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/pages/dashboard/components/FileUpload";
 
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";

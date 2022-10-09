@@ -1,7 +1,9 @@
 import "./bootstrap";
 
-if (route().current().includes("front")) {
+const frontRoutes = ["front", "login", "register", "password", "verification"];
+if (frontRoutes.includes(route().current().split(".")[0])) {
   import("../css/app.css");
+  import("ripplet.js/es/ripplet-declarative");
 }
 
 import React from "react";

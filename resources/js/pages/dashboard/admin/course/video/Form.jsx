@@ -6,7 +6,7 @@ import axios from "@/libs/axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import "ckeditor5-custom-build/build/ckeditor";
 
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/pages/dashboard/components/FileUpload";
 
 import { toast } from "react-toastify";
 

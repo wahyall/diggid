@@ -25,6 +25,7 @@ module.exports = {
           750: "#283447",
           850: "#162032",
         },
+        navy: "#010526",
       },
       screens: {
         xs: "480px",
@@ -41,6 +42,7 @@ module.exports = {
     require("@tailwindcss/typography"),
     require("daisyui"),
     require("tailwind-scrollbar")({ nocompatible: true }),
+    require("@tailwindcss/line-clamp"),
   ],
   daisyui: {
     themes: false,

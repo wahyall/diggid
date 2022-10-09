@@ -28,3 +28,16 @@ export function extractRouteParams(search, asFormData = false) {
     return params;
   }
 }
+
+export function asset(uri) {
+  return (
+    import.meta.env.VITE_URL + "/" + uri?.split("/").filter(Boolean).join("/")
+  );
+}
+
+export function currency(value) {
+  return Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(value);
+}

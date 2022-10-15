@@ -19,7 +19,7 @@ const Index = () => {
     watch,
     control,
     handleSubmit,
-    setValue,
+    reset,
   } = useForm({
     defaultValues: {
       ...params.current,
@@ -246,7 +246,7 @@ const Index = () => {
         </div>
       </section>
 
-      <FilterModal id="filter-modal" refetch={refetch} setValue={setValue} />
+      <FilterModal id="filter-modal" reset={reset} />
     </main>
   );
 };

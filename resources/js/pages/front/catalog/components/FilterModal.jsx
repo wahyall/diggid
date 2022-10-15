@@ -1,15 +1,14 @@
 import React, { memo, useRef } from "react";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import axios from "@/libs/axios";
 import { extractRouteParams } from "@/libs/utils";
-import { Inertia } from "@inertiajs/inertia";
 
 import { If, For } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
 
-const FilterModal = memo(({ id, refetch, setValue, ...props }) => {
+const FilterModal = memo(({ id, reset, ...props }) => {
   const params = useRef(extractRouteParams(window.location.search));
   const { register: form, handleSubmit } = useForm({
     defaultValues: {
@@ -23,15 +22,7 @@ const FilterModal = memo(({ id, refetch, setValue, ...props }) => {
       axios.get("/catalog/category").then((res) => res.data)
     );
 
-  const onSubmit = (data) => {
-    setValue("category", data.category);
-    setValue("sort", data.sort);
-    setValue("level", data.level);
-    // Inertia.visit(route("front.catalog"), {
-    //   data,
-    //   onSuccess: refetch,
-    // });
-  };
+  const onSubmit = (data) => reset(data);
 
   return (
     <>

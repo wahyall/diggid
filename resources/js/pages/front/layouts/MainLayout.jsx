@@ -24,11 +24,15 @@ const MainLayout = ({ children, auth: { user } }) => {
     <main>
       <div className="navbar bg-slate-50 w-full fixed top-0 border-b-2 lg:px-12 border-b-slate-300 z-50">
         <div className="navbar-start w-full lg:w-auto">
-          <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost px-2 lg:hidden">
-              <i className="las la-search text-xl"></i>
-            </label>
-            {!route().current().startsWith("front.catalog") && (
+          {route().current() !== "front.catalog" ? (
+            <div className="dropdown">
+              <label
+                tabIndex={0}
+                className="btn btn-ghost px-2 lg:hidden"
+                data-ripplet
+              >
+                <i className="las la-search text-2xl"></i>
+              </label>
               <form
                 onSubmit={handleSearch}
                 tabIndex={0}
@@ -44,8 +48,10 @@ const MainLayout = ({ children, auth: { user } }) => {
                   value={search}
                 />
               </form>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="aspect-square h-12"></div>
+          )}
           <Link
             href={route("front.home")}
             className="btn btn-ghost px-2 mx-auto"
@@ -57,7 +63,7 @@ const MainLayout = ({ children, auth: { user } }) => {
             />
           </Link>
         </div>
-        {!route().current().startsWith("front.catalog") && (
+        {route().current() !== "front.catalog" && (
           <form
             onSubmit={handleSearch}
             className="navbar-center hidden lg:flex lg:shrink lg:grow max-w-xl ml-2"
@@ -87,7 +93,7 @@ const MainLayout = ({ children, auth: { user } }) => {
           <Show>
             <Show.When isTrue={!!user}>
               <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-ghost px-2">
+                <label tabIndex={0} className="btn btn-ghost px-2" data-ripplet>
                   <span className="font-medium normal-case hidden lg:inline-block mr-4 text-base">
                     Halo, {user?.name?.split(" ")[0]}
                   </span>
@@ -125,7 +131,10 @@ const MainLayout = ({ children, auth: { user } }) => {
                     <a className="text-base">Kelas Saya</a>
                   </li>
                   <li>
-                    <Link href={route("logout")} className="text-red-500">
+                    <Link
+                      href={route("logout")}
+                      className="text-red-500 active:bg-red-500 active:text-white"
+                    >
                       Logout
                     </Link>
                   </li>
@@ -158,7 +167,7 @@ const MainLayout = ({ children, auth: { user } }) => {
           </Show>
         </div>
       </div>
-      <div className="container mx-auto mt-20 px-4 pb-10">{children}</div>
+      <div className="mt-10 md:mt-20 pb-10">{children}</div>
     </main>
   );
 };

@@ -1,6 +1,6 @@
-import React, { memo, useRef, useEffect } from "react";
+import React, { memo, useRef } from "react";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { extractRouteParams } from "@/libs/utils";
 import { useForm, useWatch } from "react-hook-form";
@@ -10,15 +10,16 @@ import { useUpdateEffect } from "react-haiku";
 import { For, If } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
 import CourseCard from "../components/CourseCard";
+import FilterModal from "./components/FilterModal";
 
 const Index = () => {
-  const queryClient = useQueryClient();
   const params = useRef(extractRouteParams(window.location.search));
   const {
     register: form,
     watch,
     control,
     handleSubmit,
+    setValue,
   } = useForm({
     defaultValues: {
       ...params.current,
@@ -31,7 +32,7 @@ const Index = () => {
     name: ["sort", "category", "level"],
   });
 
-  const { data: groupCategories = [], isSuccess: isGroupCategoriesSuccess } =
+  const { data: categoryGroups = [], isSuccess: isGroupCategoriesSuccess } =
     useQuery(["catalog", "category", "group"], () =>
       axios.get("/catalog/category").then((res) => res.data)
     );
@@ -59,7 +60,7 @@ const Index = () => {
   };
 
   return (
-    <main>
+    <main className="container mx-auto px-4">
       <header className="py-20 prose text-center max-w-none">
         <h1 className="text-navy">Eksplor Semua Kelas Kami</h1>
         <p className="max-w-lg mx-auto text-navy">
@@ -80,16 +81,29 @@ const Index = () => {
             placeholder="Cari kelas yang ingin dipelajari..."
             {...form("search")}
           />
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" data-ripplet>
             Cari
           </button>
         </form>
       </section>
-      <section className="mb-12 grid grid-cols-[1fr_4fr] gap-4">
-        <div className="overflow-auto max-h-screen scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded">
+      <section className="mb-12 md:grid md:grid-cols-[1fr_3fr] lg:grid-cols-[1fr_4fr] md:gap-4">
+        {/* begin::Filter on Mobile */}
+        <div className="rounded-md md:hidden" data-ripplet>
+          <label
+            htmlFor="filter-modal"
+            className="flex rounded-md p-4 shadow mb-8 justify-between cursor-pointer"
+          >
+            <h6 className="text-lg">Filter Pencarian</h6>
+            <i className="fa fa-sliders-h text-xl"></i>
+          </label>
+        </div>
+        {/* end::Filter on Mobile */}
+
+        {/* begin::Filter on Desktop */}
+        <div className="hidden md:block overflow-auto max-h-screen scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded">
           <If isTrue={isGroupCategoriesSuccess}>
             <For
-              each={groupCategories}
+              each={categoryGroups}
               render={(group) => (
                 <div className="mb-4">
                   <h2 className="text-lg font-semibold">{group.name}</h2>
@@ -210,7 +224,9 @@ const Index = () => {
             <Skeleton count={3} className="h-8" />
           </If>
         </div>
-        <div className="grid grid-cols-3 gap-4 items-start">
+        {/* end::Filter on Desktop */}
+
+        <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6 items-start">
           <If isTrue={isCoursesSuccess}>
             <For
               each={courses}
@@ -229,6 +245,8 @@ const Index = () => {
           </If>
         </div>
       </section>
+
+      <FilterModal id="filter-modal" refetch={refetch} setValue={setValue} />
     </main>
   );
 };

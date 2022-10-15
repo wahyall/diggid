@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
 
 // Front
 Route::group(['prefix' => 'catalog'], function () {
-    Route::post('course', [CatalogController::class, 'course']);
     Route::get('category', [CatalogController::class, 'category']);
+    Route::post('course', [CatalogController::class, 'course']);
+    Route::get('course/{uuid}', [CatalogController::class, 'courseDetail']);
 });

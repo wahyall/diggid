@@ -19,7 +19,9 @@ class MenuSeeder extends Seeder {
         $menus = [
             // Front
             ['name' => 'Home', 'url' => '/', 'route' => 'front.home', 'component' => 'front/Index'],
-            ['name' => 'Katalog Kelas', 'url' => '/catalog', 'route' => 'front.catalog', 'component' => 'front/catalog/Index'],
+            ['name' => 'Katalog Kelas', 'url' => '/catalog', 'route' => 'front.catalog', 'component' => 'front/catalog/Index', 'children' => [
+                ['name' => 'Home', 'url' => '/catalog/course/{slug}', 'route' => 'front.catalog.course', 'component' => 'front/catalog/Course'],
+            ]],
 
             ['middleware' => 'auth|verified', 'children' => [
                 // User
@@ -51,13 +53,13 @@ class MenuSeeder extends Seeder {
             } else {
                 $data = Menu::create(collect($menu)->except(['children'])->toArray());
                 if (isset($menu['children'])) {
-                    $this->seedChildren($menu['children'], $data->id, $menu['middleware']);
+                    @$this->seedChildren($menu['children'], $data->id, $menu['middleware']);
                 }
             }
         }
     }
 
-    private function seedChildren($menus, $parent_id, $parent_middleware) {
+    private function seedChildren($menus, $parent_id, $parent_middleware = '') {
         foreach ($menus as $menu) {
             @$middleware = rtrim($parent_middleware . '|' . $menu['middleware'], '|');
             if (!isset($menu['name'])) {

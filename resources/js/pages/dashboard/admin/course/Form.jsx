@@ -172,6 +172,21 @@ function Form({ close, selected, csrfToken }) {
                 autoComplete="off"
               />
             </div>
+            <div className="mb-10">
+              <label htmlFor="name" className="form-label required">
+                Caption :
+              </label>
+              <input
+                type="text"
+                name="caption"
+                id="caption"
+                placeholder="Caption"
+                className="form-control required"
+                required
+                defaultValue={course?.caption}
+                autoComplete="off"
+              />
+            </div>
             <div className="mb-6">
               <div className="row">
                 <div className="col-9">
@@ -258,7 +273,7 @@ function Form({ close, selected, csrfToken }) {
                       defaultValue={course?.finish_estimation}
                       autoComplete="off"
                     />
-                    <span className="input-group-text">hari</span>
+                    <span className="input-group-text">jam</span>
                   </div>
                 </div>
               </div>
@@ -273,6 +288,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="1"
                     id="level-pemula"
+                    defaultChecked={course?.level == 1}
                   />
                   <label class="form-check-label" for="level-pemula">
                     Pemula
@@ -285,6 +301,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="2"
                     id="level-mengengah"
+                    defaultChecked={course?.level == 2}
                   />
                   <label class="form-check-label" for="level-mengengah">
                     Menengah
@@ -297,6 +314,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="3"
                     id="level-mahir"
+                    defaultChecked={course?.level == 3}
                   />
                   <label class="form-check-label" for="level-mahir">
                     Mahir

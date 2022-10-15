@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->double('price');
             $table->string('thumbnail');
             $table->longText('description');
-            $table->integer('finish_estimation')->nullable()->comment('in days');
+            $table->integer('finish_estimation')->nullable()->comment('in hours');
             $table->double('discount')->nullable()->comment('in percentage');
             $table->timestamps();
         });

@@ -16,7 +16,6 @@ class CatalogController extends Controller {
         }
     }
 
-    // NB: sorting still not working
     public function course(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $courses = Course::search($request->search ?? "", function (Indexes $meilisearch, string $query, array $options) use ($request) {
@@ -40,6 +39,15 @@ class CatalogController extends Controller {
             }
 
             return response()->json($courses);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function courseDetail($slug) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $course = Course::where('slug', $slug)->with(['categories', 'lessons', 'lessons.videos', 'project'])->withCount(['purchases AS members'])->firstOrFail();
+            return response()->json($course);
         } else {
             abort(404);
         }

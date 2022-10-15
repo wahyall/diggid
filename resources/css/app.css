@@ -38,4 +38,21 @@
   .checkbox {
     @apply rounded-md;
   }
+
+  .badge {
+    @apply rounded-sm;
+  }
+
+  .card {
+    @apply rounded-lg;
+  }
+
+  .modal .modal-box {
+    @apply rounded-md;
+  }
+
+  .collapse .collapse-title,
+  :where(.collapse > input[type="checkbox"]) {
+    @apply !min-h-[unset];
+  }
 }

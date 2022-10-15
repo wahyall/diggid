@@ -28,10 +28,11 @@ class CourseController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255',
+                'caption' => 'required|string|max:255',
                 'thumbnail' => 'required|image',
                 'price' => 'required',
                 'discount' => 'nullable',
-                'finish_estimation' => 'nullable|integer',
+                'finish_estimation' => 'required|integer',
                 'description' => 'required|string',
                 'category_uuids' => 'required|array',
                 'category_uuids.*' => 'required|exists:categories,uuid',
@@ -47,16 +48,10 @@ class CourseController extends Controller {
             $discount = str_replace('.', '', $request->discount);
             $discount = str_replace(',', '.', $discount);
 
-            $course = Course::create([
-                'name' => $request->name,
-                'thumbnail' => 'storage/' . $request->thumbnail->store('course/thumbnail', 'public'),
-                'price' => $price,
-                'discount' => $discount ? $discount : 0,
-                'finish_estimation' => $request->finish_estimation,
-                'description' => $request->description,
-                'published' => $request->published,
-                'level' => $request->level,
-            ]);
+            $data = $request->only(['name', 'caption', 'thumbnail', 'price', 'discount', 'finish_estimation', 'description', 'published', 'level']);
+            $data['thumbnail'] = 'storage/' . $request->thumbnail->store('course/thumbnail', 'public');
+
+            $course = Course::create($data);
 
             if ($course->published) $course->searchable();
             else $course->unsearchable();
@@ -99,10 +94,11 @@ class CourseController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255',
+                'caption' => 'required|string|max:255',
                 'thumbnail' => 'required|image',
                 'price' => 'required',
                 'discount' => 'nullable',
-                'finish_estimation' => 'nullable|integer',
+                'finish_estimation' => 'required|integer',
                 'description' => 'required|string',
                 'category_uuids' => 'required|array',
                 'category_uuids.*' => 'required|exists:categories,uuid',
@@ -127,16 +123,10 @@ class CourseController extends Controller {
             $discount = str_replace('.', '', $request->discount);
             $discount = str_replace(',', '.', $discount);
 
-            $course->update([
-                'name' => $request->name,
-                'thumbnail' => 'storage/' . $request->thumbnail->store('course/thumbnail', 'public'),
-                'price' => $price,
-                'discount' => $discount ? $discount : 0,
-                'finish_estimation' => $request->finish_estimation,
-                'description' => $request->description,
-                'published' => $request->published,
-                'level' => $request->level,
-            ]);
+            $data = $request->only(['name', 'caption', 'thumbnail', 'price', 'discount', 'finish_estimation', 'description', 'published', 'level']);
+            $data['thumbnail'] = 'storage/' . $request->thumbnail->store('course/thumbnail', 'public');
+
+            $course->update($data);
 
             if ($course->published) $course->searchable();
             else $course->unsearchable();

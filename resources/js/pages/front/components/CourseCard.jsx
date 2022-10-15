@@ -2,6 +2,7 @@ import React, { memo, useMemo } from "react";
 import { currency } from "@/libs/utils";
 
 import { For } from "react-haiku";
+import { Link } from "@inertiajs/inertia-react";
 
 const CourseCard = ({ course }) => {
   const level = useMemo(() => {
@@ -9,26 +10,30 @@ const CourseCard = ({ course }) => {
     if (course.level === "2") return "Menengah";
     if (course.level === "3") return "Mahir";
   });
+
   return (
-    <div className="card card-compact bg-base-100 shadow-xl">
+    <Link
+      href={route("front.catalog.course", course.slug)}
+      className="card card-compact bg-base-100 shadow-xl"
+    >
       <figure>
         <img src={asset(course.thumbnail)} alt="Shoes" />
       </figure>
       <div className="card-body">
-        <h1 className="card-title font-bold line-clamp-2 !mb-0">
-          {course.name}
-        </h1>
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2">
           <For
             each={course.categories}
             render={(category) => (
-              <div className="badge badge-outline badge-sm" key={category.uuid}>
+              <div className="badge badge-ghost badge-sm" key={category.uuid}>
                 {category.name}
               </div>
             )}
           />
         </div>
-        <div className="flex justify-between">
+        <h1 className="card-title font-bold line-clamp-2 mb-2">
+          {course.name}
+        </h1>
+        <div className="flex justify-between mt-auto">
           <span className="text-lg">
             {currency(course.price - (course.price * course.discount) / 100)}
           </span>
@@ -54,7 +59,7 @@ const CourseCard = ({ course }) => {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -15,7 +15,7 @@ use Laravel\Scout\Searchable;
 class Course extends Model implements HasMedia {
     use Uuid, HasSlug, InteractsWithMedia, Searchable;
 
-    protected $fillable = ['name', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published', 'level'];
+    protected $fillable = ['name', 'caption', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published', 'level'];
     protected $hidden = ['id', 'category_id', 'created_at', 'updated_at', 'media'];
     protected $casts = ['published' => 'boolean'];
 

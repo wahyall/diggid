@@ -70,6 +70,10 @@ class Course extends Model implements HasMedia {
         return $this->hasMany(CourseLesson::class);
     }
 
+    public function videos() {
+        return $this->hasManyThrough(CourseLessonVideo::class, CourseLesson::class);
+    }
+
     public function project() {
         return $this->hasOne(CourseProject::class);
     }

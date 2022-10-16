@@ -7,8 +7,9 @@ import { asset } from "@/libs/utils";
 
 import { For } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
+import FreeVideo from "./components/FreeVideo";
 
-const Course = memo(() => {
+const Index = memo(() => {
   const {
     route: {
       parameters: { slug },
@@ -29,36 +30,38 @@ const Course = memo(() => {
 
   if (isLoading)
     return (
-      <div className="grid grid-cols-[2fr_3fr] gap-8 py-20">
-        <Skeleton className="aspect-video" />
-        <div>
-          <div className="flex gap-2 my-4">
-            <Skeleton height={24} width={72} />
-            <Skeleton height={24} width={72} />
-            <Skeleton height={24} width={72} />
+      <article className="md:container mx-auto md:px-4">
+        <header className="grid grid-cols-[2fr_3fr] gap-8 py-20">
+          <Skeleton className="aspect-video" />
+          <div>
+            <div className="flex gap-2 my-4">
+              <Skeleton height={24} width={72} />
+              <Skeleton height={24} width={72} />
+              <Skeleton height={24} width={72} />
+            </div>
+            <Skeleton height={48} />
+            <Skeleton height={48} />
+            <div className="flex gap-x-8 my-4">
+              <Skeleton height={24} width={200} />
+              <Skeleton height={24} width={200} />
+            </div>
+            <Skeleton height={20} />
+            <Skeleton height={20} />
+            <Skeleton height={20} width={220} />
           </div>
-          <Skeleton height={48} />
-          <Skeleton height={48} />
-          <div className="flex gap-x-8 my-4">
-            <Skeleton height={24} width={200} />
-            <Skeleton height={24} width={200} />
-          </div>
-          <Skeleton height={20} />
-          <Skeleton height={20} />
-          <Skeleton height={20} width={220} />
-        </div>
-      </div>
+        </header>
+      </article>
     );
 
   return (
     <article className="md:container mx-auto md:px-4">
-      <header className="md:grid grid-cols-[2fr_3fr] lg:gap-8 md:gap-4 py-6 md:py-20">
+      <header className="md:grid grid-cols-[2fr_3fr] lg:gap-8 md:gap-4 md:py-20">
         <img
           src={asset(course.thumbnail)}
           alt={course.name}
           className="aspect-video md:rounded-md"
         />
-        <div className="prose px-4 md:px-0 mx-auto">
+        <div className="prose px-4 md:px-0 mx-auto md:mx-0">
           <div className="flex gap-2 mb-2 mt-6 md:mt-0">
             <For
               each={course.categories}
@@ -99,8 +102,9 @@ const Course = memo(() => {
           <p>{course.caption}</p>
         </div>
       </header>
+      <FreeVideo slug={course?.slug} />
     </article>
   );
 });
 
-export default Course;
+export default Index;

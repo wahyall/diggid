@@ -36,7 +36,7 @@ const MainLayout = ({ children, auth: { user } }) => {
               <form
                 onSubmit={handleSearch}
                 tabIndex={0}
-                className="menu rounded-none menu-compact dropdown-content mt-3 py-2 shadow -ml-2 w-screen px-3 bg-slate-50"
+                className="menu rounded-none menu-compact dropdown-content mt-2 py-2 shadow -ml-2 w-screen px-3 bg-slate-50"
               >
                 <input
                   type="text"
@@ -167,7 +167,7 @@ const MainLayout = ({ children, auth: { user } }) => {
           </Show>
         </div>
       </div>
-      <div className="mt-10 md:mt-20 pb-10">{children}</div>
+      <div className="mt-16 md:mt-20 pb-10">{children}</div>
     </main>
   );
 };

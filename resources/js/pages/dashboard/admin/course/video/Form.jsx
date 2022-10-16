@@ -217,7 +217,7 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
                 defaultValue={video?.name}
               />
             </div>
-            <div className="col-12 mb-10">
+            <div className="mb-10">
               <label htmlFor="description" className="form-label">
                 Deskripsi :
               </label>
@@ -227,6 +227,39 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
                 data={video?.description ?? ""}
                 onReady={onEditorReady}
               />
+            </div>
+            <div className="mb-10">
+              <label className="form-label mb-3">
+                Jadikan Gratis? (Highlight) :
+              </label>
+              <div className="d-flex gap-10 align-items-center">
+                <div class="form-check form-check-custom form-check-solid">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="is_free"
+                    value="1"
+                    id="free"
+                    defaultChecked={video?.is_free}
+                  />
+                  <label class="form-check-label" for="free">
+                    Ya
+                  </label>
+                </div>
+                <div class="form-check form-check-custom form-check-solid">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="is_free"
+                    value="0"
+                    id="premium"
+                    defaultChecked={!video?.is_free}
+                  />
+                  <label class="form-check-label" for="premium">
+                    Tidak
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
           <div className="col-12">

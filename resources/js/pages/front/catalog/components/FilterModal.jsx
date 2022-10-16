@@ -30,15 +30,16 @@ const FilterModal = memo(({ id, reset, ...props }) => {
       <label htmlFor={id} className="modal modal-bottom sm:modal-middle">
         <label className="modal-box" htmlFor="">
           <form onSubmit={handleSubmit(onSubmit)}>
+            <h2 className="text-lg font-semibold mb-6">Kategori</h2>
             <If isTrue={isGroupCategoriesSuccess}>
               <For
                 each={categoryGroups}
                 render={(group) => (
-                  <div className="collapse collapse-arrow">
+                  <div className="collapse collapse-arrow mb-2 py-2">
                     <input type="checkbox" className="peer" />
-                    <h2 className="collapse-title text-lg font-semibold p-0 flex items-center py-4">
+                    <span className="collapse-title text-lg font-normal p-0 flex items-center">
                       {group.name}
-                    </h2>
+                    </span>
                     <div className="collapse-content p-0">
                       <ul className="mt-2">
                         <For
@@ -158,6 +159,9 @@ const FilterModal = memo(({ id, reset, ...props }) => {
               <Skeleton count={3} className="h-8" />
             </If>
             <div className="modal-action">
+              <label htmlFor={id} className="btn btn-ghost" data-ripplet>
+                Batal
+              </label>
               <label htmlFor={id}>
                 <button type="submit" className="btn btn-primary" data-ripplet>
                   Terapkan

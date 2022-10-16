@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Course;
 use App\Models\CourseLesson;
 use App\Models\CourseLessonVideo;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Iman\Streamer\VideoStreamer;
 
 class CourseLessonVideoController extends Controller {
     public function index(Request $request, $uuid) {
@@ -33,6 +35,7 @@ class CourseLessonVideoController extends Controller {
             $request->validate([
                 'name' => 'required|string',
                 'description' => 'nullable|string',
+                'is_free' => 'required|boolean',
             ]);
 
             $order = CourseLessonVideo::whereHas('lesson', function ($q) use ($lesson_uuid) {
@@ -42,6 +45,7 @@ class CourseLessonVideoController extends Controller {
                 'name' => $request->name,
                 'description' => $request->description,
                 'order' => $order,
+                'is_free' => $request->is_free,
             ]);
 
             return response()->json([
@@ -72,6 +76,7 @@ class CourseLessonVideoController extends Controller {
             $request->validate([
                 'name' => 'required|string',
                 'description' => 'nullable|string',
+                'is_free' => 'required|boolean',
                 'deleted_images' => 'nullable|array',
                 'deleted_images.*' => 'nullable|string',
             ]);
@@ -79,6 +84,7 @@ class CourseLessonVideoController extends Controller {
             $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->update([
                 'name' => $request->name,
                 'description' => $request->description,
+                'is_free' => $request->is_free,
             ]);
 
             if (isset($request->deleted_images)) {
@@ -171,5 +177,54 @@ class CourseLessonVideoController extends Controller {
         } else {
             return abort(404);
         }
+    }
+
+    public function free($slug) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $videos = CourseLessonVideo::whereHas('lesson', function ($q) use ($slug) {
+                $q->whereHas('course', function ($q) use ($slug) {
+                    $q->where('slug', $slug);
+                });
+            })->where('is_free', '1')->get();
+
+            return response()->json($videos);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function video($slug, $uuid) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $course = Course::where('slug', $slug)->first();
+            $video = CourseLessonVideo::where('uuid', $uuid)->first();
+
+            // If course or video is free, send the video with freely access
+            if ($course->price <= 0 || $video->is_free) {
+                $url = URL::temporarySignedRoute('video.play', now()->addMinutes(5), [
+                    'slug' => $slug,
+                    'uuid' => $uuid
+                ]);
+            } else {
+                $url = URL::temporarySignedRoute('video.secure.play', now()->addMinutes(5), [
+                    'slug' => $slug,
+                    'uuid' => $uuid
+                ]);
+            }
+
+            return response()->json($url);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function play($slug, $uuid) {
+        $video = CourseLessonVideo::where('uuid', $uuid)->firstOrFail();
+
+        if (!Storage::disk('private')->exists($video->video)) {
+            return abort(404);
+        }
+
+        $file = storage_path('app/private/' . $video->video);
+        VideoStreamer::streamFile($file);
     }
 }

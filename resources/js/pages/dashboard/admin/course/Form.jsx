@@ -279,7 +279,7 @@ function Form({ close, selected, csrfToken }) {
               </div>
             </div>
             <div className="mb-10">
-              <label className="form-label mb-3">Tingkatan</label>
+              <label className="form-label mb-3">Tingkatan :</label>
               <div className="d-flex gap-10 align-items-center">
                 <div class="form-check form-check-custom form-check-solid">
                   <input

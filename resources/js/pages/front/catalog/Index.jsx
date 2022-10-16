@@ -101,35 +101,41 @@ const Index = () => {
 
         {/* begin::Filter on Desktop */}
         <div className="hidden md:block overflow-auto max-h-screen scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded">
+          <h2 className="text-lg font-semibold mb-4">Kategori</h2>
           <If isTrue={isGroupCategoriesSuccess}>
             <For
               each={categoryGroups}
               render={(group) => (
-                <div className="mb-4">
-                  <h2 className="text-lg font-semibold">{group.name}</h2>
-                  <ul className="mt-2">
-                    <For
-                      each={group.categories}
-                      render={(category) => (
-                        <li>
-                          <div className="form-control">
-                            <label className="label cursor-pointer">
-                              <input
-                                type="checkbox"
-                                name="category"
-                                className="checkbox checkbox-primary"
-                                value={category.slug}
-                                {...form("category")}
-                              />
-                              <span className="label-text text-navy">
-                                {category.name}
-                              </span>
-                            </label>
-                          </div>
-                        </li>
-                      )}
-                    />
-                  </ul>
+                <div className="collapse collapse-arrow py-2">
+                  <input type="checkbox" className="peer" />
+                  <span className="collapse-title text-lg font-normal p-0 flex items-center">
+                    {group.name}
+                  </span>
+                  <div className="collapse-content p-0">
+                    <ul className="mt-2">
+                      <For
+                        each={group.categories}
+                        render={(category) => (
+                          <li>
+                            <div className="form-control">
+                              <label className="label cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  name="category[]"
+                                  className="checkbox checkbox-primary"
+                                  value={category.slug}
+                                  {...form("category")}
+                                />
+                                <span className="label-text text-navy">
+                                  {category.name}
+                                </span>
+                              </label>
+                            </div>
+                          </li>
+                        )}
+                      />
+                    </ul>
+                  </div>
                 </div>
               )}
             />

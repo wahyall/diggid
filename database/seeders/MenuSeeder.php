@@ -20,7 +20,7 @@ class MenuSeeder extends Seeder {
             // Front
             ['name' => 'Home', 'url' => '/', 'route' => 'front.home', 'component' => 'front/Index'],
             ['name' => 'Katalog Kelas', 'url' => '/catalog', 'route' => 'front.catalog', 'component' => 'front/catalog/Index', 'children' => [
-                ['name' => 'Home', 'url' => '/catalog/course/{slug}', 'route' => 'front.catalog.course', 'component' => 'front/catalog/Course'],
+                ['name' => 'Home', 'url' => '/catalog/course/{slug}', 'route' => 'front.catalog.course', 'component' => 'front/catalog/course/Index'],
             ]],
 
             ['middleware' => 'auth|verified', 'children' => [

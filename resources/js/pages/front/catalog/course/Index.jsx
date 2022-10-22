@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, Fragment } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
@@ -7,7 +7,8 @@ import { asset } from "@/libs/utils";
 
 import { For } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
-import FreeVideo from "./components/FreeVideo";
+import FreeVideo from "./blocks/FreeVideo";
+import Information from "./blocks/Information";
 
 const Index = memo(() => {
   const {
@@ -103,6 +104,7 @@ const Index = memo(() => {
         </div>
       </header>
       <FreeVideo slug={course?.slug} />
+      <Information slug={course?.slug} />
     </article>
   );
 });

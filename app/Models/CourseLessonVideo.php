@@ -8,14 +8,15 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use App\Jobs\DeleteVideoThumbnail;
 use App\Jobs\DeleteVideoHls;
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
 class CourseLessonVideo extends Model {
     use Uuid, HasSlug;
 
     protected $fillable = ['name', 'slug', 'description', 'course_lesson_id', 'video', 'order', 'is_free', 'converted_for_streaming_at'];
-    protected $hidden = ['id', 'course_lesson_id', 'video', 'created_at', 'updated_at', 'is_free', 'converted_for_streaming_at'];
+    protected $hidden = ['id', 'course_lesson_id', 'video', 'created_at', 'updated_at', 'converted_for_streaming_at'];
     protected $casts = ['is_free' => 'boolean'];
-    protected $appends = ['thumbnail'];
+    protected $appends = ['thumbnail', 'duration'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()
@@ -25,6 +26,13 @@ class CourseLessonVideo extends Model {
 
     public function getThumbnailAttribute() {
         return asset('storage/course/video/thumbnail/' . $this->uuid . '.jpg');
+    }
+
+    public function getDurationAttribute() {
+        $video = FFMpeg::fromDisk('private')
+            ->open($this->video);
+
+        return $video->getDurationInSeconds() / 60; // In minutes
     }
 
     public function lesson() {

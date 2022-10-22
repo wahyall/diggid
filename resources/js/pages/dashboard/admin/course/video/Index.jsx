@@ -104,6 +104,11 @@ function Index({ csrf_token }) {
                 Video Tidak Terupload
               </span>
             </If>
+            <If isTrue={!cell.row.original.is_processed}>
+              <span className="badge badge-light-primary ms-4">
+                Video Sedang Diproses
+              </span>
+            </If>
           </>
         ),
         header: "Nama",

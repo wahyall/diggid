@@ -97,13 +97,14 @@ Route::group(['prefix' => 'catalog'], function () {
     Route::get('course/{uuid}', [CatalogController::class, 'detail']);
 });
 
-Route::group(['prefix' => 'course/{slug}'], function () {
+Route::group(['prefix' => 'course/{course_slug}'], function () {
     Route::group(['prefix' => 'video'], function () {
         Route::get('free', [CourseLessonVideoController::class, 'free']);
-        Route::group(['prefix' => '{uuid}'], function () {
+        Route::group(['prefix' => '{video_slug}'], function () {
             Route::get('', [CourseLessonVideoController::class, 'video']);
-            Route::get('play', [CourseLessonVideoController::class, 'play'])->name('video.play');
-            Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware(['auth', 'signed']);
+            Route::get('stream', [CourseLessonVideoController::class, 'stream'])->name('video.stream');
+            Route::get('{video_file}', [CourseLessonVideoController::class, 'streamHls'])->name('video.stream.hls');
+            // Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware(['auth', 'signed']);
         });
     });
 });

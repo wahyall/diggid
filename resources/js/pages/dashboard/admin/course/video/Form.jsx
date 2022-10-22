@@ -133,6 +133,9 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
       },
       onError: ({ response }, { uuid }) => {
         toast.error(response.data.message);
+        queryClient.setQueryData([lesson_uuid, "upload-toasts"], (items) =>
+          items.filter((i) => i !== uuid)
+        );
       },
     }
   );
@@ -233,29 +236,29 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
                 Jadikan Gratis? (Highlight) :
               </label>
               <div className="d-flex gap-10 align-items-center">
-                <div class="form-check form-check-custom form-check-solid">
+                <div className="form-check form-check-custom form-check-solid">
                   <input
-                    class="form-check-input"
+                    className="form-check-input"
                     type="radio"
                     name="is_free"
                     value="1"
                     id="free"
                     defaultChecked={video?.is_free}
                   />
-                  <label class="form-check-label" for="free">
+                  <label className="form-check-label" htmlFor="free">
                     Ya
                   </label>
                 </div>
-                <div class="form-check form-check-custom form-check-solid">
+                <div className="form-check form-check-custom form-check-solid">
                   <input
-                    class="form-check-input"
+                    className="form-check-input"
                     type="radio"
                     name="is_free"
                     value="0"
                     id="premium"
                     defaultChecked={!video?.is_free}
                   />
-                  <label class="form-check-label" for="premium">
+                  <label className="form-check-label" htmlFor="premium">
                     Tidak
                   </label>
                 </div>

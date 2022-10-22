@@ -42,14 +42,15 @@ class CourseController extends Controller {
                 'level' => 'required|in:1,2,3',
             ]);
 
-            $price = str_replace('.', '', $request->price);
-            $price = str_replace(',', '.', $price);
-
-            $discount = str_replace('.', '', $request->discount);
-            $discount = str_replace(',', '.', $discount);
 
             $data = $request->only(['name', 'caption', 'thumbnail', 'price', 'discount', 'finish_estimation', 'description', 'published', 'level']);
             $data['thumbnail'] = 'storage/' . $request->thumbnail->store('course/thumbnail', 'public');
+
+            $data['price'] = str_replace('.', '', $data['price']);
+            $data['price'] = str_replace(',', '.', $data['price']);
+
+            $data['discount'] = str_replace('.', '', isset($data['discount']) ? $data['discount'] : 0);
+            $data['discount'] = str_replace(',', '.', $data['discount']);
 
             $course = Course::create($data);
 
@@ -117,14 +118,14 @@ class CourseController extends Controller {
                 unlink(storage_path('app/public/' . str_replace('storage/', '', $course->thumbnail)));
             }
 
-            $price = str_replace('.', '', $request->price);
-            $price = str_replace(',', '.', $price);
-
-            $discount = str_replace('.', '', $request->discount);
-            $discount = str_replace(',', '.', $discount);
-
             $data = $request->only(['name', 'caption', 'thumbnail', 'price', 'discount', 'finish_estimation', 'description', 'published', 'level']);
             $data['thumbnail'] = 'storage/' . $request->thumbnail->store('course/thumbnail', 'public');
+
+            $data['price'] = str_replace('.', '', $data['price']);
+            $data['price'] = str_replace(',', '.', $data['price']);
+
+            $data['discount'] = str_replace('.', '', isset($data['discount']) ? $data['discount'] : 0);
+            $data['discount'] = str_replace(',', '.', $data['discount']);
 
             $course->update($data);
 

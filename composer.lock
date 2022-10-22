@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d895b41d7881539705100632dcc90ada",
+    "content-hash": "aeb5509e490dc6a886ef5aa7c088bf08",
     "packages": [
         {
             "name": "brick/math",
@@ -2867,33 +2867,46 @@
             "time": "2022-08-01T11:03:24+00:00"
         },
         {
-            "name": "pawlox/video-thumbnail",
-            "version": "v4.0.0",
+            "name": "pbmedia/laravel-ffmpeg",
+            "version": "8.1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/pawlox/video-thumbnail.git",
-                "reference": "d1ebaa3682db54f94aa0b680b6d0ed04ae7aa4ca"
+                "url": "https://github.com/protonemedia/laravel-ffmpeg.git",
+                "reference": "e6f93d8e3b1a917d6991a1747e0e5f73531f1e08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pawlox/video-thumbnail/zipball/d1ebaa3682db54f94aa0b680b6d0ed04ae7aa4ca",
-                "reference": "d1ebaa3682db54f94aa0b680b6d0ed04ae7aa4ca",
+                "url": "https://api.github.com/repos/protonemedia/laravel-ffmpeg/zipball/e6f93d8e3b1a917d6991a1747e0e5f73531f1e08",
+                "reference": "e6f93d8e3b1a917d6991a1747e0e5f73531f1e08",
                 "shasum": ""
             },
             "require": {
-                "ext-gd": "*",
-                "illuminate/support": "^9.0",
-                "php": ">=8.0",
-                "php-ffmpeg/php-ffmpeg": "^1.0.0"
+                "illuminate/contracts": "^9.0",
+                "php": "^8.0|^8.1",
+                "php-ffmpeg/php-ffmpeg": "^1.0.1"
             },
             "require-dev": {
-                "orchestra/testbench": "~7.0",
-                "phpunit/phpunit": "^9"
+                "league/flysystem-memory": "^3.0",
+                "mockery/mockery": "^1.3.3",
+                "orchestra/testbench": "^7.0",
+                "phpunit/phpunit": "^9.5.10",
+                "spatie/image": "^2.0",
+                "spatie/phpunit-snapshot-assertions": "^4.2"
             },
             "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ProtoneMedia\\LaravelFFMpeg\\Support\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "FFMpeg": "ProtoneMedia\\LaravelFFMpeg\\Support\\FFMpeg"
+                    }
+                }
+            },
             "autoload": {
                 "psr-4": {
-                    "Pawlox\\VideoThumbnail\\": "src/"
+                    "ProtoneMedia\\LaravelFFMpeg\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2902,27 +2915,32 @@
             ],
             "authors": [
                 {
-                    "name": "Paweł Marciniak",
-                    "email": "pawmarci@gmail.com"
+                    "name": "Pascal Baljet",
+                    "email": "pascal@protone.media",
+                    "homepage": "https://protone.media",
+                    "role": "Developer"
                 }
             ],
-            "description": "Video thumbnails",
+            "description": "FFMpeg for Laravel",
+            "homepage": "https://github.com/protonemedia/laravel-ffmpeg",
             "keywords": [
-                "Laravel video thumbnail",
-                "Video Thumbnails",
-                "laravel"
+                "ffmpeg",
+                "laravel",
+                "laravel-ffmpeg",
+                "protone media",
+                "protonemedia"
             ],
             "support": {
-                "issues": "https://github.com/pawlox/video-thumbnail/issues",
-                "source": "https://github.com/pawlox/video-thumbnail/tree/v4.0.0"
+                "issues": "https://github.com/protonemedia/laravel-ffmpeg/issues",
+                "source": "https://github.com/protonemedia/laravel-ffmpeg/tree/8.1.2"
             },
             "funding": [
                 {
-                    "url": "https://paypal.me/pawlox",
-                    "type": "custom"
+                    "url": "https://github.com/pascalbaljet",
+                    "type": "github"
                 }
             ],
-            "time": "2022-05-15T12:02:55+00:00"
+            "time": "2022-05-23T12:00:47+00:00"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",

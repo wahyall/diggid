@@ -281,42 +281,42 @@ function Form({ close, selected, csrfToken }) {
             <div className="mb-10">
               <label className="form-label mb-3">Tingkatan :</label>
               <div className="d-flex gap-10 align-items-center">
-                <div class="form-check form-check-custom form-check-solid">
+                <div className="form-check form-check-custom form-check-solid">
                   <input
-                    class="form-check-input"
+                    className="form-check-input"
                     type="radio"
                     name="level"
                     value="1"
                     id="level-pemula"
                     defaultChecked={course?.level == 1}
                   />
-                  <label class="form-check-label" for="level-pemula">
+                  <label className="form-check-label" htmlFor="level-pemula">
                     Pemula
                   </label>
                 </div>
-                <div class="form-check form-check-custom form-check-solid">
+                <div className="form-check form-check-custom form-check-solid">
                   <input
-                    class="form-check-input"
+                    className="form-check-input"
                     type="radio"
                     name="level"
                     value="2"
                     id="level-mengengah"
                     defaultChecked={course?.level == 2}
                   />
-                  <label class="form-check-label" for="level-mengengah">
+                  <label className="form-check-label" htmlFor="level-mengengah">
                     Menengah
                   </label>
                 </div>
-                <div class="form-check form-check-custom form-check-solid">
+                <div className="form-check form-check-custom form-check-solid">
                   <input
-                    class="form-check-input"
+                    className="form-check-input"
                     type="radio"
                     name="level"
                     value="3"
                     id="level-mahir"
                     defaultChecked={course?.level == 3}
                   />
-                  <label class="form-check-label" for="level-mahir">
+                  <label className="form-check-label" htmlFor="level-mahir">
                     Mahir
                   </label>
                 </div>
@@ -346,7 +346,7 @@ function Form({ close, selected, csrfToken }) {
               }
               onupdatefiles={setSneakPeek}
               allowMultiple={true}
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+              labelIdle='Drag & Drop your files or <span className="filepond--label-action">Browse</span>'
               acceptedFileTypes={["image/*"]}
             />
           </div>

@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
 
         <!-- Scripts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.2.4/hls.min.js" integrity="sha512-eo7eJYiag8lbLG87os4z/5wtJNoAwueGWd1zqKZG0PCx++TDR3KgZ9bqffhemnUjsrDJJeDDW+l6nBIss+6cnA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         @routes
         @viteReactRefresh
         @vite('resources/js/app.jsx')

@@ -9,6 +9,8 @@ use App\Models\CourseLessonVideo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Iman\Streamer\VideoStreamer;
+use App\Jobs\ConvertVideoForStreaming;
+use App\Jobs\GenerateVideoThumbnail;
 
 class CourseLessonVideoController extends Controller {
     public function index(Request $request, $uuid) {
@@ -21,6 +23,7 @@ class CourseLessonVideoController extends Controller {
 
             $videos = $videos->map(function ($video) {
                 $video->has_video = isset($video->video) && Storage::disk('private')->exists($video->video);
+                $video->is_processed = isset($video->converted_for_streaming_at);
                 return $video;
             });
 
@@ -107,6 +110,7 @@ class CourseLessonVideoController extends Controller {
     }
 
     public function upload(Request $request, $lesson_uuid, $uuid) {
+        ini_set('max_execution_time', 0);
         if (request()->wantsJson()) {
             try {
                 $request->validate([
@@ -119,15 +123,20 @@ class CourseLessonVideoController extends Controller {
                     unlink(storage_path('app/private/' . $video->video));
                 }
 
-                CourseLessonVideo::where('uuid', $uuid)->update([
+                $video = CourseLessonVideo::where('uuid', $uuid)->first();
+                $video->update([
                     'video' => $request->video->store('course/video', 'private')
                 ]);
+
+                GenerateVideoThumbnail::dispatch($video)->onQueue('video');
+                ConvertVideoForStreaming::dispatch($video)->onQueue('video');
 
                 return response()->json([
                     'message' => 'Berhasil mengupload video'
                 ]);
             } catch (\Throwable $th) {
-                $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->delete();
+                $video = CourseLesson::where('uuid', $lesson_uuid)->first()->videos()->where('uuid', $uuid)->first();
+                $video->delete();
                 return response()->json([
                     'message' => $th->getMessage(),
                 ], 500);
@@ -179,11 +188,11 @@ class CourseLessonVideoController extends Controller {
         }
     }
 
-    public function free($slug) {
+    public function free($course_slug) {
         if (request()->wantsJson() && request()->ajax()) {
-            $videos = CourseLessonVideo::whereHas('lesson', function ($q) use ($slug) {
-                $q->whereHas('course', function ($q) use ($slug) {
-                    $q->where('slug', $slug);
+            $videos = CourseLessonVideo::whereHas('lesson', function ($q) use ($course_slug) {
+                $q->whereHas('course', function ($q) use ($course_slug) {
+                    $q->where('slug', $course_slug);
                 });
             })->where('is_free', '1')->get();
 
@@ -193,21 +202,16 @@ class CourseLessonVideoController extends Controller {
         }
     }
 
-    public function video($slug, $uuid) {
+    public function video($course_slug, $video_slug) {
         if (request()->wantsJson() && request()->ajax()) {
-            $course = Course::where('slug', $slug)->first();
-            $video = CourseLessonVideo::where('uuid', $uuid)->first();
+            $course = Course::where('slug', $course_slug)->first();
+            $video = CourseLessonVideo::where('slug', $video_slug)->first();
 
-            // If course or video is free, send the video with freely access
-            if ($course->price <= 0 || $video->is_free) {
-                $url = URL::temporarySignedRoute('video.play', now()->addMinutes(5), [
-                    'slug' => $slug,
-                    'uuid' => $uuid
-                ]);
-            } else {
-                $url = URL::temporarySignedRoute('video.secure.play', now()->addMinutes(5), [
-                    'slug' => $slug,
-                    'uuid' => $uuid
+            // If video is free (for non-auth user), send the video with freely access
+            if ($video->is_free) {
+                $url = URL::temporarySignedRoute('video.stream', now()->addMinutes(5), [
+                    'course_slug' => $course_slug,
+                    'video_slug' => $video_slug
                 ]);
             }
 
@@ -217,14 +221,31 @@ class CourseLessonVideoController extends Controller {
         }
     }
 
-    public function play($slug, $uuid) {
-        $video = CourseLessonVideo::where('uuid', $uuid)->firstOrFail();
+    public function stream($course_slug, $video_slug) {
+        $video = CourseLessonVideo::where('slug', $video_slug)->firstOrFail();
+        if (!$video->is_free) {
+            abort(403);
+        }
 
         if (!Storage::disk('private')->exists($video->video)) {
             return abort(404);
         }
 
-        $file = storage_path('app/private/' . $video->video);
+        $file = storage_path('app/streaming/course/video/' . $video->uuid . '.m3u8');
         VideoStreamer::streamFile($file);
+    }
+
+    public function streamHls($course_slug, $video_slug, $video_file) {
+        if (!Storage::disk('streaming')->exists($video_file)) {
+            return abort(404);
+        }
+
+        $uuid = explode('_', $video_file)[0];
+        $video = CourseLessonVideo::where('uuid', $uuid)->firstOrFail();
+        if (!$video->is_free) {
+            abort(403);
+        }
+
+        return Storage::disk('streaming')->get($video_file);
     }
 }

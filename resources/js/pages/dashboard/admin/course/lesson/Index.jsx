@@ -160,6 +160,7 @@ function Index({ csrf_token }) {
               <button
                 type="button"
                 className="btn btn-primary btn-sm ms-auto"
+                style={{ whiteSpace: "nowrap" }}
                 onClick={() => (
                   setSelected(null), setOpenForm(true), KTUtil.scrollTop()
                 )}

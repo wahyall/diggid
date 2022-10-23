@@ -35,9 +35,10 @@ export function asset(uri) {
   );
 }
 
-export function currency(value) {
+export function currency(value, options = {}) {
   return Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
+    ...options,
   }).format(value);
 }

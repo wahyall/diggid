@@ -23,7 +23,7 @@ const FreeVideo = memo(({ slug }) => {
 
   if (isLoading)
     return (
-      <section className="grid grid-cols-[2fr_1fr] gap-4">
+      <section className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 px-4 lg:px-0 mt-8">
         <Skeleton className="aspect-video" />
         <div>
           <Skeleton className="h-full" />
@@ -32,7 +32,7 @@ const FreeVideo = memo(({ slug }) => {
     );
 
   return (
-    <section className="grid grid-cols-[2fr_1fr] gap-4">
+    <section className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 px-4 lg:px-0 mt-8">
       <VideoPlayer course={course} video={selectedVideo} />
       <div>
         <div className="p-6 bg-slate-100 rounded-t-md">
@@ -46,7 +46,7 @@ const FreeVideo = memo(({ slug }) => {
                 <li>
                   <button
                     type="button"
-                    className={`rounded-full btn btn-ghost w-full justify-start gap-2 px-4 py-2 mb-4 normal-case ${
+                    className={`rounded-full btn btn-ghost w-full justify-start gap-2 px-4 py-2 mb-4 normal-case flex-nowrap ${
                       selectedVideo.uuid === video.uuid
                         ? "bg-slate-700 text-white"
                         : "bg-slate-200"
@@ -54,7 +54,7 @@ const FreeVideo = memo(({ slug }) => {
                     onClick={() => setSelectedVideo(video)}
                   >
                     <i className="fa fa-play-circle text-xl"></i>
-                    <span className="font-medium">{video.name}</span>
+                    <span className="font-medium truncate">{video.name}</span>
                   </button>
                 </li>
               )}

@@ -3,7 +3,7 @@ import React, { memo, useMemo, Fragment } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { usePage } from "@inertiajs/inertia-react";
-import { asset } from "@/libs/utils";
+import { asset, currency } from "@/libs/utils";
 
 import { For } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
@@ -46,8 +46,8 @@ const Index = memo(() => {
               <Skeleton height={24} width={200} />
               <Skeleton height={24} width={200} />
             </div>
-            <Skeleton height={20} />
-            <Skeleton height={20} />
+            <Skeleton height={20} className="mb-2" />
+            <Skeleton height={20} className="mb-2" />
             <Skeleton height={20} width={220} />
           </div>
         </header>
@@ -73,7 +73,7 @@ const Index = memo(() => {
               )}
             />
           </div>
-          <h1 className="mb-4 font-semibold">{course.name}</h1>
+          <h1 className="mb-4 font-bold">{course.name}</h1>
           <div className="flex gap-x-8 my-4">
             <div className="flex items-center gap-2">
               <svg
@@ -105,6 +105,18 @@ const Index = memo(() => {
       </header>
       <FreeVideo slug={course?.slug} />
       <Information slug={course?.slug} />
+      <div className="text-center mt-20 mb-12">
+        <div className="px-4 py-2 rounded-full bg-blue-200 inline-block">
+          <h6 className="text-primary text-md font-bold">#ExploreYourSkills</h6>
+        </div>
+      </div>
+      <section className="max-w-3xl mx-auto flex flex-col justify-center gap-4 px-4 md:px-0">
+        <h1 className="font-bold text-center text-3xl">{course.name}</h1>
+        <h6 className="font-bold text-center text-xl mb-2">
+          {currency(course.price)}
+        </h6>
+        <button className="btn btn-lg btn-primary">Gabung Kelas</button>
+      </section>
     </article>
   );
 });

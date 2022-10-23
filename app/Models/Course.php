@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuid;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\MediaLibrary\HasMedia;
@@ -84,6 +83,10 @@ class Course extends Model implements HasMedia {
 
     public function reviews() {
         return $this->hasMany(Review::class);
+    }
+
+    public function showcases() {
+        return $this->hasMany(CourseShowcase::class);
     }
 
     public function registerMediaCollections(): void {

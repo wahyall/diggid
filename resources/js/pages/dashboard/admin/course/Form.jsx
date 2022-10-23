@@ -110,7 +110,7 @@ function Form({ close, selected, csrfToken }) {
 
   const editorConfig = {
     simpleUpload: {
-      uploadUrl: `${import.meta.env.VITE_URL}/admin/course/upload-image`,
+      uploadUrl: `${import.meta.env.VITE_URL}/api/admin/course/upload-image`,
       withCredentials: true,
       headers: {
         Accept: "application/json",
@@ -288,7 +288,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="1"
                     id="level-pemula"
-                    defaultChecked={course?.level == 1}
+                    checked={course?.level == 1}
                   />
                   <label className="form-check-label" htmlFor="level-pemula">
                     Pemula
@@ -301,7 +301,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="2"
                     id="level-mengengah"
-                    defaultChecked={course?.level == 2}
+                    checked={course?.level == 2}
                   />
                   <label className="form-check-label" htmlFor="level-mengengah">
                     Menengah
@@ -314,7 +314,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="3"
                     id="level-mahir"
-                    defaultChecked={course?.level == 3}
+                    checked={course?.level == 3}
                   />
                   <label className="form-check-label" htmlFor="level-mahir">
                     Mahir

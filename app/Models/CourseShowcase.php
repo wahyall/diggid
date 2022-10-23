@@ -9,7 +9,7 @@ class CourseShowcase extends Model {
     use Uuid;
 
     protected $fillable = ['name', 'description', 'thumbnail', 'url', 'course_id', 'user_id'];
-    protected $hidden = ['id'];
+    protected $hidden = ['id', 'created_at', 'updated_at', 'course_id', 'user_id'];
 
     public function course() {
         return $this->belongsTo(Course::class);

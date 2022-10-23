@@ -28,6 +28,7 @@ class MenuSeeder extends Seeder {
                 ['name' => 'Profil', 'url' => 'me', 'route' => 'front.me', 'component' => 'front/me/Index'],
                 ['name' => 'Kelas Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
                 ['name' => 'Setting', 'url' => 'me/setting', 'route' => 'front.me.setting', 'component' => 'front/me/setting/Index'],
+                ['name' => 'Keranjang Saya', 'url' => 'me/cart', 'route' => 'front.me.cart', 'component' => 'front/me/cart/Index'],
 
                 // Redirecting Dashboard
                 ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],

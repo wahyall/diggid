@@ -1,16 +1,19 @@
 import React, { memo, useMemo, Fragment } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { usePage } from "@inertiajs/inertia-react";
 import { asset, currency } from "@/libs/utils";
 
-import { For } from "react-haiku";
+import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/inertia-react";
+import { For, Show } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
 import FreeVideo from "./blocks/FreeVideo";
 import Information from "./blocks/Information";
 
 const Index = memo(() => {
+  const queryClient = useQueryClient();
   const {
     route: {
       parameters: { slug },
@@ -27,24 +30,42 @@ const Index = memo(() => {
     if (course.level === "2") return "Menengah";
     if (course.level === "3") return "Mahir";
     return "";
-  });
+  }, [course]);
+
+  const { mutate: addToCart, isLoading: isCartLoading } = useMutation(
+    () => axios.post("/me/cart", { course_uuid: course.uuid }),
+    {
+      onSuccess: () => {
+        Inertia.visit(route("front.me.cart"));
+        queryClient.invalidateQueries(["me", "cart"]);
+      },
+      onError: (error) => {
+        if (error.response.status === 401)
+          Inertia.visit(route("login"), {
+            data: {
+              redirect: route("front.catalog.course", course.slug),
+            },
+          });
+      },
+    }
+  );
 
   if (isLoading)
     return (
       <article className="md:container mx-auto md:px-4">
-        <header className="grid grid-cols-[2fr_3fr] gap-8 py-20">
+        <header className="md:grid grid-cols-[2fr_3fr] gap-8 md:py-20">
           <Skeleton className="aspect-video" />
-          <div>
+          <div className="px-4 md:px-0">
             <div className="flex gap-2 my-4">
               <Skeleton height={24} width={72} />
               <Skeleton height={24} width={72} />
               <Skeleton height={24} width={72} />
             </div>
-            <Skeleton height={48} />
+            <Skeleton height={48} className="mb-2" />
             <Skeleton height={48} />
             <div className="flex gap-x-8 my-4">
-              <Skeleton height={24} width={200} />
-              <Skeleton height={24} width={200} />
+              <Skeleton height={24} width={120} />
+              <Skeleton height={24} width={120} />
             </div>
             <Skeleton height={20} className="mb-2" />
             <Skeleton height={20} className="mb-2" />
@@ -103,7 +124,11 @@ const Index = memo(() => {
           <p>{course.caption}</p>
         </div>
       </header>
-      <FreeVideo slug={course?.slug} />
+      <FreeVideo
+        slug={course?.slug}
+        addToCart={addToCart}
+        isCartLoading={isCartLoading}
+      />
       <Information slug={course?.slug} />
       <div className="text-center mt-20 mb-12">
         <div className="px-4 py-2 rounded-full bg-blue-200 inline-block">
@@ -112,10 +137,24 @@ const Index = memo(() => {
       </div>
       <section className="max-w-3xl mx-auto flex flex-col justify-center gap-4 px-4 md:px-0">
         <h1 className="font-bold text-center text-3xl">{course.name}</h1>
-        <h6 className="font-bold text-center text-xl mb-2">
-          {currency(course.price)}
-        </h6>
-        <button className="btn btn-lg btn-primary">Gabung Kelas</button>
+        <h6 className="text-center text-3xl my-4">{currency(course.price)}</h6>
+        <Show>
+          <Show.When isTrue={course.is_purchased}>
+            <Link className="btn btn-lg btn-primary" data-ripplet>
+              Mulai Belajar
+            </Link>
+          </Show.When>
+          <Show.Else>
+            <button
+              onClick={addToCart}
+              className={`btn btn-lg btn-primary ${isCartLoading && "loading"}`}
+              disabled={isCartLoading}
+              data-ripplet
+            >
+              Gabung Kelas
+            </button>
+          </Show.Else>
+        </Show>
       </section>
     </article>
   );

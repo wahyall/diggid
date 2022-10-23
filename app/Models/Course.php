@@ -105,6 +105,10 @@ class Course extends Model implements HasMedia {
         return $this->reviews->avg('rating');
     }
 
+    public function getIsPurchasedAttribute() {
+        return !!$this->purchases()->where('user_id', auth()->user()->id)->count();
+    }
+
     public static function booted() {
         parent::boot();
 

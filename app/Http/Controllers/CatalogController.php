@@ -48,6 +48,9 @@ class CatalogController extends Controller {
         if (request()->wantsJson() && request()->ajax()) {
             $course = Course::where('slug', $slug)->with(['categories', 'lessons', 'lessons.videos', 'showcases.user', 'reviews'])->withCount(['purchases AS members', 'videos'])->firstOrFail();
             $course->append(['sneak_peeks']);
+            if (request()->user()) {
+                $course->append(['is_purchased']);
+            }
             return response()->json($course);
         } else {
             abort(404);

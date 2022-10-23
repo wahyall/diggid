@@ -9,7 +9,7 @@ class Cart extends Model {
     use Uuid;
 
     protected $fillable = ['user_id', 'course_id'];
-    protected $hidden = ['id'];
+    protected $hidden = ['id', 'created_at', 'updated_at', 'user_id', 'course_id'];
 
     public function user() {
         return $this->belongsTo(User::class);

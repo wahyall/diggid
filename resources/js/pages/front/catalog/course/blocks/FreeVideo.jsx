@@ -8,7 +8,7 @@ import { For } from "react-haiku";
 import { useQueryClient } from "@tanstack/react-query";
 import VideoPlayer from "@/pages/front/components/VideoPlayer";
 
-const FreeVideo = memo(({ slug }) => {
+const FreeVideo = memo(({ slug, addToCart, isCartLoading }) => {
   const queryClient = useQueryClient();
   const [selectedVideo, setSelectedVideo] = useState({});
 
@@ -59,9 +59,24 @@ const FreeVideo = memo(({ slug }) => {
                 </li>
               )}
             />
+            <li>
+              <div className="rounded-full btn btn-ghost w-full justify-start gap-2 px-4 py-2 mb-4 normal-case flex-nowrap bg-slate-200 hover:bg-slate-200 cursor-default">
+                <i className="fa fa-play-circle text-xl"></i>
+                <span className="font-medium truncate">
+                  {course.videos_count - videos.length} video lainnya
+                </span>
+              </div>
+            </li>
           </ul>
         </div>
-        <button className="btn btn-lg btn-primary rounded-t-none w-full">
+        <button
+          className={`btn btn-lg btn-primary rounded-t-none w-full ${
+            isCartLoading && "loading"
+          }`}
+          disabled={isCartLoading}
+          data-ripplet
+          onClick={addToCart}
+        >
           Gabung Kelas
         </button>
       </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CategoryGroupController;
@@ -106,5 +107,13 @@ Route::group(['prefix' => 'course/{course_slug}'], function () {
             Route::get('{video_file}', [CourseLessonVideoController::class, 'streamHls'])->name('video.stream.hls');
             // Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware(['auth', 'signed']);
         });
+    });
+});
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::prefix('me')->group(function () {
+        Route::get('cart', [CartController::class, 'index']);
+        Route::post('cart', [CartController::class, 'store']);
+        Route::delete('cart/{uuid}', [CartController::class, 'destroy']);
     });
 });

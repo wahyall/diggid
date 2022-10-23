@@ -3,6 +3,7 @@ import React, { memo, useState, useRef } from "react";
 import { Link } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 import { If, Show } from "react-haiku";
+import { ToastContainer } from "react-toastify";
 
 import { extractRouteParams } from "@/libs/utils";
 
@@ -117,24 +118,48 @@ const MainLayout = ({ children, auth: { user } }) => {
                 >
                   <If isTrue={user?.role === "admin"}>
                     <li>
-                      <a href={route("dashboard")} className="text-base">
+                      <a
+                        href={route("dashboard")}
+                        className={`text-base ${
+                          route().current() === "dashboard" &&
+                          "bg-primary text-white"
+                        }`}
+                      >
+                        <i className="fa fa-th-large"></i>
                         Dashboard
                       </a>
                     </li>
                   </If>
                   <li>
-                    <Link href={route("front.me")} className="text-base">
+                    <Link
+                      href={route("front.me")}
+                      className={`text-base ${
+                        route().current() === "front.me" &&
+                        "bg-primary text-white"
+                      }`}
+                    >
+                      <i className="fa fa-user"></i>
                       Profil
                     </Link>
                   </li>
                   <li>
-                    <a className="text-base">Kelas Saya</a>
+                    <Link
+                      href={route("front.me.cart")}
+                      className={`text-base ${
+                        route().current() === "front.me.cart" &&
+                        "bg-primary text-white"
+                      }`}
+                    >
+                      <i className="fa fa-shopping-cart"></i>
+                      Keranjang
+                    </Link>
                   </li>
                   <li>
                     <Link
                       href={route("logout")}
                       className="text-red-500 active:bg-red-500 active:text-white"
                     >
+                      <i className="fa fa-sign-out-alt"></i>
                       Logout
                     </Link>
                   </li>
@@ -168,6 +193,13 @@ const MainLayout = ({ children, auth: { user } }) => {
         </div>
       </div>
       <div className="mt-16 md:mt-20 pb-10">{children}</div>
+      <ToastContainer
+        newestOnTop={false}
+        position="bottom-right"
+        theme="dark"
+        pauseOnHover={false}
+        pauseOnFocusLoss={false}
+      />
     </main>
   );
 };

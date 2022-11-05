@@ -9,7 +9,7 @@ use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\CourseLessonVideoController;
 use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
-use App\Models\PaymentMethod;
+use App\Http\Controllers\PaymentMethodController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -87,6 +87,12 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::post('upload-image', [CourseController::class, 'uploadImage']);
+        });
+
+        Route::group(['prefix' => 'payment-method'], function () {
+            Route::get('show', [PaymentMethodController::class, 'show']);
+            Route::post('paginate', [PaymentMethodController::class, 'paginate']);
+            Route::post('{uuid}/status', [PaymentMethodController::class, 'status']);
         });
     });
 });

@@ -1,24 +1,40 @@
 import { useEffect, memo, useMemo, useRef } from "react";
 import { Link } from "@inertiajs/inertia-react";
 import { useQuery } from "@tanstack/react-query";
-import { For } from "react-haiku";
+import { For, Show } from "react-haiku";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "@/libs/axios";
 
-function MenuItem({ name, icon, url, route: routeName }) {
+function MenuItem({ name, icon, url, route: routeName, heading = false }) {
   return (
     <div className="menu-item">
-      <Link
-        className={`menu-link ${route().current() === routeName && "active"}`}
-        href={route(routeName)}
-      >
-        <span className="menu-icon menu-bullet w-25px">
-          <i className={icon}></i>
-        </span>
-        <span className="menu-title">{name}</span>
-      </Link>
+      <Show>
+        <Show.When isTrue={heading}>
+          <div className="menu-content mt-8">
+            <span
+              className="menu-heading fw-bold text-uppercase fs-7"
+              style={{ color: "#646477" }}
+            >
+              {name}
+            </span>
+          </div>
+        </Show.When>
+        <Show.Else>
+          <Link
+            className={`menu-link ${
+              route().current() === routeName && "active"
+            }`}
+            href={route(routeName)}
+          >
+            <span className="menu-icon menu-bullet w-25px">
+              <i className={icon}></i>
+            </span>
+            <span className="menu-title">{name}</span>
+          </Link>
+        </Show.Else>
+      </Show>
     </div>
   );
 }

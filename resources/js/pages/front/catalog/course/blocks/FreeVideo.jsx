@@ -15,11 +15,10 @@ const FreeVideo = memo(({ slug, addToCart, isCartLoading }) => {
   const course = queryClient.getQueryData(["catalog", "course", slug]);
   const { data: videos = [], isLoading } = useQuery(
     ["catalog", "course", slug, "free-video"],
-    () => axios.get(`/course/${slug}/video/free`).then((res) => res.data),
-    {
-      onSuccess: (data) => setSelectedVideo(data[0]),
-    }
+    () => axios.get(`/course/${slug}/video/free`).then((res) => res.data)
   );
+
+  useEffect(() => videos.length && setSelectedVideo(videos[0]), [videos]);
 
   if (isLoading)
     return (

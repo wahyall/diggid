@@ -6,7 +6,7 @@ import { asset, currency } from "@/libs/utils";
 import { toast } from "react-toastify";
 
 import CourseCard from "../../components/CourseCard";
-import { For, Show } from "react-haiku";
+import { For, Show, If } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "@inertiajs/inertia-react";
 
@@ -184,14 +184,16 @@ const Index = memo(() => {
             </ul>
           </section>
 
-          <section>
-            <h6 className="text-lg font-bold mb-6">Detail Pembayaran</h6>
-            <div className="flex rounded-md border border-slate-200 p-4 gap-4 items-center justify-between mb-4">
-              <span className="text-2xl font-bold">Rp</span>
-              <span className="text-2xl">{currency(totalPrice, {})},00</span>
-            </div>
-            <Link className="btn btn-primary btn-lg w-full">Checkout</Link>
-          </section>
+          <If isTrue={!!carts.length}>
+            <section>
+              <h6 className="text-lg font-bold mb-6">Detail Pembayaran</h6>
+              <div className="flex rounded-md border border-slate-200 p-4 gap-4 items-center justify-between mb-4">
+                <span className="text-2xl font-bold">Rp</span>
+                <span className="text-2xl">{currency(totalPrice, {})},00</span>
+              </div>
+              <Link className="btn btn-primary btn-lg w-full">Checkout</Link>
+            </section>
+          </If>
         </div>
       </section>
     </main>

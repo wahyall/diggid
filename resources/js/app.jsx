@@ -22,6 +22,7 @@ import { queryClientAtom } from "jotai/query";
 
 import DashboardLayout from "./pages/dashboard/layouts/DashboardLayout";
 import MainLayout from "./pages/front/layouts/MainLayout";
+import UserLayout from "./pages/front/layouts/UserLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,9 +62,17 @@ createInertiaApp({
         );
       } else {
         if (!name.includes("Login") && !name.includes("Register")) {
-          module.default.layout = (page) => (
-            <MainLayout children={page} {...page.props} />
-          );
+          if (!name.includes("me")) {
+            module.default.layout = (page) => (
+              <MainLayout children={page} {...page.props} />
+            );
+          } else {
+            module.default.layout = (page) => (
+              <MainLayout {...page.props}>
+                <UserLayout children={page} {...page.props} />
+              </MainLayout>
+            );
+          }
         }
       }
     });

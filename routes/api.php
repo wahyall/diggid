@@ -10,6 +10,7 @@ use App\Http\Controllers\CourseLessonVideoController;
 use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -118,6 +119,8 @@ Route::group(['prefix' => 'course/{course_slug}'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::prefix('me')->group(function () {
+        Route::post('/', [UserController::class, 'update']);
+
         Route::get('cart', [CartController::class, 'index']);
         Route::post('cart', [CartController::class, 'store']);
         Route::delete('cart/{uuid}', [CartController::class, 'destroy']);

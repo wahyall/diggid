@@ -3,11 +3,17 @@
 @tailwind utilities;
 
 @layer components {
-  .input {
-    @apply rounded-md bg-slate-50;
+  .label {
+    @apply font-medium text-lg;
   }
 
-  .input:focus {
+  .input,
+  .textarea {
+    @apply rounded-md bg-slate-50 text-base;
+  }
+
+  .input:focus,
+  .textarea:focus {
     @apply bg-transparent outline-4 outline-brand-200 outline-offset-1 border-primary;
   }
 

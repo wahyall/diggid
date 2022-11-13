@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 import { extractRouteParams } from "@/libs/utils";
 
+import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const MainLayout = ({ children, auth: { user } }) => {
@@ -103,7 +104,7 @@ const MainLayout = ({ children, auth: { user } }) => {
                       <img
                         src={user?.photo_url}
                         alt="Photo Profile"
-                        className="rounded-full aspect-square object-cover w-10"
+                        className="rounded-full aspect-square object-cover !w-10"
                       />
                     </If>
                     <If isTrue={!user?.photo}>

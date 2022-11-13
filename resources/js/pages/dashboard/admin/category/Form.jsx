@@ -78,9 +78,7 @@ function Form({ close, selected }) {
       <div className="card-body">
         <div className="row">
           <div className="col-2">
-            <label htmlFor="name" className="form-label">
-              Icon :
-            </label>
+            <label className="form-label">Icon :</label>
             <FileUpload
               files={selected && category?.icon ? `/${category?.icon}` : file}
               onupdatefiles={setFile}

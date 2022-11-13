@@ -222,7 +222,7 @@ const Information = memo(({ slug }) => {
                   </div>
                 </Show.When>
                 <Show.Else>
-                  <p className="text-lg">Belum ada review untuk kursus ini</p>
+                  <p className="text-lg">Belum ada review untuk kelas ini</p>
                 </Show.Else>
               </Show>
             </Tab.Panel>
@@ -261,7 +261,7 @@ const Information = memo(({ slug }) => {
                   </div>
                 </Show.When>
                 <Show.Else>
-                  <p className="text-lg">Belum ada showcase untuk kursus ini</p>
+                  <p className="text-lg">Belum ada showcase untuk kelas ini</p>
                 </Show.Else>
               </Show>
             </Tab.Panel>

@@ -5,11 +5,14 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CategoryGroupController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\CourseLessonVideoController;
 use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MyCourseController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -91,7 +94,6 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::group(['prefix' => 'payment-method'], function () {
-            Route::get('show', [PaymentMethodController::class, 'show']);
             Route::post('paginate', [PaymentMethodController::class, 'paginate']);
             Route::post('{uuid}/status', [PaymentMethodController::class, 'status']);
         });
@@ -121,8 +123,24 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('me')->group(function () {
         Route::post('/', [UserController::class, 'update']);
 
-        Route::get('cart', [CartController::class, 'index']);
-        Route::post('cart', [CartController::class, 'store']);
-        Route::delete('cart/{uuid}', [CartController::class, 'destroy']);
+        Route::prefix('cart')->group(function () {
+            Route::get('/', [CartController::class, 'index']);
+            Route::post('/', [CartController::class, 'store']);
+            Route::delete('/{uuid}', [CartController::class, 'destroy']);
+        });
+
+        Route::prefix('transaction')->group(function () {
+            Route::get('/', [TransactionController::class, 'index']);
+            Route::get('/{uuid}', [TransactionController::class, 'detail']);
+        });
+
+        Route::prefix('course')->group(function () {
+            Route::get('/', [MyCourseController::class, 'index']);
+        });
+    });
+
+    Route::prefix('checkout')->group(function () {
+        Route::get('payment-methods', [PaymentMethodController::class, 'show']);
+        Route::post('charge', [TransactionController::class, 'charge']);
     });
 });

@@ -25,7 +25,7 @@ class PaymentMethodController extends Controller {
 
     public function show() {
         if (request()->wantsJson()) {
-            return response()->json(PaymentMethod::with(['categories'])->get());
+            return response()->json(PaymentMethod::where('is_active', '1')->get());
         } else {
             return abort(404);
         }
@@ -37,8 +37,7 @@ class PaymentMethodController extends Controller {
                 'is_active' => 'required',
             ]);
 
-            $payment = PaymentMethod::findByUuid($uuid);
-            $payment->update([
+            PaymentMethod::where('uuid', $uuid)->update([
                 'is_active' => $request->is_active
             ]);
 

@@ -27,9 +27,14 @@ class MenuSeeder extends Seeder {
                 // User
                 ['name' => 'Profil', 'url' => 'me', 'route' => 'front.me', 'component' => 'front/me/Index'],
                 ['name' => 'Kelas Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
+
                 ['name' => 'Transaksi', 'url' => 'me/transaction', 'route' => 'front.me.transaction', 'component' => 'front/me/transaction/Index'],
+                ['name' => 'Detail Transaksi', 'url' => 'me/transaction/{uuid}', 'route' => 'front.me.transaction.detail', 'component' => 'front/me/transaction/Detail'],
 
                 ['name' => 'Keranjang Saya', 'url' => 'me/cart', 'route' => 'front.me.cart', 'component' => 'front/me/cart/Index'],
+
+                // Checkout/Transaction
+                ['name' => 'Checkout', 'url' => 'checkout', 'route' => 'front.checkout', 'component' => 'front/checkout/Index'],
 
                 // Redirecting Dashboard
                 ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],

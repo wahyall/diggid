@@ -29,13 +29,17 @@ const Index = memo(() => {
   );
 
   const totalPrice = useMemo(() => {
-    return carts.reduce((acc, curr) => acc + curr.course.price, 0);
+    return carts.reduce(
+      (acc, curr) =>
+        acc + (curr.course.price - curr.course.price * curr.course.discount),
+      0
+    );
   }, [carts]);
 
   if (isLoading || isRemoveLoading)
     return (
       <main className="container mx-auto max-w-5xl px-4 pt-10">
-        <h1 className="text-3xl font-bold my-12">Keranjang Belanja</h1>
+        <h1 className="text-3xl font-bold mb-12 lg:mt-12">Keranjang Belanja</h1>
         <section className="grid sm:grid-cols-[1fr_1.5fr] gap-12">
           <div>
             <Skeleton height={250} className="mb-4" />
@@ -56,7 +60,7 @@ const Index = memo(() => {
 
   return (
     <main className="container mx-auto max-w-5xl px-4 pt-10">
-      <h1 className="text-3xl font-bold my-12">Keranjang Belanja</h1>
+      <h1 className="text-3xl font-bold mb-12 lg:mt-12">Keranjang Belanja</h1>
       <section className="grid sm:grid-cols-[1fr_1.5fr] gap-12">
         <div>
           <Show>
@@ -129,7 +133,7 @@ const Index = memo(() => {
                   className="btn btn-ghost mt-8 bg-slate-200"
                   data-ripplet
                 >
-                  Cari Kelas
+                  Lihat Kelas
                 </Link>
               </div>
             </Show.Else>
@@ -191,7 +195,12 @@ const Index = memo(() => {
                 <span className="text-2xl font-bold">Rp</span>
                 <span className="text-2xl">{currency(totalPrice, {})},00</span>
               </div>
-              <Link className="btn btn-primary btn-lg w-full">Checkout</Link>
+              <Link
+                href={route("front.checkout")}
+                className="btn btn-primary btn-lg w-full"
+              >
+                Beli Kelas
+              </Link>
             </section>
           </If>
         </div>

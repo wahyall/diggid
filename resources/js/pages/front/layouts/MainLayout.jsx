@@ -145,6 +145,30 @@ const MainLayout = ({ children, auth: { user } }) => {
                   </li>
                   <li>
                     <Link
+                      href={route("front.me.course")}
+                      className={`text-base ${
+                        route().current() === "front.me.course" &&
+                        "bg-primary text-white"
+                      }`}
+                    >
+                      <i className="fa fa-desktop"></i>
+                      Kelas Saya
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={route("front.me.transaction")}
+                      className={`text-base ${
+                        route().current() === "front.me.transaction" &&
+                        "bg-primary text-white"
+                      }`}
+                    >
+                      <i className="fa fa-money-bill-alt"></i>
+                      Pembelian
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href={route("front.me.cart")}
                       className={`text-base ${
                         route().current() === "front.me.cart" &&
@@ -155,6 +179,7 @@ const MainLayout = ({ children, auth: { user } }) => {
                       Keranjang
                     </Link>
                   </li>
+                  <div className="divider my-2"></div>
                   <li>
                     <Link
                       href={route("logout")}

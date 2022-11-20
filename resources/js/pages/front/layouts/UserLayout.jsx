@@ -8,17 +8,20 @@ const UserLayout = ({ children, auth: { user } }) => {
       <aside className="drawer drawer-mobile lg:px-8 h-auto">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content container mx-auto">
-          <label for="my-drawer-2" class="btn btn-square btn-ghost lg:hidden">
+          <label
+            for="my-drawer-2"
+            className="btn btn-square btn-ghost lg:hidden mt-8 ml-4"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              class="inline-block w-6 h-6 stroke-current"
+              className="inline-block w-6 h-6 stroke-current"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M4 6h16M4 12h16M4 18h16"
               ></path>
             </svg>
@@ -75,6 +78,20 @@ const UserLayout = ({ children, auth: { user } }) => {
                 Pembelian
               </Link>
             </li>
+            <li>
+              <Link
+                href={route("front.me.cart")}
+                className={`active:bg-slate-50 active:text-slate-800 ${
+                  route().current() === "front.me.cart" &&
+                  "bg-primary text-white"
+                }`}
+                data-ripplet
+              >
+                <i className="fa fa-shopping-cart"></i>
+                Keranjang
+              </Link>
+            </li>
+            <div className="divider"></div>
             <li>
               <Link
                 href={route("logout")}

@@ -11,9 +11,9 @@ use Spatie\Sluggable\SlugOptions;
 class PaymentMethod extends Model {
     use Uuid, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'logo', 'body', 'is_active', 'payment_method_group_id'];
+    protected $fillable = ['name', 'slug', 'logo', 'body', 'is_active'];
     protected $casts = ['body' => AsCollection::class, 'is_active' => 'boolean'];
-    protected $hidden = ['id', 'created_at', 'updated_at', 'payment_method_group_id', 'body'];
+    protected $hidden = ['id', 'created_at', 'updated_at', 'body', 'is_active'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

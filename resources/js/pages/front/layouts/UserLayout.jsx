@@ -69,7 +69,8 @@ const UserLayout = ({ children, auth: { user } }) => {
               <Link
                 href={route("front.me.transaction")}
                 className={`active:bg-slate-50 active:text-slate-800 ${
-                  route().current() === "front.me.transaction" &&
+                  (route().current() === "front.me.transaction" ||
+                    route().current() === "front.me.transaction.detail") &&
                   "bg-primary text-white"
                 }`}
                 data-ripplet

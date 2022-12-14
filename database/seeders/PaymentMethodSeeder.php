@@ -17,13 +17,64 @@ class PaymentMethodSeeder extends Seeder {
         DB::table('payment_methods')->delete();
 
         PaymentMethod::create([
+            'name' => 'Bank BCA',
+            'logo' => 'storage/payment/bank-bca.png',
+            'body' => [
+                'payment_type' => 'bank_transfer',
+                'bank_transfer' => [
+                    'bank' => 'bca'
+                ]
+            ],
+        ]);
+
+        PaymentMethod::create([
+            'name' => 'Bank BRI',
+            'logo' => 'storage/payment/bank-bri.png',
+            'body' => [
+                'payment_type' => 'bank_transfer',
+                'bank_transfer' => [
+                    'bank' => 'bri'
+                ]
+            ],
+        ]);
+
+        PaymentMethod::create([
+            'name' => 'Bank BNI',
+            'logo' => 'storage/payment/bank-bni.png',
+            'body' => [
+                'payment_type' => 'bank_transfer',
+                'bank_transfer' => [
+                    'bank' => 'bni'
+                ]
+            ],
+        ]);
+
+        PaymentMethod::create([
+            'name' => 'GoPay',
+            'logo' => 'storage/payment/gopay.svg',
+            'body' => [
+                'payment_type' => 'gopay',
+            ],
+        ]);
+
+        PaymentMethod::create([
             'name' => 'Indomaret',
-            'slug' => 'indomaret',
             'logo' => 'storage/payment/indomaret.png',
             'body' => [
                 'payment_type' => 'cstore',
                 'cstore' => [
                     'store' => 'indomaret'
+                ]
+            ],
+        ]);
+
+        PaymentMethod::create([
+            'name' => 'Alfamart',
+            'logo' => 'storage/payment/alfamart.svg',
+            'body' => [
+                'payment_type' => 'cstore',
+                'cstore' => [
+                    'store' => 'alfamart'
                 ]
             ],
         ]);

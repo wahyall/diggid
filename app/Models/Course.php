@@ -106,7 +106,7 @@ class Course extends Model implements HasMedia {
     }
 
     public function getIsPurchasedAttribute() {
-        return !!$this->purchases()->where('user_id', auth()->user()->id)->count();
+        return !!$this->purchases()->where('user_id', auth()->user()->id)->whereRelation('transaction', 'status', '=', 'success')->count();
     }
 
     public static function booted() {

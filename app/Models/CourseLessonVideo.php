@@ -40,7 +40,7 @@ class CourseLessonVideo extends Model
         $video = FFMpeg::fromDisk('private')
             ->open($this->video);
 
-        return $video->getDurationInSeconds() / 60; // In minutes
+        return round($video->getDurationInSeconds() / 60); // In minutes
     }
 
     public function lesson()

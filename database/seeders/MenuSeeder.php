@@ -27,8 +27,14 @@ class MenuSeeder extends Seeder {
                 // User
                 ['name' => 'Profil', 'url' => 'me', 'route' => 'front.me', 'component' => 'front/me/Index'],
                 ['name' => 'Kelas Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
-                ['name' => 'Setting', 'url' => 'me/setting', 'route' => 'front.me.setting', 'component' => 'front/me/setting/Index'],
+
+                ['name' => 'Transaksi', 'url' => 'me/transaction', 'route' => 'front.me.transaction', 'component' => 'front/me/transaction/Index'],
+                ['name' => 'Detail Transaksi', 'url' => 'me/transaction/{uuid}', 'route' => 'front.me.transaction.detail', 'component' => 'front/me/transaction/Detail'],
+
                 ['name' => 'Keranjang Saya', 'url' => 'me/cart', 'route' => 'front.me.cart', 'component' => 'front/me/cart/Index'],
+
+                // Checkout/Transaction
+                ['name' => 'Checkout', 'url' => 'checkout', 'route' => 'front.checkout', 'component' => 'front/checkout/Index'],
 
                 // Redirecting Dashboard
                 ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],
@@ -36,14 +42,15 @@ class MenuSeeder extends Seeder {
                 ['middleware' => 'role:admin', 'children' => [
                     // Menu Dashboard Admin
                     ['name' => 'Dashboard', 'url' => 'dashboard/admin', 'route' => 'dashboard.admin', 'component' => 'dashboard/admin/Index', 'icon' => 'las la-home fs-2'],
-
                     ['name' => 'Kelas', 'url' => 'dashboard/admin/course', 'route' => 'dashboard.admin.course', 'component' => 'dashboard/admin/course/Index', 'icon' => 'las la-chalkboard-teacher fs-2', 'children' => [
                         ['name' => 'Silabus Kelas', 'url' => 'dashboard/admin/course/{course_uuid}/lesson', 'route' => 'dashboard.admin.course.lesson', 'component' => 'dashboard/admin/course/lesson/Index', 'shown' => false, 'children' => [
                             ['name' => 'Video Silabus Kelas', 'url' => 'dashboard/admin/course/{course_uuid}/lesson/{lesson_uuid}/video', 'route' => 'dashboard.admin.course.lesson.video', 'component' => 'dashboard/admin/course/video/Index', 'shown' => false],
                         ]],
                     ]],
-
                     ['name' => 'Kategori', 'url' => 'dashboard/admin/category', 'route' => 'dashboard.admin.category', 'component' => 'dashboard/admin/category/Index', 'icon' => 'las la-tags fs-2'],
+
+                    ['name' => 'Setting', 'heading' => true],
+                    ['name' => 'Metode Pembayaran', 'url' => 'dashboard/admin/payment-method', 'route' => 'dashboard.admin.payment-method', 'component' => 'dashboard/admin/payment-method/Index', 'icon' => 'las la-money-bill fs-2'],
                 ]],
             ]],
         ];

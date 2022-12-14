@@ -19,9 +19,9 @@ const VerifyEmail = ({ auth: { user }, status }) => {
   };
 
   return (
-    <>
+    <div className="container mx-auto px-8 flex items-center justify-center min-h-[75vh]">
       <Head title="Verifikasi Email" />
-      <div className="w-full">
+      <div className="w-full max-w-lg">
         <div className="text-center mb-8">
           <h1 className="text-slate-800 text-3xl md:text-4xl font-bold mb-2">
             Verifikasi Email Anda
@@ -58,7 +58,7 @@ const VerifyEmail = ({ auth: { user }, status }) => {
           </p>
         </article>
       </div>
-    </>
+    </div>
   );
 };
 

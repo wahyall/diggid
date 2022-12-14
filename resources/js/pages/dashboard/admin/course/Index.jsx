@@ -172,7 +172,7 @@ function Index({ csrf_token }) {
       <div className="card">
         <div className="card-header">
           <div className="card-title w-100">
-            <h1>Kursus</h1>
+            <h1>Kelas</h1>
             <If isTrue={!openForm && !openProject}>
               <button
                 type="button"
@@ -182,7 +182,7 @@ function Index({ csrf_token }) {
                 )}
               >
                 <i className="las la-plus"></i>
-                Kursus Baru
+                Kelas Baru
               </button>
             </If>
           </div>

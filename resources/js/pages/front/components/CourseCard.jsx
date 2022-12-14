@@ -1,18 +1,20 @@
 import React, { memo, useMemo } from "react";
-import { currency } from "@/libs/utils";
+import { currency, asset } from "@/libs/utils";
 
 import { For } from "react-haiku";
 import { Link } from "@inertiajs/inertia-react";
 
-const CourseCard = ({ course, className }) => {
+const CourseCard = ({ course, className, as = Link }) => {
   const level = useMemo(() => {
     if (course.level === "1") return "Pemula";
     if (course.level === "2") return "Menengah";
     if (course.level === "3") return "Mahir";
   });
 
+  const Component = as;
+
   return (
-    <Link
+    <Component
       href={route("front.catalog.course", course.slug)}
       className={`card card-compact bg-base-100 shadow-xl ${className}`}
     >
@@ -59,7 +61,7 @@ const CourseCard = ({ course, className }) => {
           </span>
         </div>
       </div>
-    </Link>
+    </Component>
   );
 };
 

@@ -6,7 +6,7 @@ import { asset, currency } from "@/libs/utils";
 import { toast } from "react-toastify";
 
 import CourseCard from "../../components/CourseCard";
-import { For, Show } from "react-haiku";
+import { For, Show, If } from "react-haiku";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "@inertiajs/inertia-react";
 
@@ -29,13 +29,17 @@ const Index = memo(() => {
   );
 
   const totalPrice = useMemo(() => {
-    return carts.reduce((acc, curr) => acc + curr.course.price, 0);
+    return carts.reduce(
+      (acc, curr) =>
+        acc + (curr.course.price - curr.course.price * curr.course.discount),
+      0
+    );
   }, [carts]);
 
   if (isLoading || isRemoveLoading)
     return (
       <main className="container mx-auto max-w-5xl px-4 pt-10">
-        <h1 className="text-3xl font-bold my-12">Keranjang Belanja</h1>
+        <h1 className="text-3xl font-bold mb-12 lg:mt-12">Keranjang Belanja</h1>
         <section className="grid sm:grid-cols-[1fr_1.5fr] gap-12">
           <div>
             <Skeleton height={250} className="mb-4" />
@@ -56,7 +60,7 @@ const Index = memo(() => {
 
   return (
     <main className="container mx-auto max-w-5xl px-4 pt-10">
-      <h1 className="text-3xl font-bold my-12">Keranjang Belanja</h1>
+      <h1 className="text-3xl font-bold mb-12 lg:mt-12">Keranjang Belanja</h1>
       <section className="grid sm:grid-cols-[1fr_1.5fr] gap-12">
         <div>
           <Show>
@@ -129,7 +133,7 @@ const Index = memo(() => {
                   className="btn btn-ghost mt-8 bg-slate-200"
                   data-ripplet
                 >
-                  Cari Kelas
+                  Lihat Kelas
                 </Link>
               </div>
             </Show.Else>
@@ -184,14 +188,21 @@ const Index = memo(() => {
             </ul>
           </section>
 
-          <section>
-            <h6 className="text-lg font-bold mb-6">Detail Pembayaran</h6>
-            <div className="flex rounded-md border border-slate-200 p-4 gap-4 items-center justify-between mb-4">
-              <span className="text-2xl font-bold">Rp</span>
-              <span className="text-2xl">{currency(totalPrice, {})},00</span>
-            </div>
-            <Link className="btn btn-primary btn-lg w-full">Checkout</Link>
-          </section>
+          <If isTrue={!!carts.length}>
+            <section>
+              <h6 className="text-lg font-bold mb-6">Detail Pembayaran</h6>
+              <div className="flex rounded-md border border-slate-200 p-4 gap-4 items-center justify-between mb-4">
+                <span className="text-2xl font-bold">Rp</span>
+                <span className="text-2xl">{currency(totalPrice, {})},00</span>
+              </div>
+              <Link
+                href={route("front.checkout")}
+                className="btn btn-primary btn-lg w-full"
+              >
+                Beli Kelas
+              </Link>
+            </section>
+          </If>
         </div>
       </section>
     </main>

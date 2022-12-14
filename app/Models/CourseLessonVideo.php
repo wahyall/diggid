@@ -10,7 +10,8 @@ use App\Jobs\DeleteVideoThumbnail;
 use App\Jobs\DeleteVideoHls;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
-class CourseLessonVideo extends Model {
+class CourseLessonVideo extends Model
+{
     use Uuid, HasSlug;
 
     protected $fillable = ['name', 'slug', 'description', 'course_lesson_id', 'video', 'order', 'is_free', 'converted_for_streaming_at'];
@@ -18,28 +19,37 @@ class CourseLessonVideo extends Model {
     protected $casts = ['is_free' => 'boolean'];
     protected $appends = ['thumbnail', 'duration'];
 
-    public function getSlugOptions(): SlugOptions {
+    public function getSlugOptions(): SlugOptions
+    {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
 
-    public function getThumbnailAttribute() {
+    public function getThumbnailAttribute()
+    {
         return asset('storage/course/video/thumbnail/' . $this->uuid . '.jpg');
     }
 
-    public function getDurationAttribute() {
+    public function getDurationAttribute()
+    {
+        if (!isset($this->video)) {
+            return null;
+        }
+
         $video = FFMpeg::fromDisk('private')
             ->open($this->video);
 
         return $video->getDurationInSeconds() / 60; // In minutes
     }
 
-    public function lesson() {
+    public function lesson()
+    {
         return $this->belongsTo(CourseLesson::class, 'course_lesson_id');
     }
 
-    public static function booted() {
+    public static function booted()
+    {
         parent::boot();
 
         self::deleted(function ($model) {

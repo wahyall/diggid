@@ -288,7 +288,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="1"
                     id="level-pemula"
-                    checked={course?.level == 1}
+                    defaultChecked={course?.level == 1}
                   />
                   <label className="form-check-label" htmlFor="level-pemula">
                     Pemula
@@ -301,7 +301,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="2"
                     id="level-mengengah"
-                    checked={course?.level == 2}
+                    defaultChecked={course?.level == 2}
                   />
                   <label className="form-check-label" htmlFor="level-mengengah">
                     Menengah
@@ -314,7 +314,7 @@ function Form({ close, selected, csrfToken }) {
                     name="level"
                     value="3"
                     id="level-mahir"
-                    checked={course?.level == 3}
+                    defaultChecked={course?.level == 3}
                   />
                   <label className="form-check-label" htmlFor="level-mahir">
                     Mahir

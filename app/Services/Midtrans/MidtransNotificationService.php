@@ -44,6 +44,10 @@ class MidtransNotificationService extends MidtransService {
         return $this->transaction;
     }
 
+    public function getBody() {
+        return $this->notification->raw_response_body;
+    }
+
     protected function _createLocalSignatureKey() {
         $order_id = $this->notification->order_id;
         $status_code = $this->notification->status_code;

@@ -97,26 +97,36 @@ class TransactionController extends Controller {
     }
 
     public function notification(Request $request) {
-        $notif = new MidtransNotificationService;
+        $service = new MidtransNotificationService;
 
-        if ($notif->isSignatureKeyVerified()) {
-            $transaction = $notif->getTransaction();
+        if ($service->isSignatureKeyVerified()) {
+            $transaction = $service->getTransaction();
+            $notification = $service->getNotification();
 
-            if ($notif->isSuccess()) {
+            $body = $transaction->body;
+            $body['transaction_status'] = $notification->transaction_status;
+            $body['status_code'] = $notification->status_code;
+
+            if ($service->isSuccess()) {
+                $body['settlement_time'] = $notification->settlement_time;
+                $body['approval_code'] = $notification->approval_code;
                 $transaction->update([
                     'status' => 'success',
+                    'body' => $body,
                 ]);
             }
 
-            if ($notif->isExpire()) {
+            if ($service->isExpire()) {
                 $transaction->update([
                     'status' => 'failed',
+                    'body' => $body,
                 ]);
             }
 
-            if ($notif->isCancelled()) {
+            if ($service->isCancelled()) {
                 $transaction->update([
                     'status' => 'failed',
+                    'body' => $body,
                 ]);
             }
 

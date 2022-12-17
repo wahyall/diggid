@@ -4,18 +4,18 @@ import { currency, asset } from "@/libs/utils";
 import { For } from "react-haiku";
 import { Link } from "@inertiajs/inertia-react";
 
-const CourseCard = ({ course, className, as = Link }) => {
+const CourseCard = ({ course, className, as = Link, href }) => {
   const level = useMemo(() => {
     if (course.level === "1") return "Pemula";
     if (course.level === "2") return "Menengah";
     if (course.level === "3") return "Mahir";
-  });
+  }, [course.level]);
 
   const Component = as;
 
   return (
     <Component
-      href={route("front.catalog.course", course.slug)}
+      href={href || route("front.catalog.course", course.slug)}
       className={`card card-compact bg-base-100 shadow-xl ${className}`}
     >
       <figure>

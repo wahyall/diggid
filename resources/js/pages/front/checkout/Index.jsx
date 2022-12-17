@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from "react";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { asset, currency } from "@/libs/utils";
 import { Inertia } from "@inertiajs/inertia";
@@ -11,6 +11,7 @@ import { Link } from "@inertiajs/inertia-react";
 import { toast } from "react-toastify";
 
 const Index = memo(() => {
+  const queryClient = useQueryClient();
   const { data: paymentMethods = [], isSuccess: isPaymentSuccess } = useQuery(
     ["payment-methods"],
     () => axios.get("/checkout/payment-methods").then((res) => res.data)
@@ -35,6 +36,7 @@ const Index = memo(() => {
       onSuccess: (data) => {
         toast.success("Transaksi berhasil dibuat.");
         Inertia.visit(route("front.me.transaction.detail", data.order_id)); // Order ID = UUID in transactions
+        queryClient.invalidateQueries(["me", "cart"]);
       },
       onError: () => {
         toast.error("Transaksi gagal dibuat.");

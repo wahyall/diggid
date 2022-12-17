@@ -4,5 +4,5 @@
 $ npm run dev
 $ php artisan serve
 $ ./meilisearch
-$ php artisan queue:work --queue=high,default
+$ php artisan queue:work --queue=high,default,video
 ```

@@ -9,7 +9,7 @@ const UserLayout = ({ children, auth: { user } }) => {
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content container mx-auto">
           <label
-            for="my-drawer-2"
+            htmlFor="my-drawer-2"
             className="btn btn-square btn-ghost lg:hidden mt-8 ml-4"
           >
             <svg

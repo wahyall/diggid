@@ -144,3 +144,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('charge', [TransactionController::class, 'charge']);
     });
 });
+
+Route::post('checkout/notification', [TransactionController::class, 'notification']);

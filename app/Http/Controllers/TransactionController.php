@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use App\Services\Midtrans\PaymentNotification;
+use App\Services\Midtrans\MidtransNotificationService;
 use App\Models\PaymentMethod;
 use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +21,7 @@ class TransactionController extends Controller {
 
     public function detail($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $transaction = Transaction::with(['courses.course'])->where('uuid', $uuid)->first();
+            $transaction = Transaction::with(['courses.course', 'payment_method'])->where('uuid', $uuid)->first();
             return response()->json($transaction);
         } else {
             return abort(404);
@@ -68,6 +68,10 @@ class TransactionController extends Controller {
                 'order_id' => $transaction->uuid,
                 'gross_amount' => $amount
             ];
+            $body['customer_details'] = [
+                'first_name' => auth()->user()->name,
+                'email' => auth()->user()->email
+            ];
 
             $response = Http::withHeaders([
                 'Accept' => 'application/json',
@@ -77,6 +81,7 @@ class TransactionController extends Controller {
 
             if ($response->ok()) {
                 $transaction->update([
+                    'payment_method_id' => $method->id,
                     'identifier' => $response->collect('transaction_id')[0],
                     'body' => $response->json()
                 ]);
@@ -91,41 +96,39 @@ class TransactionController extends Controller {
         }
     }
 
-    public function receive(Request $request) {
-        $notif = new PaymentNotification;
+    public function notification(Request $request) {
+        $notif = new MidtransNotificationService;
 
         if ($notif->isSignatureKeyVerified()) {
             $transaction = $notif->getTransaction();
 
             if ($notif->isSuccess()) {
                 $transaction->update([
-                    'payment_status' => 'success',
+                    'status' => 'success',
                 ]);
             }
 
             if ($notif->isExpire()) {
                 $transaction->update([
-                    'payment_status' => 'expired',
+                    'status' => 'failed',
                 ]);
             }
 
             if ($notif->isCancelled()) {
                 $transaction->update([
-                    'payment_status' => 'cancelled',
+                    'status' => 'failed',
                 ]);
             }
 
-            return response()
-                ->json([
-                    'success' => true,
-                    'message' => 'Notifikasi berhasil diproses',
-                ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Notifikasi berhasil diproses',
+            ]);
         } else {
-            return response()
-                ->json([
-                    'error' => true,
-                    'message' => 'Signature key tidak terverifikasi',
-                ], 403);
+            return response()->json([
+                'error' => true,
+                'message' => 'Signature key tidak terverifikasi',
+            ], 403);
         }
     }
 }

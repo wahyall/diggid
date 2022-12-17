@@ -61,4 +61,12 @@
   :where(.collapse > input[type="checkbox"]) {
     @apply !min-h-[unset];
   }
+
+  .card-header {
+    @apply flex flex-auto gap-2 p-8 border-b;
+  }
+
+  .card-compact .card-header {
+    @apply p-4;
+  }
 }

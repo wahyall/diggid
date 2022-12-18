@@ -200,12 +200,7 @@ const MainLayout = ({ children, auth: { user } }) => {
               >
                 Masuk
               </Link>
-              <If
-                isTrue={
-                  route().current() !== "front.home" &&
-                  route().current() !== "front.catalog"
-                }
-              >
+              <If isTrue={route().current() !== "front.home"}>
                 <Link
                   href={route("register")}
                   className="btn btn-primary"

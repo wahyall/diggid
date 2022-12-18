@@ -29,7 +29,7 @@ class Transaction extends Model {
     }
 
     public function getDateAttribute() {
-        $date = $this->created_at->format('m');
+        $date = $this->created_at->format('d');
         $month = $this->months[$this->created_at->format('m') - 1];
         $year = $this->created_at->format('Y');
         return "$date $month $year";

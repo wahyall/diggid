@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 class TransactionController extends Controller {
     public function index() {
         if (request()->wantsJson() && request()->ajax()) {
-            return response()->json(Transaction::where('user_id', auth()->user()->id)->get());
+            return response()->json(Transaction::with(['payment_method'])->where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->get());
         } else {
             return abort(404);
         }

@@ -63,7 +63,7 @@
   }
 
   .card-header {
-    @apply flex flex-auto gap-2 p-8 border-b;
+    @apply flex flex-auto gap-2 p-8 border-b bg-slate-50;
   }
 
   .card-compact .card-header {

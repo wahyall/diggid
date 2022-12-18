@@ -55,7 +55,7 @@ const Index = memo(() => {
     return (
       <main className="container mx-auto max-w-5xl px-4 pt-10">
         <h1 className="text-3xl font-bold my-12">Checkout</h1>
-        <section className="grid sm:grid-cols-[1fr_1.5fr] gap-12">
+        <section className="grid sm:grid-cols-[1.5fr_1fr] gap-12">
           <div>
             <Skeleton height={250} className="mb-4" />
             <Skeleton height={250} className="mb-4" />

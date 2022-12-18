@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useMemo } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
@@ -15,7 +15,10 @@ const Detail = memo(() => {
       parameters: { uuid },
     },
   } = usePage().props;
-  const { data: transaction = { body: {}, courses: [] }, isLoading } = useQuery(
+  const {
+    data: transaction = { body: {}, courses: [], payment_method: {} },
+    isLoading,
+  } = useQuery(
     ["me", "transaction", uuid],
     () => axios.get(`/me/transaction/${uuid}`).then((res) => res.data),
     {
@@ -24,7 +27,37 @@ const Detail = memo(() => {
     }
   );
 
-  const { copy, isCopied } = useCopyText(transaction.body.payment_code);
+  const payment_code = useMemo(() => {
+    let value = "";
+    switch (transaction.payment_method.slug) {
+      case "bank-bca":
+        value = transaction.body.va_numbers?.[0]?.va_number;
+        break;
+
+      case "bank-bri":
+        value = transaction.body.va_numbers?.[0]?.va_number;
+        break;
+
+      case "bank-bni":
+        value = transaction.body.va_numbers?.[0]?.va_number;
+        break;
+
+      case "indomaret":
+        value = transaction.body.payment_code;
+        break;
+
+      case "alfamart":
+        value = transaction.body.payment_code;
+        break;
+
+      default:
+        break;
+    }
+
+    return value;
+  }, [transaction]);
+
+  const { copy, isCopied } = useCopyText(payment_code);
 
   if (isLoading)
     return (
@@ -87,17 +120,15 @@ const Detail = memo(() => {
             </If>
           </div>
           <div className="card-body">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex flex-col mb-4">
+              <span className="text-lg mb-2">Metode Pembayaran :</span>
               <img
                 src={asset(transaction.payment_method.logo)}
                 alt={transaction.payment_method.name}
-                className="w-24"
+                className="w-36"
               />
-              <span className="text-lg font-medium">
-                {transaction.payment_method.name}
-              </span>
             </div>
-            <div className="flex flex-col mb-2">
+            <div className="flex flex-col mb-4">
               <span className="text-lg">Total Harga :</span>
               <span className="text-2xl font-bold">
                 Rp {currency(transaction.amount, {})},00
@@ -105,10 +136,9 @@ const Detail = memo(() => {
             </div>
             <Show>
               <Show.When
-                isTrue={
-                  transaction.payment_method.slug === "indomaret" ||
-                  transaction.payment_method.slug === "alfamart"
-                }
+                isTrue={["indomaret", "alfamart"].includes(
+                  transaction.payment_method.slug
+                )}
               >
                 <div className="mb-2">
                   <span className="text-lg">Kode Pembayaran :</span>
@@ -125,6 +155,39 @@ const Detail = memo(() => {
                       </button>
                     </If>
                   </div>
+                </div>
+              </Show.When>
+              <Show.When
+                isTrue={["bank-bca", "bank-bri", "bank-bni"].includes(
+                  transaction.payment_method.slug
+                )}
+              >
+                <div className="mb-2">
+                  <span className="text-lg">Virtual Account :</span>
+                  <div className="flex items-center">
+                    <span className="text-2xl font-bold">
+                      {transaction.body.va_numbers?.[0]?.va_number}
+                    </span>
+                    <If isTrue={transaction.status === "pending"}>
+                      <button
+                        className="btn btn-sm btn-primary ml-2"
+                        onClick={copy}
+                      >
+                        {isCopied ? "Tersalin" : "Salin"}
+                      </button>
+                    </If>
+                  </div>
+                </div>
+              </Show.When>
+              <Show.When
+                isTrue={["gopay"].includes(transaction.payment_method.slug)}
+              >
+                <div className="mb-2">
+                  <span className="text-lg">Scan QR :</span>
+                  <img
+                    src={transaction.body.actions?.[0].url}
+                    className="w-72"
+                  />
                 </div>
               </Show.When>
             </Show>

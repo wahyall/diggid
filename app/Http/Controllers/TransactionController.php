@@ -141,4 +141,34 @@ class TransactionController extends Controller {
             ], 403);
         }
     }
+
+    public function cancel($uuid) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $transaction = Transaction::where('uuid', $uuid)->first();
+            if ($transaction->status === 'pending') {
+                $response = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => base64_encode(config('midtrans.server_key') . ':')
+                ])->post(config('midtrans.url') . '/' . $transaction->uuid . '/cancel');
+
+                if ($response->json()['status_code']) {
+                    $body = $transaction->body;
+                    $body['transaction_status'] = 'cancel';
+                    $transaction->update([
+                        'status' => 'failed',
+                        'body' => $body,
+                    ]);
+                }
+
+                return response()->json($response->json(), $response->json()['status_code']);
+            } else {
+                return response()->json([
+                    'message' => 'Transaksi tidak bisa dibatalkan dikarenakan status transaksi bukan pending.'
+                ], 400);
+            }
+        } else {
+            return abort(404);
+        }
+    }
 }

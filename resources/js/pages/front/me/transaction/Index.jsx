@@ -56,7 +56,7 @@ const Index = memo(() => {
                           </span>
                         </If>
                         <If isTrue={transaction.status === "failed"}>
-                          <span className="badge badge-danger rounded-full">
+                          <span className="badge badge-error rounded-full text-white">
                             Gagal
                           </span>
                         </If>

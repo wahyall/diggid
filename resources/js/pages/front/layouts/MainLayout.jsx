@@ -24,7 +24,7 @@ const MainLayout = ({ children, auth: { user } }) => {
 
   return (
     <main>
-      <div className="navbar bg-white w-full fixed top-0 border-b-2 lg:px-12 border-b-slate-300 z-50">
+      <div className="navbar bg-white w-full fixed top-0 border-b-2 lg:px-12 border-b-slate-300 z-[90]">
         <div className="navbar-start w-full lg:w-auto">
           {route().current() !== "front.catalog" ? (
             <div className="dropdown">

@@ -132,6 +132,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('transaction')->group(function () {
             Route::get('/', [TransactionController::class, 'index']);
             Route::get('/{uuid}', [TransactionController::class, 'detail']);
+            Route::post('/{uuid}/cancel', [TransactionController::class, 'cancel']);
         });
 
         Route::prefix('course')->group(function () {

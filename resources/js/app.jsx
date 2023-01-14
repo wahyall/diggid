@@ -23,6 +23,7 @@ import { queryClientAtom } from "jotai/query";
 import DashboardLayout from "./pages/dashboard/layouts/DashboardLayout";
 import MainLayout from "./pages/front/layouts/MainLayout";
 import UserLayout from "./pages/front/layouts/UserLayout";
+import CourseLayout from "./pages/front/layouts/CourseLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,7 +67,13 @@ createInertiaApp({
             module.default.layout = (page) => (
               <MainLayout children={page} {...page.props} />
             );
-          } else {
+          } else if (name.includes("me.course")) {
+            module.default.layout = (page) => (
+              <MainLayout {...page.props}>
+                <CourseLayout children={page} {...page.props} />
+              </MainLayout>
+            );
+          } else if (name.includes("me")) {
             module.default.layout = (page) => (
               <MainLayout {...page.props}>
                 <UserLayout children={page} {...page.props} />

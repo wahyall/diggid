@@ -3,22 +3,38 @@ import React, { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { usePage } from "@inertiajs/inertia-react";
+import { Inertia } from "@inertiajs/inertia";
 
 import Skeleton from "react-loading-skeleton";
 import { For, If, Show } from "react-haiku";
 import { Link } from "@inertiajs/inertia-react";
+import { useEffect } from "react";
 
-const CourseLayout = memo(() => {
+const CourseLayout = memo(({ children, auth: { user } }) => {
   const {
     route: {
-      parameters: { slug },
+      parameters: { course: courseSlug, lesson: lessonSlug, video: videoSlug },
     },
   } = usePage().props;
 
   const { data: course = {}, isLoading } = useQuery(
-    ["me", "course", slug],
-    () => axios.get(`/me/course/${slug}`).then((res) => res.data)
+    ["me", "course", courseSlug],
+    () => axios.get(`/me/course/${courseSlug}`).then((res) => res.data)
   );
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!videoSlug || !lessonSlug) {
+        Inertia.visit(
+          route("front.me.course.lesson.video", [
+            courseSlug,
+            course.course.lessons[0].slug,
+            course.course.lessons[0].videos[0].slug,
+          ])
+        );
+      }
+    }
+  }, [isLoading, course, courseSlug, lessonSlug, videoSlug]);
 
   return (
     <main className="-mt-4">
@@ -43,52 +59,76 @@ const CourseLayout = memo(() => {
               ></path>
             </svg>
           </label>
-          {children}
+          {!isLoading && !!videoSlug && !!lessonSlug && children}
         </div>
         <div className="drawer-side !max-h-none">
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-64 bg-base-100 text-base-content">
+          <ul className="menu p-4 w-96 bg-base-100 text-base-content">
             <section className="mt-4">
               <h6 className="text-xl font-semibold mb-0">
-                {course.course.name}
+                {course.course?.name}
               </h6>
             </section>
             <div className="divider my-4"></div>
-            <For
-              each={course.course.lessons}
-              render={(lesson) => (
-                <div className="collapse collapse-arrow mb-2 py-2">
-                  <input type="checkbox" className="peer" />
-                  <span className="collapse-title text-lg font-normal p-0 flex items-center">
-                    {lesson.name}
-                  </span>
-                  <div className="collapse-content p-0">
-                    <ul className="mt-2">
-                      <For
-                        each={lesson.videos}
-                        render={(video) => (
-                          <li>
-                            <Link
-                              href={route(
-                                "front.me.course.learn.video",
-                                video.order
-                              )}
-                              className={`rounded-full btn btn-ghost w-full justify-start gap-2 px-4 py-2 mb-4 normal-case flex-nowrap`}
-                              data-ripplet
-                            >
-                              <i className="fa fa-play-circle text-xl"></i>
-                              <span className="font-medium truncate">
-                                {video.name}
-                              </span>
-                            </Link>
-                          </li>
-                        )}
-                      />
-                    </ul>
-                  </div>
-                </div>
-              )}
-            />
+            <Show>
+              <Show.When isTrue={isLoading}>
+                <li>
+                  <Skeleton height={36} className="mb-2" />
+                </li>
+                <li>
+                  <Skeleton height={36} className="mb-2" />
+                </li>
+                <li>
+                  <Skeleton height={36} className="mb-2" />
+                </li>
+                <li>
+                  <Skeleton height={36} className="mb-2" />
+                </li>
+              </Show.When>
+              <Show.Else>
+                <For
+                  each={course.course?.lessons}
+                  render={(lesson) => (
+                    <div className="collapse collapse-arrow mb-2 py-2">
+                      <input type="checkbox" className="peer" />
+                      <span className="collapse-title text-lg font-normal p-0 flex items-center">
+                        {lesson.name}
+                      </span>
+                      <div className="collapse-content !p-0">
+                        <ul className="mt-2">
+                          <For
+                            each={lesson.videos}
+                            render={(video) => (
+                              <li>
+                                <Link
+                                  href={route("front.me.course.lesson.video", [
+                                    course.course?.slug,
+                                    lesson.slug,
+                                    video.slug,
+                                  ])}
+                                  className={`rounded-full btn btn-ghost w-full justify-start gap-2 px-4 py-2 mb-4 normal-case flex-nowrap ${
+                                    lessonSlug == lesson.slug &&
+                                    videoSlug == video.slug
+                                      ? "bg-primary text-white hover:bg-primary"
+                                      : "bg-slate-200"
+                                  }`}
+                                  data-ripplet
+                                >
+                                  <i className="fa fa-play-circle text-xl"></i>
+                                  <span className="font-medium truncate">
+                                    {video.name}
+                                  </span>
+                                </Link>
+                              </li>
+                            )}
+                          />
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+                />
+              </Show.Else>
+            </Show>
           </ul>
         </div>
       </aside>

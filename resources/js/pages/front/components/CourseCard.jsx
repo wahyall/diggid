@@ -19,7 +19,11 @@ const CourseCard = ({ course, className, as = Link, href }) => {
       className={`card card-compact bg-base-100 shadow-xl ${className}`}
     >
       <figure>
-        <img src={asset(course.thumbnail)} alt="Shoes" />
+        <img
+          src={asset(course.thumbnail)}
+          alt="Shoes"
+          className="aspect-video"
+        />
       </figure>
       <div className="card-body">
         <div className="flex gap-2">

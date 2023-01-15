@@ -137,11 +137,11 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
         Route::prefix('course')->group(function () {
             Route::get('/', [MyCourseController::class, 'index']);
-            Route::get('/{slug}', [MyCourseController::class, 'course']);
-            Route::prefix('/{slug}/{order}')->group(function () {
+            Route::get('/{course}', [MyCourseController::class, 'course']);
+            Route::prefix('/{course}/{lesson}/{video}')->group(function () {
                 Route::get('', [MyCourseController::class, 'video']);
                 Route::get('stream', [MyCourseController::class, 'stream'])->name('video.stream.secure');
-                Route::get('{video}', [MyCourseController::class, 'streamHls'])->name('video.stream.secure.hls');
+                Route::get('{file}', [MyCourseController::class, 'streamHls'])->name('video.stream.secure.hls');
             });
         });
     });

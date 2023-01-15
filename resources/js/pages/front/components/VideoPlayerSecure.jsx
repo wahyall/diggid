@@ -1,29 +1,30 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 
 import ReactPlayer from "react-player";
 
-const VideoPlayer = memo(({ course, video, className }) => {
+const VideoPlayerSecure = memo(({ course, lesson, video, className }) => {
   const [videoUrl, setVideoUrl] = useState();
   const url = useMemo(
-    () => `/course/${course?.slug}/video/${video?.slug}`,
-    [video, course?.slug]
+    () => `/me/course/${course?.slug}/${lesson?.slug}/${video?.slug}`,
+    [course, lesson, video]
   );
 
-  const { mutate: getVideo } = useMutation(
-    () => axios.get(url).then((res) => res.data),
-    {
-      onSuccess: (data) => setVideoUrl(data),
-    }
-  );
-
-  useEffect(() => video?.slug && getVideo(), [video]);
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData([
+    "me",
+    "course",
+    "video",
+    course.slug,
+    lesson.slug,
+    video.slug,
+  ]);
 
   return (
     <ReactPlayer
-      url={videoUrl}
+      url={data.url}
       controls
       className={`aspect-video rounded-lg overflow-hidden ${className}`}
       width="100%"
@@ -34,4 +35,4 @@ const VideoPlayer = memo(({ course, video, className }) => {
   );
 });
 
-export default VideoPlayer;
+export default VideoPlayerSecure;

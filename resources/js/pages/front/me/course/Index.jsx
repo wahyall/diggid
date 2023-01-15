@@ -6,7 +6,7 @@ import axios from "@/libs/axios";
 import Skeleton from "react-loading-skeleton";
 import { For, If, Show } from "react-haiku";
 import { Link } from "@inertiajs/inertia-react";
-import CourseCard from "../../components/CourseCard";
+import MyCourseCard from "../../components/MyCourseCard";
 
 const Index = memo(() => {
   const { data: courses = [], isLoading } = useQuery(["me", "course"], () =>
@@ -31,30 +31,32 @@ const Index = memo(() => {
       <h1 className="text-3xl font-bold mb-12 lg:mt-12">Mulai Belajar</h1>
       <Show>
         <Show.When isTrue={!!courses.length}>
-          <section>
+          <section className="grid grid-cols-3">
             <For
               each={courses}
               render={(course) => (
-                <CourseCard
+                <MyCourseCard
                   {...course}
-                  href={route("front.me.course.learn", course.course.slug)}
+                  href={route("front.me.course.lesson", course.course.slug)}
                 />
               )}
             />
           </section>
         </Show.When>
         <Show.Else>
-          <div className="mt-10 flex items-center flex-col">
-            <img
-              src={asset("assets/media/icons/empty-cart.png")}
-              className="opacity-50 w-1/2"
-            />
+          <div className="mt-20 flex items-center flex-col">
+            <h1 className="text-2xl font-semibold">
+              Kamu belum membeli Kelas mana pun.
+            </h1>
+            <h6 className="text-lg">
+              Yuk lihat semua Kelas kami yang menarik.
+            </h6>
             <Link
               href={route("front.catalog")}
               className="btn btn-ghost mt-8 bg-slate-200"
               data-ripplet
             >
-              Lihat Kelas
+              Cari Kelas
             </Link>
           </div>
         </Show.Else>

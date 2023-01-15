@@ -57,28 +57,24 @@ createInertiaApp({
       import.meta.glob("./pages/**/*.jsx")
     );
     page.then((module) => {
-      if (name.startsWith("dashboard")) {
-        module.default.layout = (page) => (
-          <DashboardLayout children={page} {...page.props} />
-        );
-      } else {
-        if (!name.includes("Login") && !name.includes("Register")) {
-          if (!name.includes("me")) {
-            module.default.layout = (page) => (
-              <MainLayout children={page} {...page.props} />
-            );
-          } else if (name.includes("me.course")) {
-            module.default.layout = (page) => (
-              <MainLayout {...page.props}>
-                <CourseLayout children={page} {...page.props} />
-              </MainLayout>
-            );
-          } else if (name.includes("me")) {
-            module.default.layout = (page) => (
-              <MainLayout {...page.props}>
-                <UserLayout children={page} {...page.props} />
-              </MainLayout>
-            );
+      if (!module.default.layout) {
+        if (name.startsWith("dashboard")) {
+          module.default.layout = (page) => (
+            <DashboardLayout children={page} {...page.props} />
+          );
+        } else {
+          if (!name.includes("Login") && !name.includes("Register")) {
+            if (!name.includes("me")) {
+              module.default.layout = (page) => (
+                <MainLayout children={page} {...page.props} />
+              );
+            } else if (name.includes("me")) {
+              module.default.layout = (page) => (
+                <MainLayout {...page.props}>
+                  <UserLayout children={page} {...page.props} />
+                </MainLayout>
+              );
+            }
           }
         }
       }

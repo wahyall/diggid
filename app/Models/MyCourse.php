@@ -10,6 +10,17 @@ class MyCourse extends Model {
 
     protected $fillable = ['course_id', 'user_id', 'transaction_id'];
     protected $hidden = ['id', 'course_id', 'user_id', 'transaction_id', 'created_at', 'updated_at'];
+    protected $appends = ['progress', 'total_progress'];
+
+    public function getProgressAttribute() {
+        $progress = $this->progresses()->where('has_watched', '1')->count();
+        return $progress;
+    }
+
+    public function getTotalProgressAttribute() {
+        $total_progress = $this->course()->first()->lessons()->count();
+        return $total_progress;
+    }
 
     public function course() {
         return $this->belongsTo(Course::class);

@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from "react";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { asset, currency } from "@/libs/utils";
 import { Inertia } from "@inertiajs/inertia";
@@ -11,6 +11,7 @@ import { Link } from "@inertiajs/inertia-react";
 import { toast } from "react-toastify";
 
 const Index = memo(() => {
+  const queryClient = useQueryClient();
   const { data: paymentMethods = [], isSuccess: isPaymentSuccess } = useQuery(
     ["payment-methods"],
     () => axios.get("/checkout/payment-methods").then((res) => res.data)
@@ -35,6 +36,7 @@ const Index = memo(() => {
       onSuccess: (data) => {
         toast.success("Transaksi berhasil dibuat.");
         Inertia.visit(route("front.me.transaction.detail", data.order_id)); // Order ID = UUID in transactions
+        queryClient.invalidateQueries(["me", "cart"]);
       },
       onError: () => {
         toast.error("Transaksi gagal dibuat.");
@@ -53,7 +55,7 @@ const Index = memo(() => {
     return (
       <main className="container mx-auto max-w-5xl px-4 pt-10">
         <h1 className="text-3xl font-bold my-12">Checkout</h1>
-        <section className="grid sm:grid-cols-[1fr_1.5fr] gap-12">
+        <section className="grid sm:grid-cols-[1.5fr_1fr] gap-12">
           <div>
             <Skeleton height={250} className="mb-4" />
             <Skeleton height={250} className="mb-4" />

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use App\Services\Midtrans\PaymentNotification;
+use App\Services\Midtrans\MidtransNotificationService;
 use App\Models\PaymentMethod;
 use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 class TransactionController extends Controller {
     public function index() {
         if (request()->wantsJson() && request()->ajax()) {
-            return response()->json(Transaction::where('user_id', auth()->user()->id)->get());
+            return response()->json(Transaction::with(['payment_method'])->where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->get());
         } else {
             return abort(404);
         }
@@ -21,7 +21,7 @@ class TransactionController extends Controller {
 
     public function detail($uuid) {
         if (request()->wantsJson() && request()->ajax()) {
-            $transaction = Transaction::with(['courses.course'])->where('uuid', $uuid)->first();
+            $transaction = Transaction::with(['courses.course', 'payment_method'])->where('uuid', $uuid)->first();
             return response()->json($transaction);
         } else {
             return abort(404);
@@ -68,6 +68,10 @@ class TransactionController extends Controller {
                 'order_id' => $transaction->uuid,
                 'gross_amount' => $amount
             ];
+            $body['customer_details'] = [
+                'first_name' => auth()->user()->name,
+                'email' => auth()->user()->email
+            ];
 
             $response = Http::withHeaders([
                 'Accept' => 'application/json',
@@ -77,6 +81,7 @@ class TransactionController extends Controller {
 
             if ($response->ok()) {
                 $transaction->update([
+                    'payment_method_id' => $method->id,
                     'identifier' => $response->collect('transaction_id')[0],
                     'body' => $response->json()
                 ]);
@@ -91,41 +96,79 @@ class TransactionController extends Controller {
         }
     }
 
-    public function receive(Request $request) {
-        $notif = new PaymentNotification;
+    public function notification(Request $request) {
+        $service = new MidtransNotificationService;
 
-        if ($notif->isSignatureKeyVerified()) {
-            $transaction = $notif->getTransaction();
+        if ($service->isSignatureKeyVerified()) {
+            $transaction = $service->getTransaction();
+            $notification = $service->getNotification();
 
-            if ($notif->isSuccess()) {
+            $body = $transaction->body;
+            $body['transaction_status'] = $notification->transaction_status;
+            $body['status_code'] = $notification->status_code;
+
+            if ($service->isSuccess()) {
+                $body['settlement_time'] = $notification->settlement_time;
+                $body['approval_code'] = $notification->approval_code;
                 $transaction->update([
-                    'payment_status' => 'success',
+                    'status' => 'success',
+                    'body' => $body,
                 ]);
             }
 
-            if ($notif->isExpire()) {
+            if ($service->isExpire()) {
                 $transaction->update([
-                    'payment_status' => 'expired',
+                    'status' => 'failed',
+                    'body' => $body,
                 ]);
             }
 
-            if ($notif->isCancelled()) {
+            if ($service->isCancelled()) {
                 $transaction->update([
-                    'payment_status' => 'cancelled',
+                    'status' => 'failed',
+                    'body' => $body,
                 ]);
             }
 
-            return response()
-                ->json([
-                    'success' => true,
-                    'message' => 'Notifikasi berhasil diproses',
-                ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Notifikasi berhasil diproses',
+            ]);
         } else {
-            return response()
-                ->json([
-                    'error' => true,
-                    'message' => 'Signature key tidak terverifikasi',
-                ], 403);
+            return response()->json([
+                'error' => true,
+                'message' => 'Signature key tidak terverifikasi',
+            ], 403);
+        }
+    }
+
+    public function cancel($uuid) {
+        if (request()->wantsJson() && request()->ajax()) {
+            $transaction = Transaction::where('uuid', $uuid)->first();
+            if ($transaction->status === 'pending') {
+                $response = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => base64_encode(config('midtrans.server_key') . ':')
+                ])->post(config('midtrans.url') . '/' . $transaction->uuid . '/cancel');
+
+                if ($response->json()['status_code']) {
+                    $body = $transaction->body;
+                    $body['transaction_status'] = 'cancel';
+                    $transaction->update([
+                        'status' => 'failed',
+                        'body' => $body,
+                    ]);
+                }
+
+                return response()->json($response->json(), $response->json()['status_code']);
+            } else {
+                return response()->json([
+                    'message' => 'Transaksi tidak bisa dibatalkan dikarenakan status transaksi bukan pending.'
+                ], 400);
+            }
+        } else {
+            return abort(404);
         }
     }
 }

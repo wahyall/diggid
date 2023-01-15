@@ -27,6 +27,8 @@ class MenuSeeder extends Seeder {
                 // User
                 ['name' => 'Profil', 'url' => 'me', 'route' => 'front.me', 'component' => 'front/me/Index'],
                 ['name' => 'Kelas Saya', 'url' => 'me/course', 'route' => 'front.me.course', 'component' => 'front/me/course/Index'],
+                ['name' => 'Kelas Saya', 'url' => 'me/course/{slug}', 'route' => 'front.me.course.lesson', 'component' => 'front/me/course/Video'],
+                ['name' => 'Kelas Saya', 'url' => 'me/course/{slug}/{order}', 'route' => 'front.me.course.lesson.video', 'component' => 'front/me/course/Video'],
 
                 ['name' => 'Transaksi', 'url' => 'me/transaction', 'route' => 'front.me.transaction', 'component' => 'front/me/transaction/Index'],
                 ['name' => 'Detail Transaksi', 'url' => 'me/transaction/{uuid}', 'route' => 'front.me.transaction.detail', 'component' => 'front/me/transaction/Detail'],

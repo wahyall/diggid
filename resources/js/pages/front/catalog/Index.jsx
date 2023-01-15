@@ -32,7 +32,7 @@ const Index = () => {
     name: ["sort", "category", "level"],
   });
 
-  const { data: categoryGroups = [], isSuccess: isGroupCategoriesSuccess } =
+  const { data: categoryGroups = [], isSuccess: isCategoryGroupsSuccess } =
     useQuery(["catalog", "category", "group"], () =>
       axios.get("/catalog/category").then((res) => res.data)
     );
@@ -102,7 +102,7 @@ const Index = () => {
         {/* begin::Filter on Desktop */}
         <div className="hidden md:block overflow-auto max-h-screen scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded">
           <h2 className="text-lg font-semibold mb-4">Kategori</h2>
-          <If isTrue={isGroupCategoriesSuccess}>
+          <If isTrue={isCategoryGroupsSuccess}>
             <For
               each={categoryGroups}
               render={(group) => (
@@ -222,7 +222,7 @@ const Index = () => {
               </ul>
             </div>
           </If>
-          <If isTrue={!isGroupCategoriesSuccess}>
+          <If isTrue={!isCategoryGroupsSuccess}>
             <Skeleton className="my-4 w-1/2 h-6" />
             <Skeleton count={3} className="h-8" />
 

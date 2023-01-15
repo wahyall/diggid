@@ -4,5 +4,6 @@
 $ npm run dev
 $ php artisan serve
 $ ./meilisearch
-$ php artisan queue:work --queue=high,default
+$ ./ngrok http 8000
+$ php artisan queue:work --queue=high,default,video
 ```

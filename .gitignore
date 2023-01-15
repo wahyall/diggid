@@ -2,6 +2,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/love.html
 /storage/*.key
 /vendor
 .env

@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
     Route::group(['prefix' => 'admin', 'middleware' => 'role:admin'], function () {
         Route::prefix('dashboard')->group(function () {
@@ -114,12 +114,12 @@ Route::group(['prefix' => 'course/{course_slug}'], function () {
             Route::get('', [CourseLessonVideoController::class, 'video']);
             Route::get('stream', [CourseLessonVideoController::class, 'stream'])->name('video.stream');
             Route::get('{video_file}', [CourseLessonVideoController::class, 'streamHls'])->name('video.stream.hls');
-            // Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware(['auth', 'signed']);
+            // Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware([['auth', 'verified'], 'signed']);
         });
     });
 });
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::prefix('me')->group(function () {
         Route::post('/', [UserController::class, 'update']);
 
@@ -132,10 +132,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('transaction')->group(function () {
             Route::get('/', [TransactionController::class, 'index']);
             Route::get('/{uuid}', [TransactionController::class, 'detail']);
+            Route::post('/{uuid}/cancel', [TransactionController::class, 'cancel']);
         });
 
         Route::prefix('course')->group(function () {
             Route::get('/', [MyCourseController::class, 'index']);
+            Route::get('/{slug}', [MyCourseController::class, 'course']);
+            Route::prefix('/{slug}/{order}')->group(function () {
+                Route::get('', [MyCourseController::class, 'video']);
+                Route::get('stream', [MyCourseController::class, 'stream'])->name('video.stream.secure');
+                Route::get('{video}', [MyCourseController::class, 'streamHls'])->name('video.stream.secure.hls');
+            });
         });
     });
 
@@ -144,3 +151,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('charge', [TransactionController::class, 'charge']);
     });
 });
+
+Route::post('checkout/notification', [TransactionController::class, 'notification']);

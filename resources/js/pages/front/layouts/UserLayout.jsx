@@ -7,9 +7,9 @@ const UserLayout = ({ children, auth: { user } }) => {
     <main className="-mt-4">
       <aside className="drawer drawer-mobile lg:px-8 h-auto">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content container mx-auto">
+        <div className="drawer-content container mx-auto lg:relative lg:!z-50">
           <label
-            for="my-drawer-2"
+            htmlFor="my-drawer-2"
             className="btn btn-square btn-ghost lg:hidden mt-8 ml-4"
           >
             <svg

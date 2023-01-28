@@ -1,4 +1,12 @@
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  memo,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { useQuery } from "@tanstack/react-query";
 import Select from "react-select";
 import {
@@ -16,7 +24,9 @@ const perOptions = [
   { value: 50, label: "50" },
 ];
 
-function Paginate({ columns, url, id, payload }) {
+const Paginate = forwardRef(({ columns, url, id, payload, Plugin = () => <>
+
+    </> }, ref) => {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [page, setPage] = useState(1);
@@ -32,6 +42,10 @@ function Paginate({ columns, url, id, payload }) {
       placeholderData: { data: [] },
     }
   );
+
+  useImperativeHandle(ref, () => ({
+    refetch,
+  }));
 
   const table = useReactTable({
     data: data.data,
@@ -78,6 +92,7 @@ function Paginate({ columns, url, id, payload }) {
             value={perOptions.filter((opt) => opt.value === per)}
             onChange={(ev) => setPer(ev.value)}
           />
+          <Plugin />
         </div>
         <form onSubmit={(ev) => (ev.preventDefault(), refetch())}>
           <input
@@ -185,6 +200,6 @@ function Paginate({ columns, url, id, payload }) {
       </div>
     </div>
   );
-}
+});
 
 export default memo(Paginate);

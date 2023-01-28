@@ -14,6 +14,8 @@ use App\Http\Controllers\MyCourseController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminTransactionController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -93,33 +95,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('upload-image', [CourseController::class, 'uploadImage']);
         });
 
+        Route::group(['prefix' => 'transaction'], function () {
+            Route::post('paginate', [AdminTransactionController::class, 'paginate']);
+            Route::get('{uuid}', [AdminTransactionController::class, 'detail']);
+            Route::get('{uuid}/report', [AdminTransactionController::class, 'report']);
+        });
+
         Route::group(['prefix' => 'payment-method'], function () {
             Route::post('paginate', [PaymentMethodController::class, 'paginate']);
             Route::post('{uuid}/status', [PaymentMethodController::class, 'status']);
         });
     });
-});
 
-// Front
-Route::group(['prefix' => 'catalog'], function () {
-    Route::get('category', [CatalogController::class, 'category']);
-    Route::post('course', [CatalogController::class, 'course']);
-    Route::get('course/{uuid}', [CatalogController::class, 'detail']);
-});
-
-Route::group(['prefix' => 'course/{course_slug}'], function () {
-    Route::group(['prefix' => 'video'], function () {
-        Route::get('free', [CourseLessonVideoController::class, 'free']);
-        Route::group(['prefix' => '{video_slug}'], function () {
-            Route::get('', [CourseLessonVideoController::class, 'video']);
-            Route::get('stream', [CourseLessonVideoController::class, 'stream'])->name('video.stream');
-            Route::get('{video_file}', [CourseLessonVideoController::class, 'streamHls'])->name('video.stream.hls');
-            // Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware([['auth', 'verified'], 'signed']);
-        });
-    });
-});
-
-Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::prefix('me')->group(function () {
         Route::post('/', [UserController::class, 'update']);
 
@@ -149,6 +136,25 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::prefix('checkout')->group(function () {
         Route::get('payment-methods', [PaymentMethodController::class, 'show']);
         Route::post('charge', [TransactionController::class, 'charge']);
+    });
+});
+
+// Front
+Route::group(['prefix' => 'catalog'], function () {
+    Route::get('category', [CatalogController::class, 'category']);
+    Route::post('course', [CatalogController::class, 'course']);
+    Route::get('course/{uuid}', [CatalogController::class, 'detail']);
+});
+
+Route::group(['prefix' => 'course/{course_slug}'], function () {
+    Route::group(['prefix' => 'video'], function () {
+        Route::get('free', [CourseLessonVideoController::class, 'free']);
+        Route::group(['prefix' => '{video_slug}'], function () {
+            Route::get('', [CourseLessonVideoController::class, 'video']);
+            Route::get('stream', [CourseLessonVideoController::class, 'stream'])->name('video.stream');
+            Route::get('{video_file}', [CourseLessonVideoController::class, 'streamHls'])->name('video.stream.hls');
+            // Route::get('secure/play', [CourseLessonVideoController::class, 'securePlay'])->name('video.secure.play')->middleware([['auth', 'verified'], 'signed']);
+        });
     });
 });
 

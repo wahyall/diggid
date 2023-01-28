@@ -8,22 +8,22 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 
 import Form from "./Form";
-import Project from "./Project";
+// import Project from "./Project";
 
 const columnHelper = createColumnHelper();
 
 function Index({ csrf_token }) {
   const [selected, setSelected] = useState(null);
   const [openForm, setOpenForm] = useState(false);
-  const [openProject, setOpenProject] = useState(false);
+  // const [openProject, setOpenProject] = useState(false);
 
   const queryClient = useQueryClient();
 
-  const courseProject = (uuid) => {
-    setSelected(uuid);
-    setOpenProject(true);
-    KTUtil.scrollTop();
-  };
+  // const courseProject = (uuid) => {
+  //   setSelected(uuid);
+  //   setOpenProject(true);
+  //   KTUtil.scrollTop();
+  // };
 
   const editCourse = (uuid) => {
     setSelected(uuid);
@@ -115,8 +115,7 @@ function Index({ csrf_token }) {
           width: "100px",
         },
         cell: (cell) =>
-          !openForm &&
-          !openProject && (
+          !openForm && (
             <div className="d-flex gap-2">
               <Link
                 href={route("dashboard.admin.course.lesson", cell.getValue())}
@@ -126,14 +125,14 @@ function Index({ csrf_token }) {
                 <i className="la la-chalkboard fs-3"></i>
                 Silabus
               </Link>
-              <button
+              {/* <button
                 className="btn btn-sm btn-primary"
                 style={{ whiteSpace: "nowrap" }}
                 onClick={useCallback(() => courseProject(cell.getValue()), [])}
               >
                 <i className="la la-tasks fs-3"></i>
                 Proyek
-              </button>
+              </button> */}
               <button
                 className="btn btn-sm btn-warning btn-icon"
                 onClick={useCallback(() => editCourse(cell.getValue()), [])}
@@ -150,7 +149,7 @@ function Index({ csrf_token }) {
           ),
       }),
     ],
-    [openForm, openProject]
+    [openForm]
   );
 
   return (
@@ -162,18 +161,18 @@ function Index({ csrf_token }) {
           csrfToken={csrf_token}
         />
       </If>
-      <If isTrue={openProject}>
+      {/* <If isTrue={openProject}>
         <Project
           close={useCallback(() => setOpenProject(false), [])}
           selected={selected}
           csrfToken={csrf_token}
         />
-      </If>
+      </If> */}
       <div className="card">
         <div className="card-header">
           <div className="card-title w-100">
             <h1>Kelas</h1>
-            <If isTrue={!openForm && !openProject}>
+            <If isTrue={!openForm}>
               <button
                 type="button"
                 className="btn btn-primary btn-sm ms-auto"

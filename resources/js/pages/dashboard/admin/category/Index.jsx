@@ -16,19 +16,19 @@ function Index() {
   const [selected, setSelected] = useState(null);
   const queryClient = useQueryClient();
 
-  const sub = (uuid) => {
+  const handleSub = (uuid) => {
     setSelected(uuid);
     setOpenSub(true);
     KTUtil.scrollTop();
   };
 
-  const edit = (uuid) => {
+  const handleEdit = (uuid) => {
     setSelected(uuid);
     setOpenForm(true);
     KTUtil.scrollTop();
   };
 
-  const hapus = (uuid) => {
+  const handleDelete = (uuid) => {
     const mySwal = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-danger btn-sm",
@@ -43,7 +43,7 @@ function Index() {
         text: "Data yang dihapus tidak dapat dikembalikan!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Ya, hapus!",
+        confirmButtonText: "Ya, handleDelete!",
         cancelButtonText: "Batalkan!",
         reverseButtons: true,
         preConfirm: () => {
@@ -102,19 +102,19 @@ function Index() {
             <button
               className="btn btn-sm btn-primary"
               style={{ whiteSpace: "nowrap" }}
-              onClick={useCallback(() => sub(cell.getValue()), [])}
+              onClick={useCallback(() => handleSub(cell.getValue()), [])}
             >
               <i className="la la-tag fs-3"></i> Kategori
             </button>
             <button
               className="btn btn-sm btn-warning btn-icon"
-              onClick={useCallback(() => edit(cell.getValue()), [])}
+              onClick={useCallback(() => handleEdit(cell.getValue()), [])}
             >
               <i className="la la-pencil fs-3"></i>
             </button>
             <button
               className="btn btn-sm btn-danger btn-icon"
-              onClick={useCallback(() => hapus(cell.getValue()), [])}
+              onClick={useCallback(() => handleDelete(cell.getValue()), [])}
             >
               <i className="la la-trash fs-3"></i>
             </button>

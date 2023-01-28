@@ -47,7 +47,7 @@ const Information = memo(({ slug }) => {
                 </a>
               )}
             </Tab>
-            <Tab as={Fragment}>
+            {/* <Tab as={Fragment}>
               {({ selected }) => (
                 <a
                   className={`tab xs:tab-lg ${
@@ -68,7 +68,7 @@ const Information = memo(({ slug }) => {
                   Showcase
                 </a>
               )}
-            </Tab>
+            </Tab> */}
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>
@@ -155,7 +155,7 @@ const Information = memo(({ slug }) => {
                 )}
               />
             </Tab.Panel>
-            <Tab.Panel>
+            {/* <Tab.Panel>
               <h4 className="text-2xl font-bold mb-6">Apa Kata Mereka</h4>
               <Show>
                 <Show.When isTrue={course?.reviews?.length}>
@@ -264,7 +264,7 @@ const Information = memo(({ slug }) => {
                   <p className="text-lg">Belum ada showcase untuk kelas ini</p>
                 </Show.Else>
               </Show>
-            </Tab.Panel>
+            </Tab.Panel> */}
           </Tab.Panels>
         </Tab.Group>
       </div>

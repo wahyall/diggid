@@ -72,18 +72,18 @@ const CourseLayout = memo(({ children, auth: { user } }) => {
             <div className="divider my-4"></div>
             <Show>
               <Show.When isTrue={isLoading}>
-                <li>
-                  <Skeleton height={36} className="mb-2" />
-                </li>
-                <li>
-                  <Skeleton height={36} className="mb-2" />
-                </li>
-                <li>
-                  <Skeleton height={36} className="mb-2" />
-                </li>
-                <li>
-                  <Skeleton height={36} className="mb-2" />
-                </li>
+                <div>
+                  <Skeleton height={48} className="mb-4" />
+                </div>
+                <div>
+                  <Skeleton height={48} className="mb-4" />
+                </div>
+                <div>
+                  <Skeleton height={48} className="mb-4" />
+                </div>
+                <div>
+                  <Skeleton height={48} className="mb-4" />
+                </div>
               </Show.When>
               <Show.Else>
                 <For

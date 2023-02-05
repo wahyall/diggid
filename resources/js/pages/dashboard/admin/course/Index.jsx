@@ -79,7 +79,7 @@ function Index({ csrf_token }) {
         cell: (cell) => (
           <img
             className="img-thumbnail"
-            width={250}
+            style={{ objectFit: "cover", width: "250px", height: "150px" }}
             src={asset(cell.getValue())}
           />
         ),

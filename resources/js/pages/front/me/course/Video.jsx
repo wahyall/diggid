@@ -25,7 +25,12 @@ const Video = memo(() => {
     () =>
       axios
         .get(`/me/course/${courseSlug}/${lessonSlug}/${videoSlug}`)
-        .then((res) => res.data)
+        .then((res) => res.data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["me", "course"], { exact: true });
+      },
+    }
   );
 
   if (isLoading)

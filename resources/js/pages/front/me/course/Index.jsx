@@ -13,8 +13,6 @@ const Index = memo(() => {
     axios.get("/me/course").then((res) => res.data)
   );
 
-  useEffect(() => console.log(courses), [courses]);
-
   if (isLoading)
     return (
       <main className="container mx-auto max-w-5xl px-4 pt-10">

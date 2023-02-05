@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Cart;
+use App\Models\MyCourse;
 
 class CartController extends Controller {
     public function index() {
@@ -19,6 +20,11 @@ class CartController extends Controller {
     public function store(Request $request) {
         if (request()->wantsJson() && request()->ajax()) {
             $course = Course::where('uuid', $request->course_uuid)->first();
+
+            if (MyCourse::where('user_id', request()->user()->id)->where('course_id', $course->id)->exists()) {
+                return response()->json(['status' => false, 'message' => 'Anda sudah membeli kursus ini'], 422);
+            }
+
             $cart = Cart::firstOrCreate([
                 'user_id' => request()->user()->id,
                 'course_id' => $course->id

@@ -8,7 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\CourseLessonVideoController;
-use App\Http\Controllers\CourseProjectController;
+// use App\Http\Controllers\CourseProjectController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MyCourseController;
 use App\Http\Controllers\PaymentMethodController;
@@ -63,12 +63,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('{uuid}/update', [CourseController::class, 'update']);
             Route::delete('{uuid}/destroy', [CourseController::class, 'destroy']);
 
-            Route::prefix('{uuid}/project')->group(function () {
-                Route::get('/', [CourseProjectController::class, 'index']);
-                Route::post('store', [CourseProjectController::class, 'store']);
-                Route::post('update', [CourseProjectController::class, 'update']);
-                Route::delete('destroy', [CourseProjectController::class, 'destroy']);
-            });
+            // Route::prefix('{uuid}/project')->group(function () {
+            //     Route::get('/', [CourseProjectController::class, 'index']);
+            //     Route::post('store', [CourseProjectController::class, 'store']);
+            //     Route::post('update', [CourseProjectController::class, 'update']);
+            //     Route::delete('destroy', [CourseProjectController::class, 'destroy']);
+            // });
 
             Route::prefix('{course_uuid}/lesson')->group(function () {
                 Route::post('/', [CourseLessonController::class, 'index']);

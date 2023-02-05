@@ -6,6 +6,7 @@ import { For, Show } from "react-haiku";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "@/libs/axios";
+import { usePage } from "@inertiajs/inertia-react";
 
 function MenuItem({ name, icon, url, route: routeName, heading = false }) {
   return (
@@ -93,6 +94,8 @@ function DashboardLayout({ children, auth: { user } }) {
       placeholderData: [],
     }
   );
+
+  const { breadcrumb = [] } = usePage().props;
 
   return (
     <main
@@ -236,19 +239,16 @@ function DashboardLayout({ children, auth: { user } }) {
                     id="kt_header_nav"
                   >
                     <ol className="breadcrumb breadcrumb-line text-muted fs-6 fw-semibold">
-                      <li className="breadcrumb-item pe-3">
-                        <a href="#" className="pe-3">
-                          Home
-                        </a>
-                      </li>
-                      <li className="breadcrumb-item pe-3">
-                        <a href="#" className="pe-3">
-                          Library
-                        </a>
-                      </li>
-                      <li className="breadcrumb-item pe-3 text-muted">
-                        Active
-                      </li>
+                      <For
+                        each={breadcrumb}
+                        render={(item) => (
+                          <li className="breadcrumb-item pe-3">
+                            <a href="#" className="pe-3">
+                              {item}
+                            </a>
+                          </li>
+                        )}
+                      />
                     </ol>
                   </div>
                   {/* end::Navbar */}
@@ -307,12 +307,12 @@ function DashboardLayout({ children, auth: { user } }) {
                         </div>
                         <div className="separator my-2"></div>
                         <div className="menu-item px-5">
-                          <Link
+                          <a
                             href={route("front.me")}
                             className="menu-link px-5"
                           >
                             Akun Saya
-                          </Link>
+                          </a>
                         </div>
                         <div className="menu-item px-5">
                           <a

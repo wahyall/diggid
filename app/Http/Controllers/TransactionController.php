@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Services\Midtrans\MidtransNotificationService;
 use App\Models\PaymentMethod;
 use App\Models\Cart;
+use App\Models\MyCourse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -54,10 +55,12 @@ class TransactionController extends Controller {
             ]);
 
             foreach ($carts as $cart) {
-                $transaction->courses()->create([
-                    'user_id' => auth()->user()->id,
-                    'course_id' => $cart->course_id
-                ]);
+                if (!MyCourse::where('user_id', auth()->user()->id)->where('course_id', $cart->course_id)->first()) {
+                    $transaction->courses()->create([
+                        'user_id' => auth()->user()->id,
+                        'course_id' => $cart->course_id
+                    ]);
+                }
             }
 
             Cart::where('user_id', auth()->user()->id)->delete();

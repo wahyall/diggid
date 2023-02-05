@@ -140,7 +140,11 @@ const Index = memo(() => {
         <h6 className="text-center text-3xl my-4">{currency(course.price)}</h6>
         <Show>
           <Show.When isTrue={course.is_purchased}>
-            <Link className="btn btn-lg btn-primary" data-ripplet>
+            <Link
+              href={route("front.me.course.lesson", course.slug)}
+              className="btn btn-lg btn-primary"
+              data-ripplet
+            >
               Mulai Belajar
             </Link>
           </Show.When>

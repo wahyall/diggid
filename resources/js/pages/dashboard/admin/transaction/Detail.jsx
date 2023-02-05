@@ -9,11 +9,19 @@ import { asset, currency } from "@/libs/utils";
 const Detail = memo(({ selected, close }) => {
   const { data: transaction = { courses: [] } } = useQuery(
     ["admin", "transaction", selected],
-    () => axios.get(`/admin/transaction/${selected}`).then((res) => res.data)
+    () => {
+      KTApp.block("#detail-transaction");
+      return axios
+        .get(`/admin/transaction/${selected}`)
+        .then((res) => res.data);
+    },
+    {
+      onSettled: () => KTApp.unblock("#detail-transaction"),
+    }
   );
 
   return (
-    <section className="card mb-12">
+    <section className="card mb-12" id="detail-transaction">
       <div className="card-header">
         <div className="card-title w-100">
           <div>
@@ -141,7 +149,7 @@ const Detail = memo(({ selected, close }) => {
                     <h3 className="fw-bolder text-end">Total</h3>
                   </td>
                   <td>
-                    <h3 className="fw-bolder text-end">
+                    <h3 className="fw-boldest text-end">
                       {currency(transaction.amount)}
                     </h3>
                   </td>

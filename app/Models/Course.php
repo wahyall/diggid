@@ -11,21 +11,19 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use DOMDocument;
 use Laravel\Scout\Searchable;
 
-class Course extends Model implements HasMedia
-{
+class Course extends Model implements HasMedia {
     use Uuid, HasSlug, InteractsWithMedia, Searchable;
 
     protected $fillable = ['name', 'caption', 'slug', 'thumbnail', 'price', 'description', 'finish_estimation', 'discount', 'published', 'level'];
     protected $hidden = ['id', 'category_id', 'created_at', 'updated_at', 'media'];
     protected $casts = ['published' => 'boolean'];
+    protected $appends = ['is_purchased'];
 
-    public function shouldBeSearchable()
-    {
+    public function shouldBeSearchable() {
         return !!$this->published;
     }
 
-    public function toSearchableArray()
-    {
+    public function toSearchableArray() {
         return [
             'name' => $this->name,
             'slug' => $this->slug,
@@ -34,22 +32,19 @@ class Course extends Model implements HasMedia
         ];
     }
 
-    public static function getSearchFilterAttributes(): array
-    {
+    public static function getSearchFilterAttributes(): array {
         return [
             'categories',
         ];
     }
 
-    public static function getSearchSortAttributes(): array
-    {
+    public static function getSearchSortAttributes(): array {
         return [
             'purchases_count',
         ];
     }
 
-    public static function getSearchRankingRuleAttributes(): array
-    {
+    public static function getSearchRankingRuleAttributes(): array {
         return [
             'words',
             'sort',
@@ -60,75 +55,64 @@ class Course extends Model implements HasMedia
         ];
     }
 
-    public function getSlugOptions(): SlugOptions
-    {
+    public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
 
     // Relationship
-    public function categories()
-    {
+    public function categories() {
         return $this->belongsToMany(Category::class, 'course_categories');
     }
 
-    public function lessons()
-    {
+    public function lessons() {
         return $this->hasMany(CourseLesson::class);
     }
 
-    public function videos()
-    {
+    public function videos() {
         return $this->hasManyThrough(CourseLessonVideo::class, CourseLesson::class);
     }
 
-    public function project()
-    {
+    public function project() {
         return $this->hasOne(CourseProject::class);
     }
 
-    public function purchases()
-    {
+    public function purchases() {
         return $this->hasMany(MyCourse::class);
     }
 
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
+    // public function reviews()
+    // {
+    //     return $this->hasMany(Review::class);
+    // }
 
-    public function showcases()
-    {
-        return $this->hasMany(CourseShowcase::class);
-    }
+    // public function showcases()
+    // {
+    //     return $this->hasMany(CourseShowcase::class);
+    // }
 
-    public function registerMediaCollections(): void
-    {
+    public function registerMediaCollections(): void {
         $this->addMediaCollection('sneak_peeks')->useDisk('course_sneak_peeks');
     }
 
     // Attribute
-    public function getSneakPeeksAttribute()
-    {
+    public function getSneakPeeksAttribute() {
         return $this->getMedia('sneak_peeks')->map(function ($item) {
             $path = str_replace(getenv('APP_URL') . '/storage/', '', $item->getFullUrl());
             return asset('storage/course/sneak_peeks/' . $path);
         });
     }
 
-    public function getRatingAttribute()
-    {
+    public function getRatingAttribute() {
         return $this->reviews->avg('rating');
     }
 
-    public function getIsPurchasedAttribute()
-    {
+    public function getIsPurchasedAttribute() {
         return !!$this->purchases()->where('user_id', auth()->user()->id)->whereRelation('transaction', 'status', '=', 'success')->count();
     }
 
-    public static function booted()
-    {
+    public static function booted() {
         parent::boot();
 
         self::deleting(function ($model) {

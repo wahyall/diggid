@@ -4,7 +4,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 
 import Skeleton from "react-loading-skeleton";
-import { For } from "react-haiku";
+import { For, Show } from "react-haiku";
+import { Link } from "@inertiajs/inertia-react";
 import { useQueryClient } from "@tanstack/react-query";
 import VideoPlayer from "@/pages/front/components/VideoPlayer";
 
@@ -68,16 +69,29 @@ const FreeVideo = memo(({ slug, addToCart, isCartLoading }) => {
             </li>
           </ul>
         </div>
-        <button
-          className={`btn btn-lg btn-primary rounded-t-none w-full ${
-            isCartLoading && "loading"
-          }`}
-          disabled={isCartLoading}
-          data-ripplet
-          onClick={addToCart}
-        >
-          Gabung Kelas
-        </button>
+        <Show>
+          <Show.When isTrue={course.is_purchased}>
+            <Link
+              href={route("front.me.course.lesson", course.slug)}
+              className="btn btn-lg btn-primary rounded-t-none w-full"
+              data-ripplet
+            >
+              Mulai Belajar
+            </Link>
+          </Show.When>
+          <Show.Else>
+            <button
+              className={`btn btn-lg btn-primary rounded-t-none w-full ${
+                isCartLoading && "loading"
+              }`}
+              disabled={isCartLoading}
+              data-ripplet
+              onClick={addToCart}
+            >
+              Gabung Kelas
+            </button>
+          </Show.Else>
+        </Show>
       </div>
     </section>
   );

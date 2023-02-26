@@ -74,7 +74,7 @@ class MyCourseController extends Controller {
             'has_watched' => true
         ]);
 
-        $file = storage_path('app/streaming/course/video/' . $video->uuid . '.m3u8');
+        $file = storage_path('app/private/' . $video->video);
         VideoStreamer::streamFile($file);
     }
 
@@ -89,8 +89,8 @@ class MyCourseController extends Controller {
         })->whereRelation('lesson', 'slug', '=', $lesson)->where('slug', $video)->firstOrFail();
         if (!$video) return abort(403);
 
-        if (!Storage::disk('streaming')->exists($file))  return abort(404);
+        if (!Storage::disk('private')->exists($file))  return abort(404);
 
-        return Storage::disk('streaming')->get($file);
+        return Storage::disk('private')->get($file);
     }
 }

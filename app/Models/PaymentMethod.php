@@ -13,7 +13,7 @@ class PaymentMethod extends Model {
 
     protected $fillable = ['name', 'slug', 'logo', 'body', 'is_active'];
     protected $casts = ['body' => AsCollection::class, 'is_active' => 'boolean'];
-    protected $hidden = ['id', 'created_at', 'updated_at', 'body', 'is_active'];
+    protected $hidden = ['id', 'created_at', 'updated_at', 'body'];
 
     public function getSlugOptions(): SlugOptions {
         return SlugOptions::create()

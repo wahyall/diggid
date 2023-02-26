@@ -280,47 +280,52 @@ function Form({ close, selected, csrfToken }) {
             </div>
             <div className="mb-10">
               <label className="form-label mb-3">Tingkatan :</label>
-              <div className="d-flex gap-10 align-items-center">
-                <div className="form-check form-check-custom form-check-solid">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="level"
-                    value="1"
-                    id="level-pemula"
-                    defaultChecked={course?.level == 1}
-                  />
-                  <label className="form-check-label" htmlFor="level-pemula">
-                    Pemula
-                  </label>
+              {(!selected || !!course?.uuid) && (
+                <div className="d-flex gap-10 align-items-center">
+                  <div className="form-check form-check-custom form-check-solid">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="level"
+                      value="1"
+                      id="level-pemula"
+                      defaultChecked={course?.level == 1}
+                    />
+                    <label className="form-check-label" htmlFor="level-pemula">
+                      Pemula
+                    </label>
+                  </div>
+                  <div className="form-check form-check-custom form-check-solid">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="level"
+                      value="2"
+                      id="level-mengengah"
+                      defaultChecked={course?.level == 2}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="level-mengengah"
+                    >
+                      Menengah
+                    </label>
+                  </div>
+                  <div className="form-check form-check-custom form-check-solid">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="level"
+                      value="3"
+                      id="level-mahir"
+                      defaultChecked={course?.level == 3}
+                    />
+                    <label className="form-check-label" htmlFor="level-mahir">
+                      Mahir
+                    </label>
+                  </div>
                 </div>
-                <div className="form-check form-check-custom form-check-solid">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="level"
-                    value="2"
-                    id="level-mengengah"
-                    defaultChecked={course?.level == 2}
-                  />
-                  <label className="form-check-label" htmlFor="level-mengengah">
-                    Menengah
-                  </label>
-                </div>
-                <div className="form-check form-check-custom form-check-solid">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="level"
-                    value="3"
-                    id="level-mahir"
-                    defaultChecked={course?.level == 3}
-                  />
-                  <label className="form-check-label" htmlFor="level-mahir">
-                    Mahir
-                  </label>
-                </div>
-              </div>
+              )}
             </div>
           </div>
           <div className="col-12 mb-10">

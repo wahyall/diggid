@@ -23,7 +23,7 @@ class CourseLessonController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string',
-                'description' => 'required|string'
+                'description' => 'nullable|string'
             ]);
 
             $order = CourseLesson::whereHas('course', function ($q) use ($course_uuid) {
@@ -65,7 +65,7 @@ class CourseLessonController extends Controller {
         if (request()->wantsJson()) {
             $request->validate([
                 'name' => 'required|string',
-                'description' => 'required|string',
+                'description' => 'nullable|string',
                 'deleted_images' => 'nullable|array',
                 'deleted_images.*' => 'nullable|string',
             ]);

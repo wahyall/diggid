@@ -5,6 +5,7 @@ import { Show, For } from "react-haiku";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { asset, currency } from "@/libs/utils";
+import useDownloadPdf from "@/hooks/useDownloadPdf";
 
 const Detail = memo(({ selected, close }) => {
   const { data: transaction = { courses: [] } } = useQuery(
@@ -20,6 +21,10 @@ const Detail = memo(({ selected, close }) => {
     }
   );
 
+  const { download: downloadPdf } = useDownloadPdf({
+    onDownload: () => KTApp.block("#detail-transaction"),
+  });
+
   return (
     <section className="card mb-12" id="detail-transaction">
       <div className="card-header">
@@ -32,7 +37,9 @@ const Detail = memo(({ selected, close }) => {
             <button
               type="button"
               className="btn btn-danger btn-sm"
-              onClick={close}
+              onClick={useCallback(() =>
+                downloadPdf(`/admin/transaction/${transaction.uuid}/report`)
+              )}
             >
               <i className="las la-file-pdf"></i>
               Report

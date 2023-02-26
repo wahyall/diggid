@@ -112,7 +112,7 @@ function Form({ close, course_uuid, selected, csrfToken }) {
               />
             </div>
             <div className="col-12 mb-10">
-              <label htmlFor="description" className="form-label required">
+              <label htmlFor="description" className="form-label">
                 Deskripsi :
               </label>
               <CKEditor

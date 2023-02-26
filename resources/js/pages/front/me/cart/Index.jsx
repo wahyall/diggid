@@ -159,32 +159,6 @@ const Index = memo(() => {
                   <i className="la la-check text-md text-primary"></i>
                 </span>
               </li>
-              <li className="flex rounded-md border border-slate-200 px-4 py-2 gap-4 items-center justify-between mb-4">
-                <div className="flex gap-4 items-center">
-                  <img
-                    src={asset("assets/media/icons/discussion.png")}
-                    width="48"
-                  />
-                  <span className="text-xl font-bold">Diskusi Tanya Jawab</span>
-                </div>
-                <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <i className="la la-check text-md text-primary"></i>
-                </span>
-              </li>
-              <li className="flex rounded-md border border-slate-200 px-4 py-2 gap-4 items-center justify-between">
-                <div className="flex gap-4 items-center">
-                  <img
-                    src={asset("assets/media/icons/certificate.png")}
-                    width="48"
-                  />
-                  <span className="text-xl font-bold">
-                    Sertifikat Kelulusan
-                  </span>
-                </div>
-                <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <i className="la la-check text-md text-primary"></i>
-                </span>
-              </li>
             </ul>
           </section>
 

@@ -129,7 +129,7 @@ class CourseLessonVideoController extends Controller {
                 ]);
 
                 GenerateVideoThumbnail::dispatch($video)->onQueue('video');
-                ConvertVideoForStreaming::dispatch($video)->onQueue('video');
+                // ConvertVideoForStreaming::dispatch($video)->onQueue('video');
 
                 return response()->json([
                     'message' => 'Berhasil mengupload video'
@@ -231,12 +231,12 @@ class CourseLessonVideoController extends Controller {
             return abort(404);
         }
 
-        $file = storage_path('app/streaming/course/video/' . $video->uuid . '.m3u8');
+        $file = storage_path('app/private/' . $video->video);
         VideoStreamer::streamFile($file);
     }
 
     public function streamHls($course_slug, $video_slug, $video_file) {
-        if (!Storage::disk('streaming')->exists($video_file)) {
+        if (!Storage::disk('private')->exists($video_file)) {
             return abort(404);
         }
 
@@ -246,6 +246,6 @@ class CourseLessonVideoController extends Controller {
             abort(403);
         }
 
-        return Storage::disk('streaming')->get($video_file);
+        return Storage::disk('private')->get($video_file);
     }
 }

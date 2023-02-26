@@ -17,13 +17,17 @@ const CourseLayout = memo(({ children, auth: { user } }) => {
     },
   } = usePage().props;
 
-  const { data: course = {}, isLoading } = useQuery(
-    ["me", "course", courseSlug],
-    () => axios.get(`/me/course/${courseSlug}`).then((res) => res.data)
+  const {
+    data: course = {},
+    isLoading,
+    isError,
+    error,
+  } = useQuery(["me", "course", courseSlug], () =>
+    axios.get(`/me/course/${courseSlug}`).then((res) => res.data)
   );
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !isError) {
       if (!videoSlug || !lessonSlug) {
         Inertia.visit(
           route("front.me.course.lesson.video", [
@@ -35,6 +39,25 @@ const CourseLayout = memo(({ children, auth: { user } }) => {
       }
     }
   }, [isLoading, course, courseSlug, lessonSlug, videoSlug]);
+
+  if (isError)
+    return (
+      <main className="container mx-auto max-w-5xl px-4 pt-10">
+        <h1 className="text-3xl font-bold text-center lg:mt-12">
+          Kamu tidak memilki akses ke Kelas ini
+        </h1>
+        <div className="mt-4 flex items-center flex-col">
+          <h6 className="text-lg">Yuk lihat semua Kelas kami yang menarik.</h6>
+          <Link
+            href={route("front.catalog")}
+            className="btn btn-ghost mt-8 bg-slate-200"
+            data-ripplet
+          >
+            Cari Kelas
+          </Link>
+        </div>
+      </main>
+    );
 
   return (
     <main className="-mt-4">

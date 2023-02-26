@@ -18,7 +18,7 @@ class MyCourse extends Model {
     }
 
     public function getTotalProgressAttribute() {
-        $total_progress = $this->course()->first()->lessons()->count();
+        $total_progress = $this->course()->first()->videos()->count();
         return $total_progress;
     }
 

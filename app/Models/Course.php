@@ -109,6 +109,7 @@ class Course extends Model implements HasMedia {
     }
 
     public function getIsPurchasedAttribute() {
+        if (!isset(auth()->user()->id)) return false;
         return !!$this->purchases()->where('user_id', auth()->user()->id)->whereRelation('transaction', 'status', '=', 'success')->count();
     }
 

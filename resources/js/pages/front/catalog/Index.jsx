@@ -2,7 +2,7 @@ import React, { memo, useRef } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/libs/axios";
-import { extractRouteParams } from "@/libs/utils";
+import { extractRouteParams, asset } from "@/libs/utils";
 import { useForm, useWatch } from "react-hook-form";
 import { Inertia } from "@inertiajs/inertia";
 import { useUpdateEffect } from "react-haiku";
@@ -109,6 +109,7 @@ const Index = () => {
                 <div className="collapse collapse-arrow py-2">
                   <input type="checkbox" className="peer" />
                   <span className="collapse-title text-lg font-normal p-0 flex items-center">
+                    <img src={asset(group.icon)} className="w-6 mr-4" />
                     {group.name}
                   </span>
                   <div className="collapse-content p-0">

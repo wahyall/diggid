@@ -61,7 +61,7 @@ function Categories({ selected, close }) {
     data.sub.forEach((item, i) => {
       formData.append(`subs[${i}][uuid]`, item.uuid);
       formData.append(`subs[${i}][name]`, item.name);
-      formData.append(`subs[${i}][icon]`, item.icon[0].file);
+      // formData.append(`subs[${i}][icon]`, item.icon[0].file);
     });
     submit(formData);
   };
@@ -91,7 +91,7 @@ function Categories({ selected, close }) {
           render={(field, index) => (
             <div className="row mb-8" key={field.uuid}>
               <input type="hidden" name={`${index}.uuid`} />
-              <div className="col-2">
+              {/* <div className="col-2">
                 <label className="form-label">Icon :</label>
                 <Controller
                   control={control}
@@ -112,7 +112,7 @@ function Categories({ selected, close }) {
                     );
                   }}
                 />
-              </div>
+              </div> */}
               <div className="col-6">
                 <div>
                   <label className="form-label">Nama :</label>

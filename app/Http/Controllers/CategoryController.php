@@ -13,7 +13,7 @@ class CategoryController extends Controller {
                 'subs' => 'required|array',
                 'subs.*.uuid' => 'required|string',
                 'subs.*.name' => 'required|string|max:179',
-                'subs.*.icon' => 'required|image',
+                // 'subs.*.icon' => 'required|image',
                 'category_group_uuid' => 'required|string'
             ]);
 
@@ -27,18 +27,18 @@ class CategoryController extends Controller {
             $group->categories()->whereNotIn('uuid', $uuids)->delete();
 
             // Delete old icon
-            $group->categories()->get()->each(function ($category) {
-                if (isset($category->icon) && file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
-                    unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
-                }
-            });
+            // $group->categories()->get()->each(function ($category) {
+            //     if (isset($category->icon) && file_exists(storage_path('app/public/' . str_replace('storage/', '', $category->icon)))) {
+            //         unlink(storage_path('app/public/' . str_replace('storage/', '', $category->icon)));
+            //     }
+            // });
 
             foreach ($request->subs as $sub) {
                 $group->categories()->updateOrCreate([
                     'uuid' => $sub['uuid']
                 ], [
                     'name' => $sub['name'],
-                    'icon' => 'storage/' . $sub['icon']->store('category', 'public'),
+                    // 'icon' => 'storage/' . $sub['icon']->store('category', 'public'),
                 ]);
             }
 

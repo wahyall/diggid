@@ -43,7 +43,7 @@ function Index() {
         text: "Data yang dihapus tidak dapat dikembalikan!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Ya, handleDelete!",
+        confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batalkan!",
         reverseButtons: true,
         preConfirm: () => {

@@ -1,6 +1,6 @@
 import axios from "@/libs/axios";
 
-const useDownloadPdf = ({
+const useDownloadExcel = ({
   swalMixin = {
     customClass: {
       confirmButton: "btn btn-success btn-sm",
@@ -18,14 +18,14 @@ const useDownloadPdf = ({
       return mySwal
         .fire({
           title: "Apakah Anda Yakin?",
-          text: "Anda Akan Mendownlaod Report Berformat PDF, Mungkin Membutuhkan Waktu Beberapa Detik!",
+          text: "Anda Akan Mendownlaod Report Berformat Excel, Mungkin Membutuhkan Waktu Beberapa Detik!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "Download Sekarang!",
           showLoaderOnConfirm: true,
-          preConfirm: function () {
+          preConfirm: function (login) {
             return axios({
               url,
               method,
@@ -35,7 +35,7 @@ const useDownloadPdf = ({
               .then((res) => {
                 var headers = res.headers;
                 var blob = new Blob([res.data], {
-                  type: "application/pdf",
+                  type: "application/vnd.ms-excel",
                 });
 
                 var link = document.createElement("a");
@@ -45,7 +45,6 @@ const useDownloadPdf = ({
                   .split('"')[0];
                 link.click();
 
-                onSuccess();
                 window.respon = { status: true, message: "Berhasil Download!" };
               })
               .catch((error) => {
@@ -68,4 +67,4 @@ const useDownloadPdf = ({
   };
 };
 
-export default useDownloadPdf;
+export default useDownloadExcel;

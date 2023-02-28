@@ -22,6 +22,7 @@
     "meilisearch/meilisearch-php": "^0.24.2",
     "midtrans/midtrans-php": "^2.5",
     "pbmedia/laravel-ffmpeg": "^8.1",
+    "phpoffice/phpspreadsheet": "^1.28",
     "spatie/laravel-medialibrary": "^10.0.0",
     "spatie/laravel-sluggable": "^3.4",
     "tightenco/ziggy": "^1.0"

@@ -205,6 +205,17 @@ const Detail = memo(() => {
                   </div>
                 </Show.When>
               </Show>
+
+              {transaction.status === "pending" && (
+                <div className="mb-2">
+                  <span className="text-lg">Harap Dibayar Sebelum :</span>
+                  <div className="flex items-center">
+                    <span className="text-2xl font-bold text-red-500">
+                      {transaction.max_date_payment}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <If isTrue={transaction.status === "pending"}>

@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Support\Carbon;
 
 class Transaction extends Model {
     use Uuid;
 
     protected $fillable = ['identifier', 'amount', 'payment_method_id', 'status', 'user_id', 'body'];
     protected $hidden = ['id', 'user_id', 'payment_method_id', 'created_at', 'updated_at'];
-    protected $appends = ['date'];
+    protected $appends = ['date', 'max_date_payment'];
     protected $casts = ['body' => AsCollection::class];
 
     private $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -33,5 +34,9 @@ class Transaction extends Model {
         $month = $this->months[$this->created_at->format('m') - 1];
         $year = $this->created_at->format('Y');
         return "$date $month $year";
+    }
+
+    public function getMaxDatePaymentAttribute() {
+        return Carbon::parse($this->created_at)->addDays(1)->format('d F Y H:i:s');
     }
 }

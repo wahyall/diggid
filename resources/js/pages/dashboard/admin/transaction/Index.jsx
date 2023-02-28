@@ -113,6 +113,7 @@ function Index() {
           !openDetail && (
             <div className="d-flex gap-2">
               <button
+                title="Detail"
                 className="btn btn-sm btn-info btn-icon"
                 onClick={useCallback(() => handleDetail(cell.getValue()), [])}
               >

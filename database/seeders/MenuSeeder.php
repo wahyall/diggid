@@ -22,6 +22,7 @@ class MenuSeeder extends Seeder {
             ['name' => 'Katalog Kelas', 'url' => '/catalog', 'route' => 'front.catalog', 'component' => 'front/catalog/Index', 'children' => [
                 ['name' => 'Home', 'url' => '/catalog/course/{slug}', 'route' => 'front.catalog.course', 'component' => 'front/catalog/course/Index'],
             ]],
+            ['name' => 'Masuk Admin', 'url' => 'dashboard/login', 'route' => 'front.auth.login-dashboard', 'component' => 'front/auth/LoginDashboard', 'shown' => false, 'middleware' => 'guest'],
 
             ['middleware' => 'auth|verified', 'children' => [
                 // User
@@ -39,7 +40,7 @@ class MenuSeeder extends Seeder {
                 ['name' => 'Checkout', 'url' => 'checkout', 'route' => 'front.checkout', 'component' => 'front/checkout/Index'],
 
                 // Redirecting Dashboard
-                ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin,mentor'],
+                ['name' => 'Redirecting', 'url' => 'dashboard', 'route' => 'dashboard', 'component' => 'dashboard/Index', 'shown' => false, 'middleware' => 'role:admin'],
 
                 ['middleware' => 'role:admin', 'children' => [
                     // Menu Dashboard Admin

@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(['prefix' => 'admin', 'middleware' => 'role:admin'], function () {
         Route::prefix('dashboard')->group(function () {
             Route::post('', [DashboardController::class, 'index']);
+            Route::post('laporan', [DashboardController::class, 'laporan']);
             Route::get('menu', [DashboardController::class, 'menu']);
         });
 

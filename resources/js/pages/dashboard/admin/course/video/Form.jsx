@@ -204,6 +204,9 @@ function Form({ close, lesson_uuid, selected, csrfToken }) {
                 acceptedFileTypes={["video/*"]}
                 required
               />
+              <span className="text-danger">
+                *) Batas maksimal ukuran video yang dapat diupload adalah 100 MB
+              </span>
             </div>
           </div>
           <div className="col-8">

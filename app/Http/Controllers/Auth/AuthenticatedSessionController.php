@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller {
 
         return response()->json([
             'message' => 'Berhasil masuk',
-            'redirect' => route('front.me'),
+            'redirect' => auth()->user()->role == 'admin' ? route('dashboard.admin') : route('front.me'),
         ]);
     }
 

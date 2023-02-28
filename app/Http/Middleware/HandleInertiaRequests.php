@@ -22,7 +22,9 @@ class HandleInertiaRequests extends Middleware {
 
     public function handle(Request $request, Closure $next) {
         $route = Route::currentRouteName();
-        if (explode('.', $route)[0] == 'dashboard') {
+        if ($route == 'dashboard.login') {
+            $this->rootView = 'front';
+        } else if (explode('.', $route)[0] == 'dashboard') {
             $this->rootView = 'dashboard';
         } else if (explode('.', $route)[0] == 'front') {
             $this->rootView = 'front';
